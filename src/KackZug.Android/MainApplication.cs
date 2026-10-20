@@ -15,6 +15,7 @@ public class MainApplication : AvaloniaAndroidApplication<App>
     public override void OnCreate()
     {
         App.Platform = new AndroidPlatform(this);
+        AlertNotifier.EnsureChannels(this);
         base.OnCreate();
     }
 }

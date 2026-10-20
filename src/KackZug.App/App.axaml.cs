@@ -30,6 +30,17 @@ public partial class App : Application
         Avalonia.Threading.Dispatcher.UIThread.Post(() => _ = main.StartImportAsync(text));
     }
 
+    public static void ReloadFromBackground()
+    {
+        var services = Services;
+        if (services is null)
+        {
+            return;
+        }
+
+        Avalonia.Threading.Dispatcher.UIThread.Post(() => services.Reload());
+    }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);

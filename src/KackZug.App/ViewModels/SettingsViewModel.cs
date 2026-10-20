@@ -25,6 +25,7 @@ public partial class SettingsViewModel : PageViewModel
         }
 
         Load();
+        main.Services.DataChanged += (_, _) => RefreshPermissions();
     }
 
     public MainViewModel Main { get; }

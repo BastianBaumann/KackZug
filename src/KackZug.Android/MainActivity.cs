@@ -1,3 +1,4 @@
+using Android;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -19,10 +20,34 @@ namespace KackZug.Android;
 [IntentFilter(new[] { Intent.ActionSend }, Categories = new[] { Intent.CategoryDefault }, DataMimeType = "text/plain")]
 public class MainActivity : AvaloniaMainActivity
 {
+    private const int NotificationPermissionRequestCode = 1;
+
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
+        AskForNotifications();
         HandleIntent(Intent);
+    }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+        App.ReloadFromBackground();
+    }
+
+    private void AskForNotifications()
+    {
+        if (!OperatingSystem.IsAndroidVersionAtLeast(33))
+        {
+            return;
+        }
+
+        if (CheckSelfPermission(Manifest.Permission.PostNotifications) == Permission.Granted)
+        {
+            return;
+        }
+
+        RequestPermissions(new[] { Manifest.Permission.PostNotifications }, NotificationPermissionRequestCode);
     }
 
     protected override void OnNewIntent(Intent? intent)
