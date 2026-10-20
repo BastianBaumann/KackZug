@@ -1,0 +1,42 @@
+{
+  "verbindungen": [
+    {
+      "verbindungsAbschnitte": [
+        {
+          "abfahrtsOrt": "Beispielhausen",
+          "abfahrtsOrtExtId": "8000002",
+          "ankunftsOrt": "Musterstadt Hbf",
+          "ankunftsOrtExtId": "8000001",
+          "abfahrt": { "sollzeit": "2026-10-20T23:40:00" },
+          "ankunft": { "sollzeit": "2026-10-21T00:08:00" },
+          "verkehrsmittel": {
+            "produktGattung": "REGIONAL",
+            "kategorie": "NRB",
+            "nummer": "4799",
+            "typ": "PUBLICTRANSPORT",
+            "mittelText": "RB9"
+          },
+          "halte": [
+            { "name": "Beispielhausen", "extId": "8000002", "gleis": "1", "abfahrt": { "sollzeit": "2026-10-20T23:40:00" } }
+          ]
+        },
+        {
+          "abfahrtsOrt": "Musterstadt Hbf",
+          "abfahrtsOrtExtId": "8000001",
+          "ankunftsOrt": "Nordviertel",
+          "ankunftsOrtExtId": "900010",
+          "abfahrt": { "sollzeit": "2026-10-21T00:15:00" },
+          "ankunft": { "sollzeit": "2026-10-21T00:24:00" },
+          "verkehrsmittel": {
+            "produktGattung": "BUS",
+            "kategorie": "Bus",
+            "nummer": "N1",
+            "typ": "PUBLICTRANSPORT",
+            "mittelText": "Bus N1"
+          },
+          "halte": []
+        }
+      ]
+    }
+  ]
+}

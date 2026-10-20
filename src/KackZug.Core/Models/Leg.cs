@@ -15,11 +15,15 @@ public sealed class Leg
 
     public TimeOnly PlannedArrival { get; set; }
 
+    public int DepartureDayOffset { get; set; }
+
     public int ArrivalDayOffset { get; set; }
 
     public string Name { get; set; } = "";
 
     public string Category { get; set; } = "";
+
+    public string? ProductClass { get; set; }
 
     public string? Line { get; set; }
 

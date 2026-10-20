@@ -1,0 +1,6 @@
+{
+  "startOrt": "Musterstadt Hbf",
+  "zielOrt": "Werkstor, Beispielhausen",
+  "hinfahrtDatum": "2026-10-20T06:42:00+02:00",
+  "hinfahrtRecon": "¶HKI¶T$A=1@O=Musterstadt Hbf@X=11000000@Y=50000000@L=8000001@a=128@$A=1@O=Beispielhausen@X=11100000@Y=50100000@L=8000002@a=128@$202610200642$202610200710$             4711$$3$$$$$$§W$A=1@O=Beispielhausen@X=11100000@Y=50100000@L=8000002@a=128@$A=1@O=Markt, Beispielhausen@X=11100500@Y=50100500@L=900001@a=128@$202610200710$202610200715$$$1$$$$$$§T$A=1@O=Markt, Beispielhausen@X=11100500@Y=50100500@L=900001@a=128@$A=1@O=Werkstor, Beispielhausen@X=11120000@Y=50120000@L=900002@a=128@$202610200720$202610200728$STR             2$$1$$$$$$¶KC¶#VE#2#CF#100#CA#0#CM#0#SICT#0#AM#16465#AM2#0#RT#7#¶KRCC¶#VE#1#"
+}
