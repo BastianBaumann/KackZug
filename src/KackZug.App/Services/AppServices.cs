@@ -1,5 +1,6 @@
 using KackZug.Core;
 using KackZug.Core.Bahn;
+using KackZug.Core.Checking;
 using KackZug.Core.Import;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
@@ -46,6 +47,18 @@ public sealed class AppServices
             return _resolver;
         }
         set { _resolver = value; }
+    }
+
+    public Func<ITripStatusSource>? StatusSourceFactory { get; set; }
+
+    public ITripStatusSource CreateStatusSource()
+    {
+        if (StatusSourceFactory is not null)
+        {
+            return StatusSourceFactory();
+        }
+
+        return new BahnWebTripStatusSource(BahnClient);
     }
 
     public BahnWebClient BahnClient
