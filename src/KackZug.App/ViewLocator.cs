@@ -20,6 +20,8 @@ public class ViewLocator : IDataTemplate
                 return new SettingsView();
             case ImportViewModel:
                 return new ImportView();
+            case TutorialViewModel:
+                return new TutorialView();
             default:
                 return new TextBlock { Text = "Keine Ansicht fuer " + param?.GetType().Name };
         }

@@ -11,6 +11,23 @@ internal static class TourSteps
     {
         Avalonia.Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Light;
 
+        check(!main.HasTutorial, "Kein Tutorial, wenn diese Version schon gesehen");
+        main.Services.Data.Settings.TutorialSeenVersion = "0.0.1";
+        main.ShowTutorialIfNeeded();
+        check(main.HasTutorial, "Tutorial nach Update");
+        await capture(window, Path.Combine(directory, "tutorial-1.png"));
+        main.Tutorial!.NextCommand.Execute(null);
+        await capture(window, Path.Combine(directory, "tutorial-2.png"));
+        main.Tutorial.NextCommand.Execute(null);
+        main.Tutorial.NextCommand.Execute(null);
+        main.Tutorial.NextCommand.Execute(null);
+        check(main.Tutorial.IsLast, "Letzte Tutorial-Seite erreicht");
+        await capture(window, Path.Combine(directory, "tutorial-5.png"));
+        main.Tutorial.FinishCommand.Execute(null);
+        check(!main.HasTutorial && main.Services.Store.Load().Settings.TutorialSeenVersion == Core.AppInfo.Version, "Tutorial als gesehen gespeichert");
+        main.ShowTutorialIfNeeded();
+        check(!main.HasTutorial, "Tutorial kommt nicht erneut");
+
         main.ShowUpdate(new Core.Updates.UpdateInfo("9.9.9", "https://github.com/BastianBaumann/KackZug/releases/tag/v9.9.9"));
         check(main.HasUpdate && main.UpdateText.Contains("9.9.9"), "Update-Hinweis sichtbar");
         main.Navigate("week");

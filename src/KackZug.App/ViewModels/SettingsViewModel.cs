@@ -116,6 +116,12 @@ public partial class SettingsViewModel : PageViewModel
         Main.Services.Platform.OpenPermissionSettings(permission.Key);
     }
 
+    [RelayCommand]
+    private void ShowTutorial()
+    {
+        Main.ShowTutorial(false);
+    }
+
     [RelayCommand(CanExecute = nameof(CanTestAlarm))]
     private async Task TestAlarmAsync()
     {

@@ -154,6 +154,13 @@
                 </StackPanel>
             </Border>
 
+            <Button Classes="ghost" HorizontalAlignment="Left" Command="{Binding ShowTutorialCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <PathIcon Data="{StaticResource IconUnknown}" Width="16" Height="16" />
+                    <TextBlock Text="Einführung noch einmal ansehen" />
+                </StackPanel>
+            </Button>
+
             <StackPanel Spacing="4" Margin="4,4,4,12">
                 <TextBlock Text="{Binding VersionText}" Classes="muted" TextWrapping="Wrap" />
                 <TextBlock Classes="muted" TextWrapping="Wrap"

@@ -37,6 +37,10 @@ public partial class MainViewModel : ViewModelBase
     public partial ConfirmViewModel? Dialog { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasTutorial))]
+    public partial TutorialViewModel? Tutorial { get; set; }
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasUpdate))]
     public partial UpdateInfo? AvailableUpdate { get; set; }
 
@@ -54,6 +58,11 @@ public partial class MainViewModel : ViewModelBase
     public bool HasDialog
     {
         get { return Dialog is not null; }
+    }
+
+    public bool HasTutorial
+    {
+        get { return Tutorial is not null; }
     }
 
     public bool HasUpdate
@@ -106,6 +115,29 @@ public partial class MainViewModel : ViewModelBase
 
         CurrentPage = page;
         page.OnShown();
+    }
+
+    public void ShowTutorialIfNeeded()
+    {
+        var seenVersion = Services.Data.Settings.TutorialSeenVersion;
+        if (seenVersion == AppInfo.Version)
+        {
+            return;
+        }
+
+        ShowTutorial(seenVersion is not null);
+    }
+
+    public void ShowTutorial(bool afterUpdate)
+    {
+        Tutorial = new TutorialViewModel(this, afterUpdate);
+    }
+
+    public void CloseTutorial()
+    {
+        Tutorial = null;
+        Services.Data.Settings.TutorialSeenVersion = AppInfo.Version;
+        Services.Store.Save(Services.Data);
     }
 
     public async Task CheckForUpdateAsync()

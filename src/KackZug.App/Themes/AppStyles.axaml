@@ -46,6 +46,12 @@
     <Style Selector="Border.card.past">
         <Setter Property="Opacity" Value="0.55" />
     </Style>
+    <Style Selector="Border.dot">
+        <Setter Property="Background" Value="{DynamicResource AppBorderBrush}" />
+    </Style>
+    <Style Selector="Border.dot.current">
+        <Setter Property="Background" Value="{DynamicResource AppAccentBrush}" />
+    </Style>
     <Style Selector="Border.soft">
         <Setter Property="Background" Value="{DynamicResource AppSurfaceAltBrush}" />
         <Setter Property="CornerRadius" Value="10" />

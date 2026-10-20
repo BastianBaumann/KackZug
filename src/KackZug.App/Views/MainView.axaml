@@ -55,6 +55,14 @@
             </Border>
         </Grid>
 
+        <Border IsVisible="{Binding HasTutorial}" Background="{DynamicResource AppOverlayBrush}">
+            <ScrollViewer>
+                <Border Classes="card" MaxWidth="480" Margin="16,32" VerticalAlignment="Center" Padding="22">
+                    <ContentControl Content="{Binding Tutorial}" />
+                </Border>
+            </ScrollViewer>
+        </Border>
+
         <Border IsVisible="{Binding HasImport}" Background="{DynamicResource AppOverlayBrush}">
             <ScrollViewer>
                 <Border Classes="card" MaxWidth="560" Margin="12,24" VerticalAlignment="Center" Padding="18">
