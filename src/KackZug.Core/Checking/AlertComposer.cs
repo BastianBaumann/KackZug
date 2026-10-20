@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using KackZug.Core.Models;
 
@@ -21,6 +22,9 @@ public static class AlertComposer
         var headline = Headline(status);
         alert.Title = shift.Name + " " + DirectionName(direction) + ": " + headline;
         alert.Text = Details(status);
+        alert.Kicker = Kicker(shift, direction, travelDate);
+        alert.Headline = AlarmHeadline(status);
+        alert.TripLine = TripLine(status);
         return alert;
     }
 
@@ -65,6 +69,63 @@ public static class AlertComposer
         }
 
         return builder.ToString();
+    }
+
+    private static readonly CultureInfo German = new CultureInfo("de-DE");
+
+    private static string Kicker(Shift shift, TripDirection direction, DateOnly travelDate)
+    {
+        var day = German.DateTimeFormat.GetAbbreviatedDayName(travelDate.DayOfWeek);
+        var text = shift.Name + " · " + DirectionName(direction) + " · " + day + " " + travelDate.ToString("dd.MM.", German);
+        return text.ToUpper(German);
+    }
+
+    private static string AlarmHeadline(TripStatus status)
+    {
+        switch (status.Overall)
+        {
+            case LegStatus.Cancelled:
+                return "FÄLLT AUS";
+            case LegStatus.PartlyCancelled:
+                return "TEILAUSFALL";
+            case LegStatus.NotFound:
+                return "NICHT GEFUNDEN";
+            case LegStatus.TransferAtRisk:
+                return "ANSCHLUSS GEFÄHRDET";
+            case LegStatus.Delayed:
+                var delay = status.Legs.Max(result => result.DelayMinutes);
+                return "+" + delay + " MIN.";
+            case LegStatus.PlatformChanged:
+                return "GLEISWECHSEL";
+            case LegStatus.Unknown:
+                return "NICHT GEPRÜFT";
+            default:
+                return "PLANMÄSSIG";
+        }
+    }
+
+    private static string TripLine(TripStatus status)
+    {
+        LegResult? leg = null;
+        if (status.Overall == LegStatus.TransferAtRisk)
+        {
+            var transfer = status.Transfers.First(item => item.AtRisk);
+            leg = status.Legs[transfer.ArrivingLegIndex];
+        }
+        else
+        {
+            var worstIndex = WorstLegIndex(status);
+            if (worstIndex >= 0)
+            {
+                leg = status.Legs[worstIndex];
+            }
+            else
+            {
+                leg = status.Legs.First(result => !result.Leg.IsWalk);
+            }
+        }
+
+        return leg.Leg.Name + " · " + leg.Leg.PlannedDeparture.ToString("HH:mm") + " " + leg.Leg.From.Name + " → " + leg.Leg.To.Name;
     }
 
     private static string Headline(TripStatus status)

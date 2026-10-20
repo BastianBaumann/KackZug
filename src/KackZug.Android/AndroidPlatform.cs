@@ -15,6 +15,7 @@ public sealed class AndroidPlatform : IPlatform
     public const string PermissionNotifications = "notifications";
     public const string PermissionExactAlarms = "exact";
     public const string PermissionBattery = "battery";
+    public const string PermissionFullScreen = "fullscreen";
 
     private readonly Context _context;
 
@@ -47,6 +48,29 @@ public sealed class AndroidPlatform : IPlatform
         AlertNotifier.Show(_context, alert, insistent);
     }
 
+    public void ScheduleTestAlarm(TimeSpan delay)
+    {
+        var alarmManager = (global::Android.App.AlarmManager?)_context.GetSystemService(Context.AlarmService);
+        if (alarmManager is null)
+        {
+            return;
+        }
+
+        var intent = new Intent(_context, typeof(NotificationActionReceiver));
+        intent.SetAction(NotificationActionReceiver.ActionTest);
+        var pending = global::Android.App.PendingIntent.GetBroadcast(_context, StableHash.Of("test-alarm"), intent,
+            global::Android.App.PendingIntentFlags.UpdateCurrent | global::Android.App.PendingIntentFlags.Immutable)!;
+        var at = DateTimeOffset.Now + delay;
+        if (AlarmScheduler.CanScheduleExact(_context))
+        {
+            alarmManager.SetExactAndAllowWhileIdle(global::Android.App.AlarmType.RtcWakeup, at.ToUnixTimeMilliseconds(), pending);
+        }
+        else
+        {
+            alarmManager.SetAndAllowWhileIdle(global::Android.App.AlarmType.RtcWakeup, at.ToUnixTimeMilliseconds(), pending);
+        }
+    }
+
     public void OpenUrl(string url)
     {
         var intent = new Intent(Intent.ActionView, global::Android.Net.Uri.Parse(url));
@@ -60,12 +84,19 @@ public sealed class AndroidPlatform : IPlatform
         var exactAllowed = AlarmScheduler.CanScheduleExact(_context);
         var power = (PowerManager?)_context.GetSystemService(Context.PowerService);
         var batteryFree = power is not null && power.IsIgnoringBatteryOptimizations(_context.PackageName);
+        var fullScreenAllowed = true;
+        if (OperatingSystem.IsAndroidVersionAtLeast(34))
+        {
+            var manager = (global::Android.App.NotificationManager?)_context.GetSystemService(Context.NotificationService);
+            fullScreenAllowed = manager is not null && manager.CanUseFullScreenIntent();
+        }
 
         return new List<PermissionInfo>
         {
             new PermissionInfo(PermissionNotifications, "Benachrichtigungen", "Ohne sie kann KackZug keine Störung melden.", notificationsAllowed),
             new PermissionInfo(PermissionExactAlarms, "Pünktliche Alarme", "Damit die Prüfung genau zur eingestellten Zeit läuft.", exactAllowed),
-            new PermissionInfo(PermissionBattery, "Akku-Optimierung aus", "Sonst kann Android die Prüfung verzögern oder ganz auslassen.", batteryFree)
+            new PermissionInfo(PermissionBattery, "Akku-Optimierung aus", "Sonst kann Android die Prüfung verzögern oder ganz auslassen.", batteryFree),
+            new PermissionInfo(PermissionFullScreen, "Vollbild-Alarm", "Damit eine Störung auch auf dem Sperrbildschirm groß erscheint.", fullScreenAllowed)
         };
     }
 
@@ -81,6 +112,10 @@ public sealed class AndroidPlatform : IPlatform
         else if (key == PermissionExactAlarms && OperatingSystem.IsAndroidVersionAtLeast(31))
         {
             intent = new Intent(global::Android.Provider.Settings.ActionRequestScheduleExactAlarm, packageUri);
+        }
+        else if (key == PermissionFullScreen && OperatingSystem.IsAndroidVersionAtLeast(34))
+        {
+            intent = new Intent(global::Android.Provider.Settings.ActionManageAppUseFullScreenIntent, packageUri);
         }
         else if (key == PermissionBattery)
         {

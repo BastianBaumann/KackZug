@@ -1,4 +1,5 @@
 using KackZug.Core.Models;
+using KackZug.Core.Planning;
 
 namespace KackZug.Core.Checking;
 
@@ -43,6 +44,7 @@ public sealed class TripChecker
 
         var status = StatusEvaluator.Evaluate(connection, observations, data.Settings);
         var alert = AlertComposer.Compose(shift, direction, travelDate, status);
+        alert.RepeatUntil = BerlinTime.ToInstant(connection.FirstRide.DepartureOn(travelDate), BerlinTime.Zone);
         var state = FindOrCreateState(data, travelDate, shiftId, direction);
         var shouldNotify = ShouldNotify(state, alert, context, data.Settings);
 

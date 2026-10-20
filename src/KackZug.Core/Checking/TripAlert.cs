@@ -20,4 +20,12 @@ public sealed class TripAlert
     public string Text { get; set; } = "";
 
     public string StatusHash { get; set; } = "";
+
+    public string Kicker { get; set; } = "";
+
+    public string Headline { get; set; } = "";
+
+    public string TripLine { get; set; } = "";
+
+    public DateTimeOffset RepeatUntil { get; set; }
 }

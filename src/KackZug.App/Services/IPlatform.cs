@@ -14,6 +14,8 @@ public interface IPlatform
 
     void ShowAlert(TripAlert alert);
 
+    void ScheduleTestAlarm(TimeSpan delay);
+
     void OpenUrl(string url);
 
     IReadOnlyList<PermissionInfo> GetPermissions();

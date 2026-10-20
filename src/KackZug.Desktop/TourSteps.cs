@@ -1,5 +1,6 @@
 #if DEBUG
 using Avalonia.Controls;
+using Avalonia.VisualTree;
 using KackZug.ViewModels;
 
 namespace KackZug.Desktop;
@@ -48,7 +49,14 @@ internal static class TourSteps
         check(shifts.IsEditing, "Editor geoeffnet");
         check(shifts.Editor!.Outbound.Legs.Count == 3, "Hinfahrt zeigt 3 Teilstrecken");
         await capture(window, Path.Combine(directory, "shift-editor.png"));
-        shifts.Editor.CancelCommand.Execute(null);
+        var colorButtons = window.GetVisualDescendants().OfType<Button>().Where(button => button.CommandParameter is ColorOption).ToList();
+        check(colorButtons.Count == 8 && colorButtons.All(button => button.Command is not null), "Farbknoepfe haben einen Befehl");
+        colorButtons[3].Command!.Execute(colorButtons[3].CommandParameter);
+        check(shifts.Editor.Colors[3].IsSelected && !shifts.Editor.Colors[0].IsSelected, "Farbknopf waehlt die Farbe");
+        shifts.Editor.SaveCommand.Execute(null);
+        check(main.Services.Store.Load().Shifts[0].ColorHex == ColorOption.ShiftColors[3], "Neue Schichtfarbe gespeichert");
+        shifts.EditCommand.Execute(shifts.Shifts[0]);
+        shifts.Editor!.CancelCommand.Execute(null);
         check(!shifts.IsEditing, "Editor geschlossen");
 
         shifts.AddCommand.Execute(null);

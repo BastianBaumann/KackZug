@@ -25,6 +25,10 @@ public class TripCheckerTests
         Assert.Equal("Frühdienst Hinfahrt: RE7 06:42 fällt aus", first.Alert.Title);
         Assert.Contains("Musterstadt Hbf → Beispielhausen: fällt aus", first.Alert.Text);
         Assert.Contains("DB Navigator", first.Alert.Text);
+        Assert.Equal("FÄLLT AUS", first.Alert.Headline);
+        Assert.Equal("FRÜHDIENST · HINFAHRT · MI 21.10.", first.Alert.Kicker);
+        Assert.Equal("RE7 · 06:42 Musterstadt Hbf → Beispielhausen", first.Alert.TripLine);
+        Assert.Equal(new DateTimeOffset(2026, 10, 21, 6, 42, 0, TimeSpan.FromHours(2)), first.Alert.RepeatUntil);
         Assert.False(second!.ShouldNotify);
         var state = Assert.Single(data.CheckStates);
         Assert.Equal(LegStatus.Cancelled, state.LastStatus);
@@ -65,6 +69,7 @@ public class TripCheckerTests
 
         Assert.Equal(LegStatus.TransferAtRisk, outcome!.Status.Overall);
         Assert.Equal("Frühdienst Hinfahrt: Anschluss in Beispielhausen gefährdet", outcome.Alert.Title);
+        Assert.Equal("ANSCHLUSS GEFÄHRDET", outcome.Alert.Headline);
         Assert.Contains("Umstieg in Beispielhausen: nur noch 0 Min. Puffer", outcome.Alert.Text);
     }
 

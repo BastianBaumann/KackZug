@@ -41,6 +41,17 @@ public sealed class DefaultPlatform : IPlatform
         Trace.WriteLine("Meldung: " + alert.Title + " / " + alert.Text);
     }
 
+    public void ScheduleTestAlarm(TimeSpan delay)
+    {
+        _ = ShowTestAlarmLaterAsync(delay);
+    }
+
+    private async Task ShowTestAlarmLaterAsync(TimeSpan delay)
+    {
+        await Task.Delay(delay);
+        ShowAlert(TestAlert.Create(DateTimeOffset.Now));
+    }
+
     public void OpenUrl(string url)
     {
         var start = new ProcessStartInfo(url) { UseShellExecute = true };

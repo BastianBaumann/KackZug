@@ -126,20 +126,11 @@ public partial class SettingsViewModel : PageViewModel
     private async Task TestAlarmAsync()
     {
         TestAlarmPending = true;
-        Main.ShowToast("Der Test-Alarm kommt in 5 Sekunden. Du kannst das Handy auch sperren.", false);
+        Main.Services.Platform.ScheduleTestAlarm(TimeSpan.FromSeconds(5));
+        Main.ShowToast("Der Test-Alarm kommt in 5 Sekunden, auch wenn du die App schließt. Er geht nur mit „Gesehen“ weg.", false);
         try
         {
             await Task.Delay(TimeSpan.FromSeconds(5));
-            var alert = new TripAlert
-            {
-                Title = "Test: RE7 06:42 fällt aus",
-                Text = "So sieht eine Störung aus. Alles gut, das war nur ein Test.",
-                Severity = AlertSeverity.Problem,
-                Status = LegStatus.Cancelled,
-                StatusHash = "test",
-                TravelDate = DateOnly.FromDateTime(DateTime.Today)
-            };
-            Main.Services.Platform.ShowAlert(alert);
         }
         finally
         {
