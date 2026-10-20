@@ -1,0 +1,27 @@
+# Build output
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.idea/
+.vscode/
+TestResults/
+artifacts/
+
+# Secrets and key material
+.env
+.env.*
+*.keystore
+*.jks
+*.pfx
+*.p12
+*.pem
+*.key
+
+# Runtime data and logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

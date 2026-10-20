@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/KackZug.Android/KackZug.Android.csproj" />
+    <Project Path="src/KackZug.App/KackZug.App.csproj" />
+    <Project Path="src/KackZug.Core/KackZug.Core.csproj" />
+    <Project Path="src/KackZug.Desktop/KackZug.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/KackZug.Core.Tests/KackZug.Core.Tests.csproj" />
+  </Folder>
+</Solution>
