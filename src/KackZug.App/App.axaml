@@ -55,6 +55,7 @@
 
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
         <StyleInclude Source="avares://KackZug.App/Themes/AppStyles.axaml" />
     </Application.Styles>
 </Application>

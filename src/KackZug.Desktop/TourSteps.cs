@@ -90,6 +90,22 @@ internal static class TourSteps
         check(refreshedToday.OutboundStatus is not null && refreshedToday.OutboundStatus.Text.Contains("Anschluss gefährdet"), "Jetzt pruefen zeigt Anschluss gefaehrdet");
         await capture(window, Path.Combine(directory, "week-checked.png"));
         check(monday.DayName == "Montag", "Wochentage auf Deutsch");
+
+        main.Navigate("settings");
+        var settings = (SettingsViewModel)main.CurrentPage!;
+        check(settings.LeadTimes.Count(option => option.IsChecked) == 3, "Drei Vorlaufzeiten aktiv");
+        settings.LeadTimes.First(option => option.Minutes == 120).IsChecked = true;
+        check(main.Services.Data.Settings.LeadTimesMinutes.SequenceEqual(new[] { 120, 90, 45, 15 }), "Vorlaufzeit 120 gespeichert");
+        settings.ApplyPresetCommand.Execute(settings.Presets[1]);
+        check(main.Services.Store.Load().Settings.AccentColor == "#3F51B5", "Farbvorlage gespeichert");
+        await capture(window, Path.Combine(directory, "settings-preset.png"));
+        settings.ThemeDark = true;
+        check(main.Services.Data.Settings.ThemeMode == Core.Models.ThemeMode.Dark, "Dunkel gespeichert");
+        await capture(window, Path.Combine(directory, "settings-dark-preset.png"));
+        settings.ApplyPresetCommand.Execute(settings.Presets[0]);
+        settings.ThemeSystem = true;
+        settings.EveningCheckEnabled = false;
+        check(main.Services.Data.Settings.EveningCheckTime is null, "Abend-Check abgeschaltet");
     }
 }
 #endif

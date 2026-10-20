@@ -37,4 +37,13 @@ public sealed class AndroidPlatform : IPlatform
         intent.AddFlags(ActivityFlags.NewTask);
         _context.StartActivity(intent);
     }
+
+    public IReadOnlyList<PermissionInfo> GetPermissions()
+    {
+        return new List<PermissionInfo>();
+    }
+
+    public void OpenPermissionSettings(string key)
+    {
+    }
 }

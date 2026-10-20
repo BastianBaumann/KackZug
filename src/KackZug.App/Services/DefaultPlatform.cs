@@ -46,4 +46,13 @@ public sealed class DefaultPlatform : IPlatform
         var start = new ProcessStartInfo(url) { UseShellExecute = true };
         Process.Start(start);
     }
+
+    public IReadOnlyList<PermissionInfo> GetPermissions()
+    {
+        return new List<PermissionInfo>();
+    }
+
+    public void OpenPermissionSettings(string key)
+    {
+    }
 }

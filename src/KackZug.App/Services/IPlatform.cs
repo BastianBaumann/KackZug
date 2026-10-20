@@ -15,4 +15,8 @@ public interface IPlatform
     void ShowAlert(TripAlert alert);
 
     void OpenUrl(string url);
+
+    IReadOnlyList<PermissionInfo> GetPermissions();
+
+    void OpenPermissionSettings(string key);
 }
