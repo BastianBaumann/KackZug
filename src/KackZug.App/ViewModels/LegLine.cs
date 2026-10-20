@@ -2,7 +2,7 @@ using KackZug.Core.Models;
 
 namespace KackZug.ViewModels;
 
-/// <summary>Eine Zeile mit einer Teilstrecke fuer die Anzeige</summary>
+/// <summary>Eine Teilstrecke fuer die Anzeige im Stil der Connection-Komponente</summary>
 public sealed class LegLine
 {
     public LegLine(Leg leg)
@@ -11,6 +11,12 @@ public sealed class LegLine
         Route = ConnectionText.Route(leg);
         Details = ConnectionText.Details(leg);
         IsWalk = leg.IsWalk;
+        DepartureTime = leg.PlannedDeparture.ToString("HH:mm");
+        ArrivalTime = leg.PlannedArrival.ToString("HH:mm");
+        FromName = leg.From.Name;
+        ToName = leg.To.Name;
+        LineName = leg.Name;
+        Meta = ConnectionText.Meta(leg);
     }
 
     public string Times { get; }
@@ -20,4 +26,16 @@ public sealed class LegLine
     public string Details { get; }
 
     public bool IsWalk { get; }
+
+    public string DepartureTime { get; }
+
+    public string ArrivalTime { get; }
+
+    public string FromName { get; }
+
+    public string ToName { get; }
+
+    public string LineName { get; }
+
+    public string Meta { get; }
 }

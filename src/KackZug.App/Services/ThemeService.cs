@@ -5,20 +5,22 @@ using KackZug.Core.Models;
 
 namespace KackZug.Services;
 
-/// <summary>Setzt die zwei Farben und Hell oder Dunkel live</summary>
+/// <summary>Setzt Hell oder Dunkel und, falls gewaehlt, eine eigene Markenfarbe statt des Orange aus dem Designsystem</summary>
 public sealed class ThemeService
 {
-    public const string DefaultAccent = "#1E9E8B";
-    public const string DefaultSecondary = "#8B5A2B";
+    public const string DefaultAccent = "#C84B0C";
+    public const string LegacyAccent = "#1E9E8B";
 
-    public static readonly (string Name, string Accent, string Secondary)[] Presets =
+    public static readonly (string Name, string Accent)[] Presets =
     {
-        ("KackZug", DefaultAccent, DefaultSecondary),
-        ("Nachtzug", "#3F51B5", "#7E57C2"),
-        ("Regio", "#2E7D32", "#F9A825"),
-        ("Ostsee", "#0277BD", "#26A69A"),
-        ("Anthrazit", "#37474F", "#FB8C00")
+        ("Orange (Standard)", DefaultAccent),
+        ("Petrol", "#00788A"),
+        ("Blau", "#1455C0"),
+        ("Violett", "#6A3FB5"),
+        ("Schiefer", "#46505E")
     };
+
+    private static readonly string[] AccentKeys = { "AppAccentBrush", "AppAccentPressedBrush", "AppAccentSoftBrush", "AppAccentInkBrush" };
 
     public void Apply(Settings settings)
     {
@@ -29,22 +31,22 @@ public sealed class ThemeService
         }
 
         application.RequestedThemeVariant = ToThemeVariant(settings.ThemeMode);
-
-        var accent = Parse(settings.AccentColor, DefaultAccent);
-        var secondary = Parse(settings.SecondaryColor, DefaultSecondary);
         var resources = application.Resources;
+        var accent = Parse(settings.AccentColor, DefaultAccent);
+        var isDefault = IsDefault(settings.AccentColor);
 
-        resources["AppAccentColor"] = accent;
-        resources["AppSecondaryColor"] = secondary;
-        resources["AppAccentBrush"] = new SolidColorBrush(accent);
-        resources["AppSecondaryBrush"] = new SolidColorBrush(secondary);
-        resources["AppAccentSoftBrush"] = new SolidColorBrush(Color.FromArgb(0x26, accent.R, accent.G, accent.B));
-        resources["AppGradientBrush"] = new LinearGradientBrush
+        foreach (var key in AccentKeys)
         {
-            StartPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
-            EndPoint = new RelativePoint(1, 0, RelativeUnit.Relative),
-            GradientStops = { new GradientStop(accent, 0), new GradientStop(secondary, 1) }
-        };
+            resources.Remove(key);
+        }
+
+        if (!isDefault)
+        {
+            resources["AppAccentBrush"] = new SolidColorBrush(accent);
+            resources["AppAccentPressedBrush"] = new SolidColorBrush(Shade(accent, 0.83));
+            resources["AppAccentInkBrush"] = new SolidColorBrush(accent);
+            resources["AppAccentSoftBrush"] = new SolidColorBrush(Color.FromArgb(0x2E, accent.R, accent.G, accent.B));
+        }
 
         resources["SystemAccentColor"] = accent;
         resources["SystemAccentColorLight1"] = Shade(accent, 1.15);
@@ -55,8 +57,24 @@ public sealed class ThemeService
         resources["SystemAccentColorDark3"] = Shade(accent, 0.55);
     }
 
+    public static bool IsDefault(string? hex)
+    {
+        if (string.IsNullOrEmpty(hex))
+        {
+            return true;
+        }
+
+        return string.Equals(hex, DefaultAccent, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(hex, LegacyAccent, StringComparison.OrdinalIgnoreCase);
+    }
+
     public static Color Parse(string? hex, string fallback)
     {
+        if (IsDefault(hex))
+        {
+            return Color.Parse(fallback);
+        }
+
         if (Color.TryParse(hex, out var color))
         {
             return color;
@@ -68,6 +86,17 @@ public sealed class ThemeService
     public static string ToHex(Color color)
     {
         return "#" + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+    }
+
+    public static IBrush FindBrush(string key, IBrush fallback)
+    {
+        var application = Application.Current;
+        if (application is not null && application.TryGetResource(key, application.ActualThemeVariant, out var resource) && resource is IBrush brush)
+        {
+            return brush;
+        }
+
+        return fallback;
     }
 
     private static ThemeVariant ToThemeVariant(ThemeMode mode)

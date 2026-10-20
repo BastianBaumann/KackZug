@@ -26,6 +26,7 @@ internal static class Program
     {
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .WithAppFont()
             .LogToTrace();
     }
 }

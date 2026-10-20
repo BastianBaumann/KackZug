@@ -21,7 +21,7 @@ public partial class SettingsViewModel : PageViewModel
         Main = main;
         foreach (var preset in ThemeService.Presets)
         {
-            Presets.Add(new ColorPreset(preset.Name, preset.Accent, preset.Secondary));
+            Presets.Add(new ColorPreset(preset.Name, preset.Accent));
         }
 
         Load();
@@ -86,7 +86,7 @@ public partial class SettingsViewModel : PageViewModel
     public partial Color AccentColor { get; set; }
 
     [ObservableProperty]
-    public partial Color SecondaryColor { get; set; }
+    public partial bool HasNoPermissions { get; set; }
 
     [ObservableProperty]
     public partial bool HasMissingPermissions { get; set; }
@@ -105,7 +105,6 @@ public partial class SettingsViewModel : PageViewModel
     {
         _isLoading = true;
         AccentColor = Color.Parse(preset.Accent);
-        SecondaryColor = Color.Parse(preset.Secondary);
         _isLoading = false;
         SaveColors();
     }
@@ -179,7 +178,6 @@ public partial class SettingsViewModel : PageViewModel
         ThemeLight = settings.ThemeMode == ThemeMode.Light;
         ThemeDark = settings.ThemeMode == ThemeMode.Dark;
         AccentColor = ThemeService.Parse(settings.AccentColor, ThemeService.DefaultAccent);
-        SecondaryColor = ThemeService.Parse(settings.SecondaryColor, ThemeService.DefaultSecondary);
         _isLoading = false;
         RefreshPermissions();
     }
@@ -193,6 +191,7 @@ public partial class SettingsViewModel : PageViewModel
         }
 
         HasMissingPermissions = Permissions.Any(permission => permission.Missing);
+        HasNoPermissions = Permissions.Count == 0;
     }
 
     private void SaveLeadTimes()
@@ -224,7 +223,6 @@ public partial class SettingsViewModel : PageViewModel
         }
 
         Settings.AccentColor = ThemeService.ToHex(AccentColor);
-        Settings.SecondaryColor = ThemeService.ToHex(SecondaryColor);
         Main.Services.Theme.Apply(Settings);
         Main.Services.Store.Save(Main.Services.Data);
     }
@@ -354,8 +352,4 @@ public partial class SettingsViewModel : PageViewModel
         SaveColors();
     }
 
-    partial void OnSecondaryColorChanged(Color value)
-    {
-        SaveColors();
-    }
 }

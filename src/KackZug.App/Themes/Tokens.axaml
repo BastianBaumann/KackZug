@@ -1,0 +1,82 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Farben aus dem KackZug-Designsystem (tokens.json); Marke in Orange statt Rot -->
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="AppBackgroundBrush" Color="#F0F3F5" />
+            <SolidColorBrush x:Key="AppSurfaceBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AppSurfaceAltBrush" Color="#E5E9EC" />
+            <SolidColorBrush x:Key="AppBorderBrush" Color="#D7DCE1" />
+            <SolidColorBrush x:Key="AppTextBrush" Color="#131821" />
+            <SolidColorBrush x:Key="AppMutedBrush" Color="#56606B" />
+            <SolidColorBrush x:Key="AppDisabledBrush" Color="#8A929C" />
+            <SolidColorBrush x:Key="AppAccentBrush" Color="#C84B0C" />
+            <SolidColorBrush x:Key="AppAccentPressedBrush" Color="#A63E09" />
+            <SolidColorBrush x:Key="AppAccentInkBrush" Color="#B93D0A" />
+            <SolidColorBrush x:Key="AppAccentSoftBrush" Color="#FDEBDD" />
+            <SolidColorBrush x:Key="AppOnAccentBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AppFocusBrush" Color="#1455C0" />
+            <SolidColorBrush x:Key="AppOkBrush" Color="#1B7A35" />
+            <SolidColorBrush x:Key="AppOnOkBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AppOkInkBrush" Color="#1B7A35" />
+            <SolidColorBrush x:Key="AppLateBrush" Color="#FFBB00" />
+            <SolidColorBrush x:Key="AppOnLateBrush" Color="#131821" />
+            <SolidColorBrush x:Key="AppLateInkBrush" Color="#8A5600" />
+            <SolidColorBrush x:Key="AppLateSoftBrush" Color="#FFF4D6" />
+            <SolidColorBrush x:Key="AppCancelBrush" Color="#C50014" />
+            <SolidColorBrush x:Key="AppOnCancelBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AppCancelInkBrush" Color="#C50014" />
+            <SolidColorBrush x:Key="AppCancelSoftBrush" Color="#FDE6E8" />
+            <SolidColorBrush x:Key="AppUnknownBrush" Color="#5F6873" />
+            <SolidColorBrush x:Key="AppOnUnknownBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AppOverlayBrush" Color="#8F0B0D10" />
+            <SolidColorBrush x:Key="Shift1Brush" Color="#1455C0" />
+            <SolidColorBrush x:Key="Shift2Brush" Color="#6A3FB5" />
+            <SolidColorBrush x:Key="Shift3Brush" Color="#00788A" />
+            <SolidColorBrush x:Key="Shift4Brush" Color="#B8247A" />
+            <SolidColorBrush x:Key="Shift5Brush" Color="#8A5523" />
+            <SolidColorBrush x:Key="Shift6Brush" Color="#46505E" />
+            <SolidColorBrush x:Key="AppOnShiftBrush" Color="#FFFFFF" />
+            <BoxShadows x:Key="AppCardShadow">0 1 2 0 #14131821, 0 1 1 0 #0A131821</BoxShadows>
+            <BoxShadows x:Key="AppSheetShadow">0 -4 24 0 #29131821</BoxShadows>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="AppBackgroundBrush" Color="#0F1215" />
+            <SolidColorBrush x:Key="AppSurfaceBrush" Color="#1A1E23" />
+            <SolidColorBrush x:Key="AppSurfaceAltBrush" Color="#14171B" />
+            <SolidColorBrush x:Key="AppBorderBrush" Color="#343A42" />
+            <SolidColorBrush x:Key="AppTextBrush" Color="#EEF1F4" />
+            <SolidColorBrush x:Key="AppMutedBrush" Color="#A3ACB6" />
+            <SolidColorBrush x:Key="AppDisabledBrush" Color="#6B737D" />
+            <SolidColorBrush x:Key="AppAccentBrush" Color="#C84B0C" />
+            <SolidColorBrush x:Key="AppAccentPressedBrush" Color="#A63E09" />
+            <SolidColorBrush x:Key="AppAccentInkBrush" Color="#FF8A3D" />
+            <SolidColorBrush x:Key="AppAccentSoftBrush" Color="#3A2012" />
+            <SolidColorBrush x:Key="AppOnAccentBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AppFocusBrush" Color="#7AA7FF" />
+            <SolidColorBrush x:Key="AppOkBrush" Color="#5AD47A" />
+            <SolidColorBrush x:Key="AppOnOkBrush" Color="#0F1215" />
+            <SolidColorBrush x:Key="AppOkInkBrush" Color="#5AD47A" />
+            <SolidColorBrush x:Key="AppLateBrush" Color="#FFBB00" />
+            <SolidColorBrush x:Key="AppOnLateBrush" Color="#131821" />
+            <SolidColorBrush x:Key="AppLateInkBrush" Color="#FFC840" />
+            <SolidColorBrush x:Key="AppLateSoftBrush" Color="#33290D" />
+            <SolidColorBrush x:Key="AppCancelBrush" Color="#D1001A" />
+            <SolidColorBrush x:Key="AppOnCancelBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AppCancelInkBrush" Color="#FF6B73" />
+            <SolidColorBrush x:Key="AppCancelSoftBrush" Color="#3A1418" />
+            <SolidColorBrush x:Key="AppUnknownBrush" Color="#9AA3AD" />
+            <SolidColorBrush x:Key="AppOnUnknownBrush" Color="#0F1215" />
+            <SolidColorBrush x:Key="AppOverlayBrush" Color="#A3000000" />
+            <SolidColorBrush x:Key="Shift1Brush" Color="#7AA7FF" />
+            <SolidColorBrush x:Key="Shift2Brush" Color="#B597FF" />
+            <SolidColorBrush x:Key="Shift3Brush" Color="#3CC4D6" />
+            <SolidColorBrush x:Key="Shift4Brush" Color="#F07AC0" />
+            <SolidColorBrush x:Key="Shift5Brush" Color="#D9A06A" />
+            <SolidColorBrush x:Key="Shift6Brush" Color="#A9B4C2" />
+            <SolidColorBrush x:Key="AppOnShiftBrush" Color="#0F1215" />
+            <BoxShadows x:Key="AppCardShadow">0 0 0 0 #00000000</BoxShadows>
+            <BoxShadows x:Key="AppSheetShadow">0 -4 24 0 #80000000</BoxShadows>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

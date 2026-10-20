@@ -12,6 +12,11 @@ public class MainApplication : AvaloniaAndroidApplication<App>
     {
     }
 
+    protected override Avalonia.AppBuilder CustomizeAppBuilder(Avalonia.AppBuilder builder)
+    {
+        return base.CustomizeAppBuilder(builder).WithAppFont();
+    }
+
     public override void OnCreate()
     {
         App.Platform = new AndroidPlatform(this);

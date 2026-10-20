@@ -1,45 +1,25 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:KackZug.ViewModels"
+             xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.ShiftsView"
              x:DataType="vm:ShiftsViewModel">
     <UserControl.Resources>
         <DataTemplate x:Key="ConnectionCardTemplate" x:DataType="vm:ConnectionCardViewModel">
             <Border Classes="card">
-                <StackPanel Spacing="8">
+                <StackPanel Spacing="12">
                     <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Text="{Binding Title}" Classes="h3" VerticalAlignment="Center" />
-                        <Button Grid.Column="1" Classes="icon" IsVisible="{Binding HasConnection}"
-                                Command="{Binding RemoveCommand}" ToolTip.Tip="Fahrt entfernen">
-                            <PathIcon Data="{StaticResource IconDelete}" Width="18" Height="18" />
+                        <TextBlock Text="{Binding Title}" Classes="title" VerticalAlignment="Center" />
+                        <Button Grid.Column="1" Classes="ghost" IsVisible="{Binding HasConnection}" Command="{Binding RemoveCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <c:OutlineIcon Data="{StaticResource IconDelete}" Width="18" Height="18" />
+                                <TextBlock Text="Entfernen" />
+                            </StackPanel>
                         </Button>
                     </Grid>
                     <TextBlock IsVisible="{Binding IsEmpty}" TextWrapping="Wrap" Classes="muted"
-                               Text="Noch keine Verbindung. Im DB Navigator auf „Teilen“ tippen und KackZug wählen." />
-                    <ItemsControl ItemsSource="{Binding Legs}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Spacing="8" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="vm:LegLine">
-                                <Grid ColumnDefinitions="Auto,*" >
-                                    <PathIcon Width="18" Height="18" Margin="0,2,10,0" VerticalAlignment="Top"
-                                              Data="{StaticResource IconTrain}" IsVisible="{Binding !IsWalk}"
-                                              Foreground="{DynamicResource AppAccentBrush}" />
-                                    <PathIcon Width="18" Height="18" Margin="0,2,10,0" VerticalAlignment="Top"
-                                              Data="{StaticResource IconWalk}" IsVisible="{Binding IsWalk}"
-                                              Foreground="{DynamicResource AppMutedBrush}" />
-                                    <StackPanel Grid.Column="1" Spacing="1">
-                                        <TextBlock Text="{Binding Times}" FontWeight="SemiBold" />
-                                        <TextBlock Text="{Binding Route}" TextWrapping="Wrap" />
-                                        <TextBlock Text="{Binding Details}" Classes="muted" />
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                               Text="Noch keine Verbindung. Tipp im DB Navigator auf „Teilen“ und wähl KackZug." />
+                    <ItemsControl ItemsSource="{Binding Legs}" ItemTemplate="{StaticResource LegTemplate}" />
                 </StackPanel>
             </Border>
         </DataTemplate>
@@ -48,47 +28,49 @@
         <ScrollViewer IsVisible="{Binding IsListVisible}">
             <StackPanel Margin="16" Spacing="12">
                 <Grid ColumnDefinitions="*,Auto">
-                    <TextBlock Text="{Binding Title}" Classes="h1" VerticalAlignment="Center" />
-                    <Button Grid.Column="1" Classes="accent" Command="{Binding AddCommand}">
+                    <TextBlock Text="{Binding Title}" Classes="title-lg" VerticalAlignment="Center" />
+                    <Button Grid.Column="1" Classes="primary" Command="{Binding AddCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="6">
-                            <PathIcon Data="{StaticResource IconPlus}" Width="16" Height="16" Foreground="White" />
+                            <c:OutlineIcon Data="{StaticResource IconPlus}" Width="18" Height="18" />
                             <TextBlock Text="Neue Schicht" />
                         </StackPanel>
                     </Button>
                 </Grid>
 
                 <Border Classes="card" IsVisible="{Binding IsEmpty}">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Noch keine Schicht" Classes="h3" />
-                        <TextBlock TextWrapping="Wrap"
-                                   Text="Such im DB Navigator deine Verbindung zur Arbeit und tippe auf „Teilen“. Wähle dort KackZug aus. Die Verbindung landet dann als Hin- oder Rückfahrt in einer Schicht." />
+                    <StackPanel Spacing="12" HorizontalAlignment="Center" Margin="8,16">
+                        <c:OutlineIcon Data="{StaticResource IconShare}" Width="48" Height="48" StrokeThickness="1.5" Foreground="{DynamicResource AppMutedBrush}" HorizontalAlignment="Center" />
+                        <TextBlock Text="Noch keine Schicht" Classes="title" HorizontalAlignment="Center" />
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Center" MaxWidth="300" Classes="muted"
+                                   Text="Tipp im DB Navigator bei deiner Verbindung auf „Teilen“ und wähl KackZug. Sie landet dann als Hin- oder Rückfahrt in einer Schicht." />
                     </StackPanel>
                 </Border>
 
                 <ItemsControl ItemsSource="{Binding Shifts}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Spacing="10" />
+                            <StackPanel Spacing="12" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:ShiftCardViewModel">
-                            <Button Padding="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                                    Background="Transparent" BorderThickness="0"
+                            <Button Classes="plain" HorizontalAlignment="Stretch"
                                     Command="{Binding $parent[UserControl].((vm:ShiftsViewModel)DataContext).EditCommand}"
                                     CommandParameter="{Binding}">
-                                <Border Classes="card" Padding="0">
+                                <Border Classes="day">
                                     <Grid ColumnDefinitions="6,*">
-                                        <Border Background="{Binding ColorBrush}" CornerRadius="14,0,0,14" />
-                                        <StackPanel Grid.Column="1" Margin="14,12" Spacing="6">
-                                            <TextBlock Text="{Binding Name}" Classes="h3" />
-                                            <StackPanel Spacing="2">
-                                                <TextBlock Text="Hinfahrt" Classes="label" Margin="0" />
-                                                <TextBlock Text="{Binding OutboundText}" TextWrapping="Wrap" FontSize="13" />
+                                        <Border Background="{Binding ColorBrush}" />
+                                        <StackPanel Grid.Column="1" Margin="16,12" Spacing="8">
+                                            <Border Classes="badge" Background="{Binding ColorBrush}" HorizontalAlignment="Left" MinHeight="36" Padding="12,0" CornerRadius="8">
+                                                <TextBlock Text="{Binding Name}" Foreground="{DynamicResource AppOnShiftBrush}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                            </Border>
+                                            <StackPanel Spacing="1">
+                                                <TextBlock Text="Hinfahrt" Classes="caption" />
+                                                <TextBlock Text="{Binding OutboundText}" TextWrapping="Wrap" FontFeatures="+tnum" />
                                             </StackPanel>
-                                            <StackPanel Spacing="2">
-                                                <TextBlock Text="Rückfahrt" Classes="label" Margin="0" />
-                                                <TextBlock Text="{Binding ReturnText}" TextWrapping="Wrap" FontSize="13" />
+                                            <StackPanel Spacing="1">
+                                                <TextBlock Text="Rückfahrt" Classes="caption" />
+                                                <TextBlock Text="{Binding ReturnText}" TextWrapping="Wrap" FontFeatures="+tnum" />
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
@@ -104,16 +86,16 @@
             <ContentControl Content="{Binding Editor}" Margin="16">
                 <ContentControl.ContentTemplate>
                     <DataTemplate x:DataType="vm:ShiftEditorViewModel">
-                        <StackPanel Spacing="14">
-                            <TextBlock Text="{Binding Heading}" Classes="h1" />
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="{Binding Heading}" Classes="title-lg" />
 
-                            <StackPanel>
-                                <TextBlock Text="Name" Classes="label" />
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Name" Classes="caption" />
                                 <TextBox Text="{Binding Name}" PlaceholderText="z. B. Frühdienst" />
                             </StackPanel>
 
-                            <StackPanel>
-                                <TextBlock Text="Farbe" Classes="label" />
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Farbe" Classes="caption" />
                                 <ItemsControl ItemsSource="{Binding Colors}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -122,12 +104,12 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:ColorOption">
-                                            <Button Classes="icon" Margin="0,0,6,6" Padding="2" CornerRadius="20"
+                                            <Button Classes="icon" Margin="0,0,4,4" Padding="4" CornerRadius="24"
                                                     Command="{Binding $parent[ItemsControl].((vm:ShiftEditorViewModel)DataContext).SelectColorCommand}"
                                                     CommandParameter="{Binding}">
-                                                <Border Width="36" Height="36" CornerRadius="18" Background="{Binding Brush}">
-                                                    <PathIcon Data="{StaticResource IconOk}" Width="18" Height="18" Foreground="White"
-                                                              IsVisible="{Binding IsSelected}" />
+                                                <Border Width="40" Height="40" CornerRadius="20" Background="{Binding Brush}">
+                                                    <c:OutlineIcon Data="{StaticResource IconOk}" Width="22" Height="22" Foreground="{DynamicResource AppOnShiftBrush}"
+                                                                   IsVisible="{Binding IsSelected}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
                                             </Button>
                                         </DataTemplate>
@@ -138,19 +120,16 @@
                             <ContentControl Content="{Binding Outbound}" ContentTemplate="{StaticResource ConnectionCardTemplate}" />
                             <ContentControl Content="{Binding Return}" ContentTemplate="{StaticResource ConnectionCardTemplate}" />
 
-                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                                <Button Classes="ghost" Command="{Binding CancelCommand}">
-                                    <TextBlock Text="Abbrechen" />
-                                </Button>
-                                <Button Classes="accent" Command="{Binding SaveCommand}">
-                                    <TextBlock Text="Speichern" />
-                                </Button>
-                            </StackPanel>
-
-                            <Button Classes="danger" IsVisible="{Binding CanDelete}" HorizontalAlignment="Left"
+                            <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding SaveCommand}">
+                                <TextBlock Text="Speichern" />
+                            </Button>
+                            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CancelCommand}">
+                                <TextBlock Text="Abbrechen" />
+                            </Button>
+                            <Button Classes="secondary destructive" IsVisible="{Binding CanDelete}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
                                     Command="{Binding DeleteCommand}">
                                 <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <PathIcon Data="{StaticResource IconDelete}" Width="16" Height="16" Foreground="White" />
+                                    <c:OutlineIcon Data="{StaticResource IconDelete}" Width="18" Height="18" />
                                     <TextBlock Text="Schicht löschen" />
                                 </StackPanel>
                             </Button>
@@ -160,5 +139,4 @@
             </ContentControl>
         </ScrollViewer>
     </Grid>
-
 </UserControl>

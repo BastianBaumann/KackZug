@@ -1,22 +1,24 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:KackZug.ViewModels"
+             xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.TutorialView"
              x:DataType="vm:TutorialViewModel">
-    <StackPanel Spacing="18">
-        <Border Height="150" DataContext="{Binding Current}" x:DataType="vm:TutorialStep">
+    <StackPanel Spacing="20">
+        <Border Height="140" DataContext="{Binding Current}" x:DataType="vm:TutorialStep">
             <Grid>
-                <Image Source="{StaticResource LogoImage}" Width="150" Height="150" IsVisible="{Binding ShowsLogo}" />
-                <Border Width="110" Height="110" CornerRadius="55" Background="{DynamicResource AppAccentSoftBrush}"
+                <Image Source="{StaticResource LogoImage}" Width="140" Height="140" IsVisible="{Binding ShowsLogo}" />
+                <Border Width="112" Height="112" CornerRadius="56" Background="{DynamicResource AppAccentSoftBrush}"
                         IsVisible="{Binding !ShowsLogo}">
-                    <PathIcon Data="{Binding Icon}" Width="56" Height="56" Foreground="{DynamicResource AppAccentBrush}" />
+                    <c:OutlineIcon Data="{Binding Icon}" Width="52" Height="52" Foreground="{DynamicResource AppAccentInkBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Border>
             </Grid>
         </Border>
 
         <StackPanel Spacing="8" DataContext="{Binding Current}" x:DataType="vm:TutorialStep">
-            <TextBlock Text="{Binding Title}" Classes="h2" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
-            <TextBlock Text="{Binding Text}" TextWrapping="Wrap" TextAlignment="Center" />
+            <TextBlock Text="{Binding Title}" Classes="title" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding Text}" TextWrapping="Wrap" TextAlignment="Center" Classes="muted" />
         </StackPanel>
 
         <ItemsControl ItemsSource="{Binding Steps}" HorizontalAlignment="Center">
@@ -27,29 +29,29 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="vm:TutorialStep">
-                    <Border Width="9" Height="9" CornerRadius="5" Classes="dot" Classes.current="{Binding IsCurrent}" />
+                    <Border Width="10" Height="10" CornerRadius="5" Classes="dot" Classes.current="{Binding IsCurrent}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <Grid ColumnDefinitions="Auto,*,Auto">
-            <Button Classes="ghost" Command="{Binding BackCommand}" IsVisible="{Binding !IsFirst}">
-                <TextBlock Text="Zurück" />
+        <StackPanel Spacing="8">
+            <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding NextCommand}" IsVisible="{Binding IsNotLast}">
+                <TextBlock Text="Weiter" />
             </Button>
-            <Button Grid.Column="0" Classes="icon" Command="{Binding FinishCommand}" IsVisible="{Binding IsFirst}">
-                <TextBlock Text="Überspringen" Foreground="{DynamicResource AppMutedBrush}" />
+            <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding FinishCommand}" IsVisible="{Binding IsLast}">
+                <TextBlock Text="Los geht's" />
             </Button>
-            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
-                <Button Classes="ghost" Command="{Binding OpenSettingsCommand}" IsVisible="{Binding IsLast}">
-                    <TextBlock Text="Einstellungen" />
+            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding OpenSettingsCommand}" IsVisible="{Binding IsLast}">
+                <TextBlock Text="Zu den Einstellungen" />
+            </Button>
+            <Grid ColumnDefinitions="*,*">
+                <Button Classes="ghost" Command="{Binding BackCommand}" IsVisible="{Binding !IsFirst}" HorizontalAlignment="Left">
+                    <TextBlock Text="Zurück" />
                 </Button>
-                <Button Classes="accent" Command="{Binding NextCommand}" IsVisible="{Binding IsNotLast}">
-                    <TextBlock Text="Weiter" />
+                <Button Grid.Column="1" Classes="ghost" Command="{Binding FinishCommand}" IsVisible="{Binding IsNotLast}" HorizontalAlignment="Right">
+                    <TextBlock Text="Überspringen" />
                 </Button>
-                <Button Classes="accent" Command="{Binding FinishCommand}" IsVisible="{Binding IsLast}">
-                    <TextBlock Text="Los geht's" />
-                </Button>
-            </StackPanel>
-        </Grid>
+            </Grid>
+        </StackPanel>
     </StackPanel>
 </UserControl>

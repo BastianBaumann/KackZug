@@ -50,7 +50,7 @@ internal static class TourSteps
         check(shifts.Editor!.Outbound.Legs.Count == 3, "Hinfahrt zeigt 3 Teilstrecken");
         await capture(window, Path.Combine(directory, "shift-editor.png"));
         var colorButtons = window.GetVisualDescendants().OfType<Button>().Where(button => button.CommandParameter is ColorOption).ToList();
-        check(colorButtons.Count == 8 && colorButtons.All(button => button.Command is not null), "Farbknoepfe haben einen Befehl");
+        check(colorButtons.Count == ColorOption.ShiftColors.Length && colorButtons.All(button => button.Command is not null), "Farbknoepfe haben einen Befehl");
         colorButtons[3].Command!.Execute(colorButtons[3].CommandParameter);
         check(shifts.Editor.Colors[3].IsSelected && !shifts.Editor.Colors[0].IsSelected, "Farbknopf waehlt die Farbe");
         shifts.Editor.SaveCommand.Execute(null);
@@ -119,7 +119,7 @@ internal static class TourSteps
         check(reloaded.ShiftId == plan.ShiftId, "Aenderung in der Datei");
         await week.CheckNowCommand.ExecuteAsync(null);
         var refreshedToday = week.Days.First(day => day.IsToday);
-        check(refreshedToday.OutboundStatus is not null && refreshedToday.OutboundStatus.Text.Contains("Anschluss gefährdet"), "Jetzt pruefen zeigt Anschluss gefaehrdet");
+        check(refreshedToday.OutboundCaption is not null && refreshedToday.OutboundCaption.Contains("Anschluss knapp") && refreshedToday.DayBadge!.Text == "Anschluss knapp", "Jetzt pruefen zeigt Anschluss gefaehrdet");
         await capture(window, Path.Combine(directory, "week-checked.png"));
         check(monday.DayName == "Montag", "Wochentage auf Deutsch");
 
@@ -129,7 +129,7 @@ internal static class TourSteps
         settings.LeadTimes.First(option => option.Minutes == 120).IsChecked = true;
         check(main.Services.Data.Settings.LeadTimesMinutes.SequenceEqual(new[] { 120, 90, 45, 15 }), "Vorlaufzeit 120 gespeichert");
         settings.ApplyPresetCommand.Execute(settings.Presets[1]);
-        check(main.Services.Store.Load().Settings.AccentColor == "#3F51B5", "Farbvorlage gespeichert");
+        check(main.Services.Store.Load().Settings.AccentColor == "#00788A", "Farbvorlage gespeichert");
         await capture(window, Path.Combine(directory, "settings-preset.png"));
         settings.ThemeDark = true;
         check(main.Services.Data.Settings.ThemeMode == Core.Models.ThemeMode.Dark, "Dunkel gespeichert");

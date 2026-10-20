@@ -22,7 +22,8 @@ public class TripCheckerTests
 
         Assert.True(first!.ShouldNotify);
         Assert.Equal(AlertSeverity.Problem, first.Alert.Severity);
-        Assert.Equal("Frühdienst Hinfahrt: RE7 06:42 fällt aus", first.Alert.Title);
+        Assert.Equal("FRÜHDIENST HIN: RE7 06:42 FÄLLT AUS", first.Alert.Title);
+        Assert.Equal("Fällt aus", first.Alert.BadgeText);
         Assert.Contains("Musterstadt Hbf → Beispielhausen: fällt aus", first.Alert.Text);
         Assert.Contains("DB Navigator", first.Alert.Text);
         Assert.Equal("FÄLLT AUS", first.Alert.Headline);
@@ -52,7 +53,8 @@ public class TripCheckerTests
         var larger = await checker.CheckAsync(data, Day, shift.Id, TripDirection.Outbound, CheckContext.LeadTime, CancellationToken.None);
 
         Assert.True(first!.ShouldNotify);
-        Assert.Equal("Frühdienst Hinfahrt: RE7 06:42 +6 Min.", first.Alert.Title);
+        Assert.Equal("FRÜHDIENST HIN: RE7 06:42 +6 MIN.", first.Alert.Title);
+        Assert.Equal("+6 min", first.Alert.BadgeText);
         Assert.False(sameBucket!.ShouldNotify);
         Assert.True(larger!.ShouldNotify);
     }
@@ -68,7 +70,8 @@ public class TripCheckerTests
         var outcome = await checker.CheckAsync(data, Day, shift.Id, TripDirection.Outbound, CheckContext.LeadTime, CancellationToken.None);
 
         Assert.Equal(LegStatus.TransferAtRisk, outcome!.Status.Overall);
-        Assert.Equal("Frühdienst Hinfahrt: Anschluss in Beispielhausen gefährdet", outcome.Alert.Title);
+        Assert.Equal("FRÜHDIENST HIN: ANSCHLUSS IN BEISPIELHAUSEN GEFÄHRDET", outcome.Alert.Title);
+        Assert.Equal("Anschluss knapp", outcome.Alert.BadgeText);
         Assert.Equal("ANSCHLUSS GEFÄHRDET", outcome.Alert.Headline);
         Assert.Contains("Umstieg in Beispielhausen: nur noch 0 Min. Puffer", outcome.Alert.Text);
     }
@@ -104,6 +107,7 @@ public class TripCheckerTests
         Assert.True(evening.ShouldNotify);
         Assert.Equal(AlertSeverity.Info, evening.Alert.Severity);
         Assert.Equal("Frühdienst Hinfahrt: RE7 06:42 fährt laut Fahrplan", evening.Alert.Title);
+        Assert.Equal("Laut Fahrplan", evening.Alert.BadgeText);
         Assert.Contains("Echtzeitdaten gibt es erst kurz vor der Abfahrt", evening.Alert.Text);
         Assert.DoesNotContain("pünktlich", evening.Alert.Text);
     }
@@ -138,6 +142,7 @@ public class TripCheckerTests
         Assert.False(early!.ShouldNotify);
         Assert.True(last!.ShouldNotify);
         Assert.Contains("konnte nicht geprüft werden", last.Alert.Title);
+        Assert.Equal("Nicht geprüft", last.Alert.BadgeText);
     }
 
     [Fact]

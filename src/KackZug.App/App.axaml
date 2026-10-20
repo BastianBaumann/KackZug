@@ -8,44 +8,11 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://KackZug.App/Themes/Tokens.axaml" />
                 <ResourceInclude Source="avares://KackZug.App/Assets/Logo.axaml" />
                 <ResourceInclude Source="avares://KackZug.App/Themes/Icons.axaml" />
+                <ResourceInclude Source="avares://KackZug.App/Themes/Templates.axaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <Color x:Key="AppAccentColor">#1E9E8B</Color>
-            <Color x:Key="AppSecondaryColor">#8B5A2B</Color>
-            <SolidColorBrush x:Key="AppAccentBrush" Color="#1E9E8B" />
-            <SolidColorBrush x:Key="AppSecondaryBrush" Color="#8B5A2B" />
-            <SolidColorBrush x:Key="AppAccentSoftBrush" Color="#261E9E8B" />
-            <LinearGradientBrush x:Key="AppGradientBrush" StartPoint="0%,100%" EndPoint="100%,0%">
-                <GradientStop Offset="0" Color="#1E9E8B" />
-                <GradientStop Offset="1" Color="#8B5A2B" />
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="AppSuccessBrush" Color="#2E9E5B" />
-            <SolidColorBrush x:Key="AppWarningBrush" Color="#E9A23B" />
-            <SolidColorBrush x:Key="AppDangerBrush" Color="#D93A3A" />
-            <SolidColorBrush x:Key="AppNeutralBrush" Color="#9AA4AE" />
-
-            <ResourceDictionary.ThemeDictionaries>
-                <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#F6F4EF" />
-                    <SolidColorBrush x:Key="AppSurfaceBrush" Color="#FFFFFF" />
-                    <SolidColorBrush x:Key="AppSurfaceAltBrush" Color="#F0ECE4" />
-                    <SolidColorBrush x:Key="AppBorderBrush" Color="#E4DED3" />
-                    <SolidColorBrush x:Key="AppTextBrush" Color="#263238" />
-                    <SolidColorBrush x:Key="AppMutedBrush" Color="#6B7680" />
-                    <SolidColorBrush x:Key="AppOverlayBrush" Color="#66263238" />
-                </ResourceDictionary>
-                <ResourceDictionary x:Key="Dark">
-                    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#14171A" />
-                    <SolidColorBrush x:Key="AppSurfaceBrush" Color="#1E2328" />
-                    <SolidColorBrush x:Key="AppSurfaceAltBrush" Color="#262C32" />
-                    <SolidColorBrush x:Key="AppBorderBrush" Color="#323A42" />
-                    <SolidColorBrush x:Key="AppTextBrush" Color="#E8EDF2" />
-                    <SolidColorBrush x:Key="AppMutedBrush" Color="#97A3AE" />
-                    <SolidColorBrush x:Key="AppOverlayBrush" Color="#99000000" />
-                </ResourceDictionary>
-            </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 

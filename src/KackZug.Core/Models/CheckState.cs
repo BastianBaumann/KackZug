@@ -17,6 +17,8 @@ public sealed class CheckState
 
     public string LastSummary { get; set; } = "";
 
+    public string LastBadgeText { get; set; } = "";
+
     public DateTimeOffset LastCheckedAt { get; set; }
 
     public DateTimeOffset? LastNotifiedAt { get; set; }

@@ -91,7 +91,7 @@ public partial class ShiftEditorViewModel : ViewModelBase
         }
 
         _main.Services.SaveAndReschedule();
-        _main.ShowToast("Schicht gespeichert.", false);
+        _main.ShowToast("Gespeichert. Ich pass auf.", false);
         _closed();
     }
 

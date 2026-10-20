@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo/kackzug.svg" alt="KackZug Logo" width="180">
+  <img src="assets/logo/kackzug-app-icon.svg" alt="KackZug Logo" width="160">
 </p>
 
 # KackZug
@@ -19,8 +19,11 @@ er verspätet, wechselt das Gleis oder wird der Anschluss knapp, meldet sich Kac
 - **Prüfen zu festen Zeiten:** am Abend vorher und kurz vor der Abfahrt, standardmäßig 90, 45 und
   15 Minuten vorher. Die Zeiten sind einstellbar.
 - **Laute Meldungen bei Störungen:** Ausfall, Teilausfall, Verspätung ab einer einstellbaren Schwelle,
-  Gleiswechsel, gefährdeter Anschluss oder eine Fahrt, die es so nicht mehr gibt. Der Alarmton kann
-  sich wiederholen, bis du reagierst.
+  Gleiswechsel, gefährdeter Anschluss oder eine Fahrt, die es so nicht mehr gibt. Es öffnet sich ein
+  Vollbild-Alarm, auch auf dem Sperrbildschirm. Er klingelt und kommt alle fünf Minuten wieder, bis du
+  „Gesehen“ tippst.
+- **Ehrliche Anzeige:** bahn.de hat den Fahrplan schon Tage vorher, Echtzeitdaten aber erst kurz vor der
+  Abfahrt. Solange es keine Echtzeit gibt, zeigt KackZug „Laut Fahrplan“ statt „Planmäßig“.
 - **„Jetzt prüfen“** für heute und morgen, ein **Test-Alarm** und eine kurze **Einführung** beim
   ersten Start.
 
@@ -110,5 +113,5 @@ Release-Schlüssel aus den Repository-Secrets und veröffentlicht sie als GitHub
 ## Lizenz
 
 KackZug steht unter der GNU General Public License, Version 3 oder neuer (siehe [LICENSE](LICENSE)).
-Das gilt auch für das Logo. Die Symbole in der App stammen aus den
-[Material Design Icons](https://pictogrammers.com/library/mdi/) und stehen unter der Apache License 2.0.
+Das gilt auch für Logo und Symbole, die aus dem eigenen Designsystem des Projekts stammen
+(`assets/`). Die Schrift ist [Inter](https://rsms.me/inter/) unter der SIL Open Font License.

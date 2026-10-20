@@ -1,65 +1,58 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:KackZug.ViewModels"
+             xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.ImportView"
              x:DataType="vm:ImportViewModel">
-    <StackPanel Spacing="14">
-        <TextBlock Text="Verbindung übernehmen" Classes="h2" />
-
-        <StackPanel IsVisible="{Binding IsLoading}" Spacing="10">
+    <StackPanel Spacing="16">
+        <StackPanel IsVisible="{Binding IsLoading}" Spacing="12">
+            <TextBlock Text="Verbindung wird geladen …" Classes="title" />
             <ProgressBar IsIndeterminate="True" />
-            <TextBlock Text="Verbindung wird bei bahn.de geladen …" Classes="muted" />
+            <TextBlock Text="Ich frag kurz bei bahn.de nach." Classes="muted" />
         </StackPanel>
 
         <StackPanel IsVisible="{Binding HasError}" Spacing="12">
             <StackPanel Orientation="Horizontal" Spacing="8">
-                <PathIcon Data="{StaticResource IconWarning}" Width="22" Height="22" Foreground="{DynamicResource AppDangerBrush}" />
-                <TextBlock Text="Das hat nicht geklappt" Classes="h3" VerticalAlignment="Center" />
+                <c:OutlineIcon Data="{StaticResource IconWarning}" Width="24" Height="24" Foreground="{DynamicResource AppCancelInkBrush}" />
+                <TextBlock Text="Hm, den Link konnte ich nicht lesen." Classes="title" VerticalAlignment="Center" TextWrapping="Wrap" />
             </StackPanel>
             <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" />
-            <Button Classes="ghost" HorizontalAlignment="Right" Command="{Binding CloseCommand}">
+            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CloseCommand}">
                 <TextBlock Text="Schließen" />
             </Button>
         </StackPanel>
 
-        <StackPanel IsVisible="{Binding IsReady}" Spacing="14">
-            <Border Classes="soft">
-                <ItemsControl ItemsSource="{Binding Legs}">
+        <StackPanel IsVisible="{Binding IsReady}" Spacing="16">
+            <StackPanel Spacing="2">
+                <TextBlock Text="Verbindung erkannt" Classes="title" />
+                <TextBlock Text="{Binding NewSummary}" Classes="muted" TextWrapping="Wrap" FontFeatures="+tnum" />
+            </StackPanel>
+            <Border Classes="soft" Padding="12,12,12,0">
+                <ItemsControl ItemsSource="{Binding Legs}" ItemTemplate="{StaticResource LegTemplate}" />
+            </Border>
+            <TextBlock Text="{Binding Hint}" IsVisible="{Binding Hint, Converter={x:Static ObjectConverters.IsNotNull}}"
+                       Classes="caption" TextWrapping="Wrap" Foreground="{DynamicResource AppLateInkBrush}" />
+
+            <StackPanel Spacing="8">
+                <TextBlock Text="Für welche Schicht?" Classes="caption" />
+                <ItemsControl ItemsSource="{Binding Targets}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Spacing="8" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:LegLine">
-                            <StackPanel Spacing="1">
-                                <TextBlock Text="{Binding Times}" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding Route}" TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding Details}" Classes="muted" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Border>
-            <TextBlock Classes="muted" TextWrapping="Wrap"
-                       Text="Gespeichert werden Bahnhöfe, Uhrzeiten und Zug, nicht das Datum. Die Fahrt gilt dann an jedem Tag mit dieser Schicht." />
-            <TextBlock Text="{Binding Hint}" IsVisible="{Binding Hint, Converter={x:Static ObjectConverters.IsNotNull}}"
-                       Classes="muted" TextWrapping="Wrap" Foreground="{DynamicResource AppWarningBrush}" />
-
-            <StackPanel Spacing="6">
-                <TextBlock Text="Für welche Schicht?" Classes="label" />
-                <ItemsControl ItemsSource="{Binding Targets}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:ImportTarget">
-                            <ToggleButton Margin="0,0,8,8" IsChecked="{Binding IsSelected, Mode=OneWay}"
+                            <ToggleButton Classes="choice" IsChecked="{Binding IsSelected, Mode=OneWay}"
                                           Command="{Binding $parent[UserControl].((vm:ImportViewModel)DataContext).SelectTargetCommand}"
                                           CommandParameter="{Binding}">
-                                <TextBlock Text="{Binding Title}" />
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <Grid Width="20" Height="20" VerticalAlignment="Center">
+                                        <Ellipse Stroke="{DynamicResource AppMutedBrush}" StrokeThickness="2" IsVisible="{Binding !IsSelected}" />
+                                        <Ellipse Stroke="{DynamicResource AppAccentBrush}" StrokeThickness="6" IsVisible="{Binding IsSelected}" />
+                                    </Grid>
+                                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                                </StackPanel>
                             </ToggleButton>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -68,36 +61,35 @@
                          IsVisible="{Binding IsNewTarget}" />
             </StackPanel>
 
-            <StackPanel Spacing="6">
-                <TextBlock Text="Als" Classes="label" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <ToggleButton IsChecked="{Binding IsOutbound, Mode=OneWay}" Command="{Binding ChooseOutboundCommand}">
+            <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
+                <UniformGrid Rows="1">
+                    <ToggleButton Classes="segment" IsChecked="{Binding IsOutbound, Mode=OneWay}" Command="{Binding ChooseOutboundCommand}">
                         <TextBlock Text="Hinfahrt" />
                     </ToggleButton>
-                    <ToggleButton IsChecked="{Binding IsReturn, Mode=OneWay}" Command="{Binding ChooseReturnCommand}">
+                    <ToggleButton Classes="segment" IsChecked="{Binding IsReturn, Mode=OneWay}" Command="{Binding ChooseReturnCommand}">
                         <TextBlock Text="Rückfahrt" />
                     </ToggleButton>
-                </StackPanel>
-            </StackPanel>
+                </UniformGrid>
+            </Border>
 
             <Border Classes="soft" IsVisible="{Binding HasReplacement}">
                 <StackPanel Spacing="6">
-                    <TextBlock Text="Die vorhandene Fahrt wird ersetzt" Classes="h3" />
-                    <TextBlock Text="Bisher" Classes="label" Margin="0" />
-                    <TextBlock Text="{Binding ReplacedSummary}" TextWrapping="Wrap" />
-                    <TextBlock Text="Neu" Classes="label" Margin="0" />
-                    <TextBlock Text="{Binding NewSummary}" TextWrapping="Wrap" />
+                    <TextBlock Text="Die vorhandene Fahrt wird ersetzt" Classes="label" />
+                    <TextBlock Text="Vorher" Classes="caption" />
+                    <TextBlock Text="{Binding ReplacedSummary}" TextWrapping="Wrap" Classes="muted" FontFeatures="+tnum" />
+                    <TextBlock Text="Nachher" Classes="caption" />
+                    <TextBlock Text="{Binding NewSummary}" TextWrapping="Wrap" FontFeatures="+tnum" />
                 </StackPanel>
             </Border>
 
-            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                <Button Classes="ghost" Command="{Binding CloseCommand}">
-                    <TextBlock Text="Abbrechen" />
-                </Button>
-                <Button Classes="accent" Command="{Binding SaveCommand}">
-                    <TextBlock Text="Speichern" />
-                </Button>
-            </StackPanel>
+            <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding SaveCommand}">
+                <TextBlock Text="Speichern" />
+            </Button>
+            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CloseCommand}">
+                <TextBlock Text="Abbrechen" />
+            </Button>
+            <TextBlock Classes="caption" TextWrapping="Wrap"
+                       Text="Gespeichert wird das Muster (Bahnhöfe, Uhrzeiten, Linie), nicht das Datum. Die Fahrt gilt an jedem Tag mit dieser Schicht." />
         </StackPanel>
     </StackPanel>
 </UserControl>

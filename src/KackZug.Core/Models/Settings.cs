@@ -17,7 +17,7 @@ public sealed class Settings
 
     public NewWeekMode NewWeekMode { get; set; } = NewWeekMode.CopyPrevious;
 
-    public string AccentColor { get; set; } = "#1E9E8B";
+    public string AccentColor { get; set; } = "#C84B0C";
 
     public string SecondaryColor { get; set; } = "#8B5A2B";
 

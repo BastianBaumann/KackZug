@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:KackZug.ViewModels"
+             xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.MainView"
              x:DataType="vm:MainViewModel"
              Background="{DynamicResource AppBackgroundBrush}">
@@ -9,20 +10,20 @@
             <Border Grid.Row="0" Padding="16,10" Background="{DynamicResource AppSurfaceBrush}"
                     BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,0,0,1">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Image Source="{StaticResource LogoImage}" Width="40" Height="40" />
-                    <TextBlock Text="KackZug" Classes="h2" VerticalAlignment="Center" />
+                    <Image Source="{StaticResource LogoImage}" Width="36" Height="36" />
+                    <TextBlock FontSize="22" FontWeight="ExtraBold" VerticalAlignment="Center" LetterSpacing="-0.5"><Run Text="Kack" Foreground="{DynamicResource AppAccentInkBrush}" /><Run Text="Zug" Foreground="{DynamicResource AppTextBrush}" /></TextBlock>
                 </StackPanel>
             </Border>
 
             <Grid Grid.Row="1" RowDefinitions="Auto,*">
                 <Border Grid.Row="0" IsVisible="{Binding HasUpdate}" Background="{DynamicResource AppAccentSoftBrush}" Padding="16,8">
                     <Grid ColumnDefinitions="*,Auto,Auto">
-                        <TextBlock Text="{Binding UpdateText}" VerticalAlignment="Center" TextWrapping="Wrap" />
-                        <Button Grid.Column="1" Classes="accent" Margin="8,0,0,0" Command="{Binding OpenUpdatePageCommand}">
+                        <TextBlock Text="{Binding UpdateText}" VerticalAlignment="Center" TextWrapping="Wrap" FontWeight="SemiBold" />
+                        <Button Grid.Column="1" Classes="ghost" Command="{Binding OpenUpdatePageCommand}">
                             <TextBlock Text="Herunterladen" />
                         </Button>
                         <Button Grid.Column="2" Classes="icon" Command="{Binding DismissUpdateCommand}" ToolTip.Tip="Ausblenden">
-                            <PathIcon Data="{StaticResource IconCancelled}" Width="16" Height="16" />
+                            <c:OutlineIcon Data="{StaticResource IconCancelled}" Width="18" Height="18" Foreground="{DynamicResource AppMutedBrush}" />
                         </Button>
                     </Grid>
                 </Border>
@@ -30,7 +31,7 @@
             </Grid>
 
             <Border Grid.Row="2" Background="{DynamicResource AppSurfaceBrush}"
-                    BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,1,0,0" Padding="4,4,4,8">
+                    BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,1,0,0" Padding="4,0,4,6">
                 <ItemsControl ItemsSource="{Binding NavItems}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -39,16 +40,19 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:NavItem">
-                            <Button Classes="tab" Classes.selected="{Binding IsSelected}"
-                                    Command="{Binding $parent[UserControl].((vm:MainViewModel)DataContext).NavigateCommand}"
-                                    CommandParameter="{Binding Key}">
-                                <StackPanel Spacing="3">
-                                    <PathIcon Data="{Binding Icon}" Width="22" Height="22" HorizontalAlignment="Center"
-                                              Foreground="{Binding $parent[Button].Foreground}" />
-                                    <TextBlock Text="{Binding Title}" FontSize="11" HorizontalAlignment="Center"
-                                               Foreground="{Binding $parent[Button].Foreground}" />
-                                </StackPanel>
-                            </Button>
+                            <Grid RowDefinitions="3,*">
+                                <Border Grid.Row="0" Width="40" CornerRadius="0,0,3,3" Background="{DynamicResource AppAccentBrush}" IsVisible="{Binding IsSelected}" />
+                                <Button Grid.Row="1" Classes="tab" Classes.selected="{Binding IsSelected}"
+                                        Command="{Binding $parent[UserControl].((vm:MainViewModel)DataContext).NavigateCommand}"
+                                        CommandParameter="{Binding Key}">
+                                    <StackPanel Spacing="3">
+                                        <c:OutlineIcon Data="{Binding Icon}" Width="24" Height="24" HorizontalAlignment="Center"
+                                                       Foreground="{Binding $parent[Button].Foreground}" />
+                                        <TextBlock Text="{Binding Title}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center"
+                                                   Foreground="{Binding $parent[Button].Foreground}" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -57,31 +61,35 @@
 
         <Border IsVisible="{Binding HasTutorial}" Background="{DynamicResource AppOverlayBrush}">
             <ScrollViewer>
-                <Border Classes="card" MaxWidth="480" Margin="16,32" VerticalAlignment="Center" Padding="22">
+                <Border Classes="card" MaxWidth="480" Margin="16,32" VerticalAlignment="Center" Padding="24">
                     <ContentControl Content="{Binding Tutorial}" />
                 </Border>
             </ScrollViewer>
         </Border>
 
         <Border IsVisible="{Binding HasImport}" Background="{DynamicResource AppOverlayBrush}">
-            <ScrollViewer>
-                <Border Classes="card" MaxWidth="560" Margin="12,24" VerticalAlignment="Center" Padding="18">
-                    <ContentControl Content="{Binding Import}" />
-                </Border>
-            </ScrollViewer>
+            <Border VerticalAlignment="Bottom" MaxWidth="600" CornerRadius="16,16,0,0" Background="{DynamicResource AppSurfaceBrush}"
+                    BoxShadow="{DynamicResource AppSheetShadow}" MaxHeight="{Binding $parent[UserControl].Bounds.Height}">
+                <ScrollViewer>
+                    <StackPanel Margin="16,8,16,24">
+                        <Border Width="40" Height="4" CornerRadius="2" Background="{DynamicResource AppBorderBrush}" Margin="0,0,0,16" />
+                        <ContentControl Content="{Binding Import}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
         </Border>
 
         <Border IsVisible="{Binding HasDialog}" Background="{DynamicResource AppOverlayBrush}">
-            <Border Classes="card" MaxWidth="420" Margin="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+            <Border Classes="card" MaxWidth="420" Margin="16" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="20"
                     DataContext="{Binding Dialog}" x:DataType="vm:ConfirmViewModel">
-                <StackPanel Spacing="14">
-                    <TextBlock Text="{Binding Title}" Classes="h2" TextWrapping="Wrap" />
+                <StackPanel Spacing="16">
+                    <TextBlock Text="{Binding Title}" Classes="title" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
                     <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                        <Button Classes="ghost" Command="{Binding CancelCommand}">
+                        <Button Classes="secondary" Command="{Binding CancelCommand}">
                             <TextBlock Text="Abbrechen" />
                         </Button>
-                        <Button Classes="accent" Command="{Binding ConfirmCommand}">
+                        <Button Classes="secondary destructive" Command="{Binding ConfirmCommand}">
                             <TextBlock Text="{Binding ConfirmText}" />
                         </Button>
                     </StackPanel>
@@ -90,7 +98,7 @@
         </Border>
 
         <Border IsVisible="{Binding HasToast}" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                Margin="16,0,16,84" Padding="16,10" CornerRadius="12" MaxWidth="520"
+                Margin="16,0,16,84" Padding="16,12" CornerRadius="8" MaxWidth="520"
                 Background="{DynamicResource AppTextBrush}">
             <TextBlock Text="{Binding Toast}" TextWrapping="Wrap" Foreground="{DynamicResource AppBackgroundBrush}" />
         </Border>

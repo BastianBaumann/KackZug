@@ -7,7 +7,7 @@ public sealed class Shift
 
     public string Name { get; set; } = "";
 
-    public string ColorHex { get; set; } = "#1E9E8B";
+    public string ColorHex { get; set; } = "#1455C0";
 
     public SavedConnection? Outbound { get; set; }
 

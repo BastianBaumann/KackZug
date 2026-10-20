@@ -51,6 +51,7 @@ public sealed class TripChecker
         state.LastStatusHash = alert.StatusHash;
         state.LastStatus = status.Overall;
         state.LastSummary = alert.Title;
+        state.LastBadgeText = alert.BadgeText;
         state.LastCheckedAt = _clock.Now;
         if (shouldNotify)
         {

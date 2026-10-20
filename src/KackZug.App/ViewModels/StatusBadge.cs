@@ -1,81 +1,123 @@
 using Avalonia;
 using Avalonia.Media;
 using KackZug.Core.Checking;
+using KackZug.Services;
 
 namespace KackZug.ViewModels;
 
-/// <summary>Farbiger Punkt mit Kurztext fuer den letzten bekannten Stand einer Fahrt</summary>
+/// <summary>Status-Kennzeichen wie im Designsystem: Flaeche, Symbol und Wort, nie nur Farbe</summary>
 public sealed class StatusBadge
 {
-    public StatusBadge(LegStatus? status, string text)
+    public StatusBadge(LegStatus? status, string text, string caption)
     {
         Text = text;
-        Brush = BrushFor(status);
+        Caption = caption;
+        var variant = VariantOf(status);
+        Background = ThemeService.FindBrush("App" + variant + "Brush", Brushes.Gray);
+        Foreground = ThemeService.FindBrush("AppOn" + variant + "Brush", Brushes.White);
+        Icon = FindGeometry(IconKeyOf(status));
     }
 
     public string Text { get; }
 
-    public IBrush Brush { get; }
+    public string Caption { get; }
+
+    public IBrush Background { get; }
+
+    public IBrush Foreground { get; }
+
+    public Geometry? Icon { get; }
 
     public static string ShortText(LegStatus? status)
     {
         if (status is null)
         {
-            return "noch nicht geprüft";
+            return "Noch nicht geprüft";
         }
 
         switch (status.Value)
         {
             case LegStatus.OnTime:
-                return "planmäßig";
-            case LegStatus.Unknown:
-                return "konnte nicht prüfen";
+                return "Planmäßig";
             case LegStatus.PlannedOnly:
-                return "laut Fahrplan, Echtzeit folgt";
+                return "Laut Fahrplan, Echtzeit folgt";
+            case LegStatus.Unknown:
+                return "Nicht geprüft";
             case LegStatus.PlatformChanged:
                 return "Gleiswechsel";
             case LegStatus.Delayed:
-                return "verspätet";
+                return "Verspätet";
             case LegStatus.TransferAtRisk:
-                return "Anschluss gefährdet";
+                return "Anschluss knapp";
             case LegStatus.NotFound:
-                return "fährt so nicht";
+                return "Nicht gefunden";
             case LegStatus.PartlyCancelled:
                 return "Teilausfall";
             default:
-                return "fällt aus";
+                return "Fällt aus";
         }
     }
 
-    private static IBrush BrushFor(LegStatus? status)
+    private static string VariantOf(LegStatus? status)
     {
-        var key = "AppNeutralBrush";
-        if (status is not null)
+        if (status is null)
         {
-            switch (status.Value)
-            {
-                case LegStatus.OnTime:
-                    key = "AppSuccessBrush";
-                    break;
-                case LegStatus.PlatformChanged:
-                case LegStatus.Delayed:
-                    key = "AppWarningBrush";
-                    break;
-                case LegStatus.TransferAtRisk:
-                case LegStatus.NotFound:
-                case LegStatus.PartlyCancelled:
-                case LegStatus.Cancelled:
-                    key = "AppDangerBrush";
-                    break;
-            }
+            return "Unknown";
         }
 
+        switch (status.Value)
+        {
+            case LegStatus.OnTime:
+                return "Ok";
+            case LegStatus.PlatformChanged:
+            case LegStatus.Delayed:
+            case LegStatus.TransferAtRisk:
+                return "Late";
+            case LegStatus.NotFound:
+            case LegStatus.PartlyCancelled:
+            case LegStatus.Cancelled:
+                return "Cancel";
+            default:
+                return "Unknown";
+        }
+    }
+
+    private static string IconKeyOf(LegStatus? status)
+    {
+        if (status is null)
+        {
+            return "IconUnknown";
+        }
+
+        switch (status.Value)
+        {
+            case LegStatus.OnTime:
+            case LegStatus.PlannedOnly:
+                return "IconOk";
+            case LegStatus.Delayed:
+                return "IconLate";
+            case LegStatus.PlatformChanged:
+                return "IconPlatform";
+            case LegStatus.TransferAtRisk:
+                return "IconTransfer";
+            case LegStatus.NotFound:
+                return "IconWarning";
+            case LegStatus.PartlyCancelled:
+            case LegStatus.Cancelled:
+                return "IconCancelled";
+            default:
+                return "IconUnknown";
+        }
+    }
+
+    private static Geometry? FindGeometry(string key)
+    {
         var application = Application.Current;
-        if (application is not null && application.TryGetResource(key, null, out var resource) && resource is IBrush brush)
+        if (application is not null && application.TryGetResource(key, null, out var resource))
         {
-            return brush;
+            return resource as Geometry;
         }
 
-        return Brushes.Gray;
+        return null;
     }
 }

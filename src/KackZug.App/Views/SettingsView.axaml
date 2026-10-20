@@ -2,168 +2,229 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:KackZug.ViewModels"
              xmlns:services="using:KackZug.Services"
+             xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
     <ScrollViewer>
-        <StackPanel Margin="16" Spacing="12">
-            <TextBlock Text="{Binding Title}" Classes="h1" />
+        <StackPanel Margin="16" Spacing="4">
+            <TextBlock Text="{Binding Title}" Classes="title-lg" Margin="0,0,0,8" />
 
-            <Border Classes="card" IsVisible="{Binding HasMissingPermissions}" BorderBrush="{DynamicResource AppWarningBrush}" BorderThickness="2">
-                <StackPanel Spacing="10">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <PathIcon Data="{StaticResource IconWarning}" Width="20" Height="20" Foreground="{DynamicResource AppWarningBrush}" />
-                        <TextBlock Text="Damit Alarme sicher ankommen" Classes="h3" VerticalAlignment="Center" />
-                    </StackPanel>
-                    <ItemsControl ItemsSource="{Binding Permissions}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Spacing="10" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="services:PermissionInfo">
-                                <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding Missing}">
-                                    <StackPanel Spacing="2">
-                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
-                                        <TextBlock Text="{Binding Explanation}" Classes="muted" TextWrapping="Wrap" />
+            <TextBlock Text="Damit Alarme sicher ankommen" Classes="section" />
+            <Border Classes="group">
+                <ItemsControl ItemsSource="{Binding Permissions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="services:PermissionInfo">
+                            <Border Classes="setting">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel Spacing="2" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}" Classes="body-lg" />
+                                        <TextBlock Text="{Binding Explanation}" Classes="caption" TextWrapping="Wrap" />
                                     </StackPanel>
-                                    <Button Grid.Column="1" Classes="ghost" VerticalAlignment="Center" Margin="8,0,0,0"
-                                            Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).FixPermissionCommand}"
-                                            CommandParameter="{Binding}">
-                                        <TextBlock Text="Erlauben" />
-                                    </Button>
+                                    <StackPanel Grid.Column="1" Spacing="4" Margin="12,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                        <Border Classes="badge" Background="{DynamicResource AppOkBrush}" IsVisible="{Binding Granted}" HorizontalAlignment="Right">
+                                            <TextBlock Text="Erlaubt" Foreground="{DynamicResource AppOnOkBrush}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
+                                        </Border>
+                                        <Border Classes="badge" Background="{DynamicResource AppCancelBrush}" IsVisible="{Binding Missing}" HorizontalAlignment="Right">
+                                            <TextBlock Text="Fehlt" Foreground="{DynamicResource AppOnCancelBrush}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
+                                        </Border>
+                                        <Button Classes="ghost" IsVisible="{Binding Missing}"
+                                                Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).FixPermissionCommand}"
+                                                CommandParameter="{Binding}">
+                                            <TextBlock Text="Erlauben" />
+                                        </Button>
+                                    </StackPanel>
                                 </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Border>
+            <TextBlock Classes="caption" TextWrapping="Wrap" Margin="4,6,4,0" IsVisible="{Binding HasNoPermissions}"
+                       Text="Auf dem Desktop gibt es hier nichts zu erlauben." />
 
-            <Border Classes="card">
-                <StackPanel Spacing="10">
-                    <TextBlock Text="Wann geprüft wird" Classes="h3" />
-                    <TextBlock Text="Vor der ersten Abfahrt" Classes="label" />
-                    <ItemsControl ItemsSource="{Binding LeadTimes}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="vm:LeadTimeOption">
-                                <CheckBox IsChecked="{Binding IsChecked}" Margin="0,0,14,0">
-                                    <TextBlock Text="{Binding Text}" />
-                                </CheckBox>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <CheckBox IsChecked="{Binding EveningCheckEnabled}">
-                        <TextBlock Text="Am Abend vorher prüfen" />
-                    </CheckBox>
-                    <TimePicker SelectedTime="{Binding EveningCheckTime}" ClockIdentifier="24HourClock" MinuteIncrement="5"
-                                IsEnabled="{Binding EveningCheckEnabled}" />
-                    <CheckBox IsChecked="{Binding EveningOkNotification}" IsEnabled="{Binding EveningCheckEnabled}">
-                        <TextBlock Text="Am Abend auch melden, wenn alles planmäßig ist" TextWrapping="Wrap" />
-                    </CheckBox>
-                </StackPanel>
-            </Border>
-
-            <Border Classes="card">
-                <StackPanel Spacing="10">
-                    <TextBlock Text="Was gemeldet wird" Classes="h3" />
-                    <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Text="Verspätung melden ab (Min.)" VerticalAlignment="Center" TextWrapping="Wrap" />
-                        <NumericUpDown Grid.Column="1" Value="{Binding DelayThreshold}" Minimum="1" Maximum="60" Increment="1" FormatString="0" Width="130" />
-                    </Grid>
-                    <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Text="Mindestzeit zum Umsteigen (Min.)" VerticalAlignment="Center" TextWrapping="Wrap" />
-                        <NumericUpDown Grid.Column="1" Value="{Binding MinTransfer}" Minimum="0" Maximum="30" Increment="1" FormatString="0" Width="130" />
-                    </Grid>
-                    <CheckBox IsChecked="{Binding InsistentAlerts}">
-                        <TextBlock Text="Alarmton wiederholen, bis ich reagiere" TextWrapping="Wrap" />
-                    </CheckBox>
-                    <Button Classes="ghost" Command="{Binding TestAlarmCommand}" HorizontalAlignment="Left">
-                        <StackPanel Orientation="Horizontal" Spacing="6">
-                            <PathIcon Data="{StaticResource IconBell}" Width="16" Height="16" />
-                            <TextBlock Text="Test-Alarm in 5 Sekunden" />
+            <TextBlock Text="Wann geprüft wird" Classes="section" />
+            <Border Classes="group">
+                <StackPanel>
+                    <Border Classes="setting">
+                        <StackPanel Spacing="8">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="Vor der ersten Abfahrt" Classes="body-lg" />
+                                <TextBlock Text="Echtzeit gibt es meist erst kurz vorher." Classes="caption" />
+                            </StackPanel>
+                            <ItemsControl ItemsSource="{Binding LeadTimes}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:LeadTimeOption">
+                                        <CheckBox IsChecked="{Binding IsChecked}" Margin="0,0,16,0">
+                                            <TextBlock Text="{Binding Text}" />
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </StackPanel>
-                    </Button>
+                    </Border>
+                    <Border Classes="setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="Am Abend vorher prüfen" Classes="body-lg" />
+                                <TextBlock Text="Meist nur laut Fahrplan, Echtzeit folgt später." Classes="caption" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding EveningCheckEnabled}" OnContent="" OffContent="" />
+                        </Grid>
+                    </Border>
+                    <Border Classes="setting" IsVisible="{Binding EveningCheckEnabled}">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Uhrzeit" Classes="body-lg" VerticalAlignment="Center" />
+                            <TimePicker Grid.Column="1" SelectedTime="{Binding EveningCheckTime}" ClockIdentifier="24HourClock" MinuteIncrement="5" />
+                        </Grid>
+                    </Border>
+                    <Border Classes="setting" BorderThickness="0">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="Auch melden, wenn alles im Plan ist" Classes="body-lg" TextWrapping="Wrap" />
+                                <TextBlock Text="Kurze Info beim Abend-Check." Classes="caption" />
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding EveningOkNotification}" OnContent="" OffContent="" />
+                        </Grid>
+                    </Border>
                 </StackPanel>
             </Border>
 
-            <Border Classes="card">
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Neue Woche" Classes="h3" />
-                    <RadioButton GroupName="week" IsChecked="{Binding CopyPreviousWeek}">
-                        <TextBlock Text="Plan der Vorwoche übernehmen" />
-                    </RadioButton>
-                    <RadioButton GroupName="week" IsChecked="{Binding StartWeekEmpty}">
-                        <TextBlock Text="Leer beginnen" />
-                    </RadioButton>
+            <TextBlock Text="Was gemeldet wird" Classes="section" />
+            <Border Classes="group">
+                <StackPanel>
+                    <Border Classes="setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="Verspätung ab" Classes="body-lg" />
+                                <TextBlock Text="Minuten" Classes="caption" />
+                            </StackPanel>
+                            <NumericUpDown Grid.Column="1" Value="{Binding DelayThreshold}" Minimum="1" Maximum="60" Increment="1" FormatString="0" Width="130" />
+                        </Grid>
+                    </Border>
+                    <Border Classes="setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="Zeit zum Umsteigen" Classes="body-lg" />
+                                <TextBlock Text="Minuten zusätzlich zum Fußweg" Classes="caption" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <NumericUpDown Grid.Column="1" Value="{Binding MinTransfer}" Minimum="0" Maximum="30" Increment="1" FormatString="0" Width="130" />
+                        </Grid>
+                    </Border>
+                    <Border Classes="setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="Alarm wiederholen" Classes="body-lg" />
+                                <TextBlock Text="Klingelt, bis du „Gesehen“ tippst." Classes="caption" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding InsistentAlerts}" OnContent="" OffContent="" />
+                        </Grid>
+                    </Border>
+                    <Border Classes="setting" BorderThickness="0">
+                        <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding TestAlarmCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <c:OutlineIcon Data="{StaticResource IconBell}" Width="20" Height="20" />
+                                <TextBlock Text="Test-Alarm in 5 Sekunden" />
+                            </StackPanel>
+                        </Button>
+                    </Border>
                 </StackPanel>
             </Border>
 
-            <Border Classes="card">
-                <StackPanel Spacing="10">
-                    <TextBlock Text="Aussehen" Classes="h3" />
-                    <StackPanel Orientation="Horizontal" Spacing="14">
-                        <RadioButton GroupName="theme" IsChecked="{Binding ThemeSystem}">
-                            <TextBlock Text="System" />
+            <TextBlock Text="Neue Woche" Classes="section" />
+            <Border Classes="group">
+                <StackPanel>
+                    <Border Classes="setting">
+                        <RadioButton GroupName="week" IsChecked="{Binding CopyPreviousWeek}" VerticalAlignment="Center">
+                            <TextBlock Text="Plan der Vorwoche übernehmen" Classes="body-lg" />
                         </RadioButton>
-                        <RadioButton GroupName="theme" IsChecked="{Binding ThemeLight}">
-                            <TextBlock Text="Hell" />
+                    </Border>
+                    <Border Classes="setting" BorderThickness="0">
+                        <RadioButton GroupName="week" IsChecked="{Binding StartWeekEmpty}" VerticalAlignment="Center">
+                            <TextBlock Text="Leer beginnen" Classes="body-lg" />
                         </RadioButton>
-                        <RadioButton GroupName="theme" IsChecked="{Binding ThemeDark}">
-                            <TextBlock Text="Dunkel" />
-                        </RadioButton>
-                    </StackPanel>
-                    <TextBlock Text="Farben" Classes="label" />
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <ColorPicker Color="{Binding AccentColor}" />
-                        <ColorPicker Color="{Binding SecondaryColor}" />
-                    </StackPanel>
-                    <TextBlock Text="Vorlagen" Classes="label" />
-                    <ItemsControl ItemsSource="{Binding Presets}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="vm:ColorPreset">
-                                <Button Classes="ghost" Margin="0,0,8,8"
-                                        Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).ApplyPresetCommand}"
-                                        CommandParameter="{Binding}">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Border Width="22" Height="22" CornerRadius="11" Background="{Binding Brush}" />
-                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
-                                    </StackPanel>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    </Border>
                 </StackPanel>
             </Border>
 
-            <Border Classes="card">
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Updates" Classes="h3" />
-                    <CheckBox IsChecked="{Binding UpdateCheckEnabled}">
-                        <TextBlock Text="Einmal am Tag auf GitHub nach einer neuen Version schauen" TextWrapping="Wrap" />
-                    </CheckBox>
+            <TextBlock Text="Aussehen" Classes="section" />
+            <Border Classes="group">
+                <StackPanel>
+                    <Border Classes="setting">
+                        <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4" VerticalAlignment="Center">
+                            <UniformGrid Rows="1">
+                                <ToggleButton Classes="segment" IsChecked="{Binding ThemeSystem}">
+                                    <TextBlock Text="System" />
+                                </ToggleButton>
+                                <ToggleButton Classes="segment" IsChecked="{Binding ThemeLight}">
+                                    <TextBlock Text="Hell" />
+                                </ToggleButton>
+                                <ToggleButton Classes="segment" IsChecked="{Binding ThemeDark}">
+                                    <TextBlock Text="Dunkel" />
+                                </ToggleButton>
+                            </UniformGrid>
+                        </Border>
+                    </Border>
+                    <Border Classes="setting" BorderThickness="0">
+                        <StackPanel Spacing="8">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="Markenfarbe" Classes="body-lg" />
+                                    <TextBlock Text="Standard ist das Orange aus dem Logo." Classes="caption" />
+                                </StackPanel>
+                                <ColorPicker Grid.Column="1" Color="{Binding AccentColor}" />
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding Presets}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:ColorPreset">
+                                        <Button Classes="secondary" MinHeight="44" Margin="0,0,8,8"
+                                                Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).ApplyPresetCommand}"
+                                                CommandParameter="{Binding}">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <Border Width="20" Height="20" CornerRadius="10" Background="{Binding Brush}" />
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Border>
 
-            <Button Classes="ghost" HorizontalAlignment="Left" Command="{Binding ShowTutorialCommand}">
-                <StackPanel Orientation="Horizontal" Spacing="6">
-                    <PathIcon Data="{StaticResource IconUnknown}" Width="16" Height="16" />
+            <TextBlock Text="Updates" Classes="section" />
+            <Border Classes="group">
+                <Border Classes="setting" BorderThickness="0">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="2" VerticalAlignment="Center">
+                            <TextBlock Text="Nach neuer Version schauen" Classes="body-lg" />
+                            <TextBlock Text="Einmal am Tag auf GitHub." Classes="caption" />
+                        </StackPanel>
+                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding UpdateCheckEnabled}" OnContent="" OffContent="" />
+                    </Grid>
+                </Border>
+            </Border>
+
+            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,16,0,0" Command="{Binding ShowTutorialCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <c:OutlineIcon Data="{StaticResource IconUnknown}" Width="20" Height="20" />
                     <TextBlock Text="Einführung noch einmal ansehen" />
                 </StackPanel>
             </Button>
 
-            <StackPanel Spacing="4" Margin="4,4,4,12">
-                <TextBlock Text="{Binding VersionText}" Classes="muted" TextWrapping="Wrap" />
-                <TextBlock Classes="muted" TextWrapping="Wrap"
+            <StackPanel Spacing="4" Margin="4,16,4,16">
+                <TextBlock Text="{Binding VersionText}" Classes="caption" TextWrapping="Wrap" />
+                <TextBlock Classes="caption" TextWrapping="Wrap"
                            Text="KackZug ist ein privates Open-Source-Projekt und hat nichts mit der Deutschen Bahn zu tun. Die Daten kommen von bahn.de." />
             </StackPanel>
         </StackPanel>

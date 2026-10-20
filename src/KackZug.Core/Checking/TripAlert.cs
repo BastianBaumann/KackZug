@@ -23,6 +23,8 @@ public sealed class TripAlert
 
     public string Kicker { get; set; } = "";
 
+    public string BadgeText { get; set; } = "";
+
     public string Headline { get; set; } = "";
 
     public string TripLine { get; set; } = "";

@@ -19,7 +19,7 @@ public partial class MainViewModel : ViewModelBase
         NavItems = new ObservableCollection<NavItem>
         {
             new NavItem("week", "Woche", "IconWeek", () => new WeekViewModel(this)),
-            new NavItem("shifts", "Schichten", "IconTrain", () => new ShiftsViewModel(this)),
+            new NavItem("shifts", "Schichten", "IconShifts", () => new ShiftsViewModel(this)),
             new NavItem("settings", "Einstellungen", "IconSettings", () => new SettingsViewModel(this))
         };
         Navigate("week");

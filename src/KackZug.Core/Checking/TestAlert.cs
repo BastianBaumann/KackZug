@@ -7,7 +7,7 @@ public static class TestAlert
     {
         return new TripAlert
         {
-            Title = "Test: RE7 06:42 fällt aus",
+            Title = "TEST HIN: RE7 06:42 FÄLLT AUS",
             Text = "So sieht eine Störung aus. Alles gut, das war nur ein Test.",
             Severity = AlertSeverity.Problem,
             Status = LegStatus.Cancelled,

@@ -10,7 +10,7 @@ public sealed class ShiftCardViewModel
     {
         Shift = shift;
         Name = shift.Name;
-        ColorBrush = new SolidColorBrush(Services.ThemeService.Parse(shift.ColorHex, Services.ThemeService.DefaultAccent));
+        ColorBrush = ColorOption.BrushFor(shift.ColorHex);
         OutboundText = ConnectionText.Summary(shift.Outbound);
         ReturnText = ConnectionText.Summary(shift.Return);
     }

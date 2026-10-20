@@ -21,6 +21,12 @@ public static class AlertComposer
 
         var headline = Headline(status);
         alert.Title = shift.Name + " " + DirectionName(direction) + ": " + headline;
+        if (alert.Severity == AlertSeverity.Problem)
+        {
+            alert.Title = (shift.Name + " " + ShortDirectionName(direction) + ": " + headline).ToUpper(German);
+        }
+
+        alert.BadgeText = BadgeText(status);
         alert.Text = Details(status);
         alert.Kicker = Kicker(shift, direction, travelDate);
         alert.Headline = AlarmHeadline(status);
@@ -36,6 +42,48 @@ public static class AlertComposer
         }
 
         return "Rückfahrt";
+    }
+
+    public static string ShortDirectionName(TripDirection direction)
+    {
+        if (direction == TripDirection.Outbound)
+        {
+            return "Hin";
+        }
+
+        return "Rück";
+    }
+
+    public static string BadgeText(TripStatus status)
+    {
+        switch (status.Overall)
+        {
+            case LegStatus.OnTime:
+                return "Planmäßig";
+            case LegStatus.PlannedOnly:
+                return "Laut Fahrplan";
+            case LegStatus.Unknown:
+                return "Nicht geprüft";
+            case LegStatus.Delayed:
+                var delay = status.Legs.Max(result => result.DelayMinutes);
+                return "+" + delay + " min";
+            case LegStatus.PlatformChanged:
+                var changed = status.Legs.First(result => result.NewPlatform is not null);
+                if (string.IsNullOrEmpty(changed.Leg.PlannedPlatform))
+                {
+                    return "Gleis " + changed.NewPlatform;
+                }
+
+                return "Gleis " + changed.Leg.PlannedPlatform + " → " + changed.NewPlatform;
+            case LegStatus.TransferAtRisk:
+                return "Anschluss knapp";
+            case LegStatus.NotFound:
+                return "Nicht gefunden";
+            case LegStatus.PartlyCancelled:
+                return "Teilausfall";
+            default:
+                return "Fällt aus";
+        }
     }
 
     public static AlertSeverity SeverityOf(LegStatus status)
