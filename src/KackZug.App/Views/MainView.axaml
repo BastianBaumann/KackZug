@@ -42,6 +42,14 @@
             </Border>
         </Grid>
 
+        <Border IsVisible="{Binding HasImport}" Background="{DynamicResource AppOverlayBrush}">
+            <ScrollViewer>
+                <Border Classes="card" MaxWidth="560" Margin="12,24" VerticalAlignment="Center" Padding="18">
+                    <ContentControl Content="{Binding Import}" />
+                </Border>
+            </ScrollViewer>
+        </Border>
+
         <Border IsVisible="{Binding HasDialog}" Background="{DynamicResource AppOverlayBrush}">
             <Border Classes="card" MaxWidth="420" Margin="16" VerticalAlignment="Center" HorizontalAlignment="Center"
                     DataContext="{Binding Dialog}" x:DataType="vm:ConfirmViewModel">

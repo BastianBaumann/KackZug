@@ -18,6 +18,8 @@ public class ViewLocator : IDataTemplate
                 return new ShiftsView();
             case SettingsViewModel:
                 return new SettingsView();
+            case ImportViewModel:
+                return new ImportView();
             default:
                 return new TextBlock { Text = "Keine Ansicht fuer " + param?.GetType().Name };
         }

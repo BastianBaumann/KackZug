@@ -35,6 +35,10 @@ public partial class MainViewModel : ViewModelBase
     public partial ConfirmViewModel? Dialog { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasImport))]
+    public partial ImportViewModel? Import { get; set; }
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasToast))]
     public partial string? Toast { get; set; }
 
@@ -44,6 +48,11 @@ public partial class MainViewModel : ViewModelBase
     public bool HasDialog
     {
         get { return Dialog is not null; }
+    }
+
+    public bool HasImport
+    {
+        get { return Import is not null; }
     }
 
     public bool HasToast
@@ -73,6 +82,18 @@ public partial class MainViewModel : ViewModelBase
 
         CurrentPage = page;
         page.OnShown();
+    }
+
+    public Task StartImportAsync(string sharedText)
+    {
+        var import = new ImportViewModel(this);
+        Import = import;
+        return import.LoadAsync(sharedText);
+    }
+
+    public void CloseImport()
+    {
+        Import = null;
     }
 
     public async Task<bool> ConfirmAsync(string title, string message, string confirmText)

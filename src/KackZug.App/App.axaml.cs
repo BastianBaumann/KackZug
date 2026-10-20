@@ -16,6 +16,20 @@ public partial class App : Application
 
     public static MainViewModel? Main { get; private set; }
 
+    private static string? _pendingSharedText;
+
+    public static void HandleSharedText(string text)
+    {
+        var main = Main;
+        if (main is null)
+        {
+            _pendingSharedText = text;
+            return;
+        }
+
+        Avalonia.Threading.Dispatcher.UIThread.Post(() => _ = main.StartImportAsync(text));
+    }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -45,5 +59,12 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+
+        if (_pendingSharedText is not null)
+        {
+            var text = _pendingSharedText;
+            _pendingSharedText = null;
+            HandleSharedText(text);
+        }
     }
 }

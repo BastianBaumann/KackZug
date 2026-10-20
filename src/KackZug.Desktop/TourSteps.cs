@@ -37,6 +37,32 @@ internal static class TourSteps
         main.Dialog!.ConfirmCommand.Execute(null);
         await deleteTask;
         check(shifts.Shifts.Count == 2, "Schicht geloescht");
+
+        main.Services.Resolver = new DemoResolver();
+        await main.StartImportAsync("nur kaputt");
+        check(main.Import!.HasError, "Import ohne Link zeigt Fehler");
+        await capture(window, Path.Combine(directory, "import-error.png"));
+        main.Import.CloseCommand.Execute(null);
+
+        await main.StartImportAsync("https://int.bahn.de/en/buchung/start?vbid=demo");
+        var import = main.Import!;
+        check(import.IsReady && import.Legs.Count == 1, "Import zeigt die Verbindung");
+        check(import.IsNewTarget && !import.SaveCommand.CanExecute(null), "Neue Schicht braucht einen Namen");
+        await capture(window, Path.Combine(directory, "import-new.png"));
+
+        var spaet = import.Targets.First(target => target.Title == "Spätdienst");
+        import.SelectTargetCommand.Execute(spaet);
+        check(import.IsReturn, "Spaetdienst ohne Rueckfahrt schlaegt Rueckfahrt vor");
+        check(!import.HasReplacement, "Nichts wird ersetzt");
+        import.ChooseOutboundCommand.Execute(null);
+        check(import.HasReplacement, "Hinfahrt ersetzen zeigt vorher und nachher");
+        await capture(window, Path.Combine(directory, "import-replace.png"));
+        import.ChooseReturnCommand.Execute(null);
+        import.SaveCommand.Execute(null);
+        check(!main.HasImport, "Import geschlossen nach Speichern");
+        var saved = main.Services.Data.Shifts.First(shift => shift.Name == "Spätdienst");
+        check(saved.Return is not null && saved.Return.Legs[0].Name == "RB21", "Rueckfahrt gespeichert");
+        await capture(window, Path.Combine(directory, "shifts-after-import.png"));
     }
 }
 #endif

@@ -1,4 +1,6 @@
 using KackZug.Core;
+using KackZug.Core.Bahn;
+using KackZug.Core.Import;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
 using KackZug.Core.Storage;
@@ -8,6 +10,9 @@ namespace KackZug.Services;
 /// <summary>Haelt Daten, Speicher und Plattform zusammen und plant nach jeder Aenderung die Pruefungen neu</summary>
 public sealed class AppServices
 {
+    private IConnectionResolver? _resolver;
+    private BahnWebClient? _bahnClient;
+
     private AppServices(IPlatform platform, AppDataStore store, AppData data, IClock clock)
     {
         Platform = platform;
@@ -28,6 +33,33 @@ public sealed class AppServices
     public IClock Clock { get; }
 
     public ThemeService Theme { get; }
+
+    public IConnectionResolver Resolver
+    {
+        get
+        {
+            if (_resolver is null)
+            {
+                _resolver = new BahnWebConnectionResolver(BahnClient, Clock);
+            }
+
+            return _resolver;
+        }
+        set { _resolver = value; }
+    }
+
+    public BahnWebClient BahnClient
+    {
+        get
+        {
+            if (_bahnClient is null)
+            {
+                _bahnClient = new BahnWebClient(BahnWebClient.CreateHttpClient());
+            }
+
+            return _bahnClient;
+        }
+    }
 
     public static AppServices Create(IPlatform platform)
     {
