@@ -7,9 +7,36 @@ namespace KackZug.Desktop;
 /// <summary>Zusaetzliche Ablaeufe der Screenshot-Tour, wird mit jeder Ansicht erweitert</summary>
 internal static class TourSteps
 {
-    public static Task RunAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)
+    public static async Task RunAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)
     {
-        return Task.CompletedTask;
+        Avalonia.Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Light;
+
+        main.Navigate("shifts");
+        var shifts = (ShiftsViewModel)main.CurrentPage!;
+        check(shifts.Shifts.Count == 2, "Schichtenliste zeigt 2 Demo-Schichten");
+        shifts.EditCommand.Execute(shifts.Shifts[0]);
+        check(shifts.IsEditing, "Editor geoeffnet");
+        check(shifts.Editor!.Outbound.Legs.Count == 3, "Hinfahrt zeigt 3 Teilstrecken");
+        await capture(window, Path.Combine(directory, "shift-editor.png"));
+        shifts.Editor.CancelCommand.Execute(null);
+        check(!shifts.IsEditing, "Editor geschlossen");
+
+        shifts.AddCommand.Execute(null);
+        check(!shifts.Editor!.SaveCommand.CanExecute(null), "Neue Schicht ohne Namen nicht speicherbar");
+        shifts.Editor.Name = "Nachtdienst";
+        check(shifts.Editor.SaveCommand.CanExecute(null), "Neue Schicht mit Namen speicherbar");
+        shifts.Editor.SaveCommand.Execute(null);
+        check(shifts.Shifts.Count == 3, "Neue Schicht in der Liste");
+        await capture(window, Path.Combine(directory, "shifts-after-add.png"));
+
+        shifts.EditCommand.Execute(shifts.Shifts[2]);
+        var deleteTask = shifts.Editor!.DeleteCommand.ExecuteAsync(null);
+        await Task.Delay(300);
+        check(main.HasDialog, "Rueckfrage beim Loeschen");
+        await capture(window, Path.Combine(directory, "shift-delete-confirm.png"));
+        main.Dialog!.ConfirmCommand.Execute(null);
+        await deleteTask;
+        check(shifts.Shifts.Count == 2, "Schicht geloescht");
     }
 }
 #endif
