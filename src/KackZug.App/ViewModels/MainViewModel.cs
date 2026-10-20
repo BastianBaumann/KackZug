@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using KackZug.Core;
+using KackZug.Core.Updates;
 using KackZug.Services;
 
 namespace KackZug.ViewModels;
@@ -35,6 +37,10 @@ public partial class MainViewModel : ViewModelBase
     public partial ConfirmViewModel? Dialog { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasUpdate))]
+    public partial UpdateInfo? AvailableUpdate { get; set; }
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasImport))]
     public partial ImportViewModel? Import { get; set; }
 
@@ -48,6 +54,24 @@ public partial class MainViewModel : ViewModelBase
     public bool HasDialog
     {
         get { return Dialog is not null; }
+    }
+
+    public bool HasUpdate
+    {
+        get { return AvailableUpdate is not null; }
+    }
+
+    public string UpdateText
+    {
+        get
+        {
+            if (AvailableUpdate is null)
+            {
+                return "";
+            }
+
+            return "Version " + AvailableUpdate.Version + " ist da.";
+        }
     }
 
     public bool HasImport
@@ -82,6 +106,46 @@ public partial class MainViewModel : ViewModelBase
 
         CurrentPage = page;
         page.OnShown();
+    }
+
+    public async Task CheckForUpdateAsync()
+    {
+        var data = Services.Data;
+        if (!data.Settings.UpdateCheckEnabled || !UpdateChecker.IsDue(data.LastUpdateCheck, Services.Clock.Now))
+        {
+            return;
+        }
+
+        data.LastUpdateCheck = Services.Clock.Now;
+        Services.Store.Save(data);
+        using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+        var checker = new UpdateChecker(httpClient);
+        var update = await checker.FindNewerAsync(AppInfo.Version, CancellationToken.None);
+        if (update is not null)
+        {
+            ShowUpdate(update);
+        }
+    }
+
+    public void ShowUpdate(UpdateInfo update)
+    {
+        AvailableUpdate = update;
+        OnPropertyChanged(nameof(UpdateText));
+    }
+
+    [RelayCommand]
+    private void OpenUpdatePage()
+    {
+        if (AvailableUpdate is not null)
+        {
+            Services.Platform.OpenUrl(AvailableUpdate.PageUrl);
+        }
+    }
+
+    [RelayCommand]
+    private void DismissUpdate()
+    {
+        AvailableUpdate = null;
     }
 
     public Task StartImportAsync(string sharedText)

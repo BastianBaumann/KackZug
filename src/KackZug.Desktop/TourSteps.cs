@@ -11,6 +11,13 @@ internal static class TourSteps
     {
         Avalonia.Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Light;
 
+        main.ShowUpdate(new Core.Updates.UpdateInfo("9.9.9", "https://github.com/BastianBaumann/KackZug/releases/tag/v9.9.9"));
+        check(main.HasUpdate && main.UpdateText.Contains("9.9.9"), "Update-Hinweis sichtbar");
+        main.Navigate("week");
+        await capture(window, Path.Combine(directory, "update-banner.png"));
+        main.DismissUpdateCommand.Execute(null);
+        check(!main.HasUpdate, "Update-Hinweis ausblendbar");
+
         main.Navigate("week");
         var firstWeek = (WeekViewModel)main.CurrentPage!;
         var mondayPlan = main.Services.Store.Load().CurrentWeek!.GetDay(DayOfWeek.Monday);

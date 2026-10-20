@@ -14,7 +14,20 @@
                 </StackPanel>
             </Border>
 
-            <TransitioningContentControl Grid.Row="1" Content="{Binding CurrentPage}" />
+            <Grid Grid.Row="1" RowDefinitions="Auto,*">
+                <Border Grid.Row="0" IsVisible="{Binding HasUpdate}" Background="{DynamicResource AppAccentSoftBrush}" Padding="16,8">
+                    <Grid ColumnDefinitions="*,Auto,Auto">
+                        <TextBlock Text="{Binding UpdateText}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                        <Button Grid.Column="1" Classes="accent" Margin="8,0,0,0" Command="{Binding OpenUpdatePageCommand}">
+                            <TextBlock Text="Herunterladen" />
+                        </Button>
+                        <Button Grid.Column="2" Classes="icon" Command="{Binding DismissUpdateCommand}" ToolTip.Tip="Ausblenden">
+                            <PathIcon Data="{StaticResource IconCancelled}" Width="16" Height="16" />
+                        </Button>
+                    </Grid>
+                </Border>
+                <TransitioningContentControl Grid.Row="1" Content="{Binding CurrentPage}" />
+            </Grid>
 
             <Border Grid.Row="2" Background="{DynamicResource AppSurfaceBrush}"
                     BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,1,0,0" Padding="4,4,4,8">

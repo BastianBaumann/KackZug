@@ -55,6 +55,7 @@ public partial class App : Application
 
         var main = new MainViewModel(services);
         Main = main;
+        _ = main.CheckForUpdateAsync();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
