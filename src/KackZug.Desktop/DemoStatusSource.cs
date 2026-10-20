@@ -25,6 +25,7 @@ internal sealed class DemoStatusSource : ITripStatusSource
             LiveDeparture = plannedDeparture.AddMinutes(delay),
             LiveArrival = plannedArrival.AddMinutes(delay),
             ArrivalKnown = true,
+            HasLiveData = true,
             CurrentPlatform = leg.PlannedPlatform
         };
         return Task.FromResult(observation);

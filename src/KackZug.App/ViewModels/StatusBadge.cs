@@ -30,6 +30,8 @@ public sealed class StatusBadge
                 return "planmäßig";
             case LegStatus.Unknown:
                 return "konnte nicht prüfen";
+            case LegStatus.PlannedOnly:
+                return "laut Fahrplan, Echtzeit folgt";
             case LegStatus.PlatformChanged:
                 return "Gleiswechsel";
             case LegStatus.Delayed:

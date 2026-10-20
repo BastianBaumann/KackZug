@@ -12,6 +12,8 @@ public sealed class FakeTripStatusSource : ITripStatusSource
 
     public bool Offline { get; set; }
 
+    public bool NoLiveData { get; set; }
+
     public int Calls { get; private set; }
 
     public Task<LegObservation> ObserveAsync(Leg leg, DateOnly travelDate, CancellationToken cancellationToken)
@@ -38,6 +40,7 @@ public sealed class FakeTripStatusSource : ITripStatusSource
             LiveDeparture = plannedDeparture.AddMinutes(delay),
             LiveArrival = plannedArrival.AddMinutes(delay),
             ArrivalKnown = true,
+            HasLiveData = !NoLiveData,
             CurrentPlatform = leg.PlannedPlatform,
             DepartureCancelled = CancelledNames.Contains(leg.Name)
         };

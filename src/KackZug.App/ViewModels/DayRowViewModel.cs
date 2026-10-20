@@ -189,7 +189,20 @@ public partial class DayRowViewModel : ViewModelBase
             return new StatusBadge(null, prefix + departure + "· " + StatusBadge.ShortText(null));
         }
 
-        var text = prefix + departure + "· " + StatusBadge.ShortText(state.LastStatus);
+        var text = prefix + departure + "· " + StatusBadge.ShortText(state.LastStatus) + " · geprüft " + CheckedText(state.LastCheckedAt);
         return new StatusBadge(state.LastStatus, text);
+    }
+
+    private string CheckedText(DateTimeOffset checkedAt)
+    {
+        var wallClock = Core.Planning.BerlinTime.ToWallClock(checkedAt, Core.Planning.BerlinTime.Zone);
+        var checkedDay = DateOnly.FromDateTime(wallClock);
+        var today = DateOnly.FromDateTime(Core.Planning.BerlinTime.ToWallClock(_week.Main.Services.Clock.Now, Core.Planning.BerlinTime.Zone));
+        if (checkedDay == today)
+        {
+            return wallClock.ToString("HH:mm");
+        }
+
+        return German.DateTimeFormat.GetAbbreviatedDayName(wallClock.DayOfWeek) + " " + wallClock.ToString("HH:mm");
     }
 }

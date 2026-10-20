@@ -32,6 +32,7 @@ public static class TripReader
         if (liveDeparture is not null)
         {
             observation.LiveDeparture = liveDeparture;
+            observation.HasLiveData = true;
         }
 
         var platform = CurrentPlatform(departureStop);
@@ -64,6 +65,10 @@ public static class TripReader
         var arrivalStop = stopList[arrivalIndex];
         observation.ArrivalKnown = true;
         observation.LiveArrival = BahnJson.ReadLiveTime(arrivalStop, "ankunft");
+        if (observation.LiveArrival is not null)
+        {
+            observation.HasLiveData = true;
+        }
         if (CancellationNotes.ContainsCancellation(arrivalStop))
         {
             observation.ArrivalCancelled = true;

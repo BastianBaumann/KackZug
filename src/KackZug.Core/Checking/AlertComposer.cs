@@ -40,7 +40,7 @@ public static class AlertComposer
 
     public static AlertSeverity SeverityOf(LegStatus status)
     {
-        if (status == LegStatus.OnTime || status == LegStatus.Unknown)
+        if (status == LegStatus.OnTime || status == LegStatus.PlannedOnly || status == LegStatus.Unknown)
         {
             return AlertSeverity.Info;
         }
@@ -99,6 +99,8 @@ public static class AlertComposer
                 return "GLEISWECHSEL";
             case LegStatus.Unknown:
                 return "NICHT GEPRÜFT";
+            case LegStatus.PlannedOnly:
+                return "LAUT FAHRPLAN";
             default:
                 return "PLANMÄSSIG";
         }
@@ -141,6 +143,11 @@ public static class AlertComposer
         if (worstIndex < 0)
         {
             var firstRide = status.Legs.First(result => !result.Leg.IsWalk);
+            if (status.Overall == LegStatus.PlannedOnly)
+            {
+                return Describe(firstRide) + " fährt laut Fahrplan";
+            }
+
             return Describe(firstRide) + " fährt planmäßig";
         }
 
@@ -158,7 +165,13 @@ public static class AlertComposer
                 continue;
             }
 
-            var line = Describe(result) + " " + result.Leg.From.Name + " → " + result.Leg.To.Name + ": " + Problem(result);
+            var problem = Problem(result);
+            if (status.Overall == LegStatus.PlannedOnly)
+            {
+                problem = "laut Fahrplan";
+            }
+
+            var line = Describe(result) + " " + result.Leg.From.Name + " → " + result.Leg.To.Name + ": " + problem;
             lines.Add(line);
         }
 
@@ -172,6 +185,11 @@ public static class AlertComposer
             var station = status.Legs[transfer.ArrivingLegIndex].Leg.To.Name;
             var spare = Math.Max(0, transfer.SpareMinutes);
             lines.Add("Umstieg in " + station + ": nur noch " + spare + " Min. Puffer");
+        }
+
+        if (status.Overall == LegStatus.PlannedOnly)
+        {
+            lines.Add("Echtzeitdaten gibt es erst kurz vor der Abfahrt. KackZug prüft dann noch einmal.");
         }
 
         if (status.Overall == LegStatus.NotFound || status.Overall == LegStatus.Cancelled || status.Overall == LegStatus.PartlyCancelled)

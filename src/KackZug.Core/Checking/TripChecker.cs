@@ -73,6 +73,11 @@ public sealed class TripChecker
             return context == CheckContext.LastLeadTime && changed;
         }
 
+        if (alert.Status == LegStatus.PlannedOnly)
+        {
+            return context == CheckContext.Evening || (context == CheckContext.LastLeadTime && changed);
+        }
+
         var wasProblem = state.LastStatus is not null && AlertComposer.SeverityOf(state.LastStatus.Value) == AlertSeverity.Problem;
         if (wasProblem)
         {

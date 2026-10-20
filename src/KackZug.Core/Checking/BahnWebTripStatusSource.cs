@@ -33,6 +33,11 @@ public sealed class BahnWebTripStatusSource : ITripStatusSource
             return LegObservation.Unknown(plannedDeparture, plannedArrival, exception.UserMessage);
         }
 
+        if (board.Count == 0)
+        {
+            return LegObservation.Unknown(plannedDeparture, plannedArrival, "bahn.de hat für diesen Tag und diese Uhrzeit noch keine Daten.");
+        }
+
         var observation = new LegObservation
         {
             PlannedDeparture = plannedDeparture,
@@ -48,6 +53,7 @@ public sealed class BahnWebTripStatusSource : ITripStatusSource
 
         observation.Result = ObservationResult.Found;
         observation.LiveDeparture = entry.LiveTime;
+        observation.HasLiveData = entry.LiveTime is not null;
         observation.DepartureCancelled = entry.Cancelled;
         observation.CurrentPlatform = entry.LivePlatform ?? entry.Platform;
 

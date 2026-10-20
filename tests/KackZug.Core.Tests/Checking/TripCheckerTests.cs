@@ -89,6 +89,26 @@ public class TripCheckerTests
     }
 
     [Fact]
+    public async Task WithoutRealtimeEveningSaysOnlyPlanned()
+    {
+        var (data, shift) = CreateData();
+        data.Settings.EveningOkNotification = false;
+        var source = new FakeTripStatusSource { NoLiveData = true };
+        var checker = new TripChecker(source, new FixedClock(Now));
+
+        var lead = await checker.CheckAsync(data, Day, shift.Id, TripDirection.Outbound, CheckContext.LeadTime, CancellationToken.None);
+        var evening = await checker.CheckAsync(data, Day, shift.Id, TripDirection.Outbound, CheckContext.Evening, CancellationToken.None);
+
+        Assert.Equal(LegStatus.PlannedOnly, evening!.Status.Overall);
+        Assert.False(lead!.ShouldNotify);
+        Assert.True(evening.ShouldNotify);
+        Assert.Equal(AlertSeverity.Info, evening.Alert.Severity);
+        Assert.Equal("Frühdienst Hinfahrt: RE7 06:42 fährt laut Fahrplan", evening.Alert.Title);
+        Assert.Contains("Echtzeitdaten gibt es erst kurz vor der Abfahrt", evening.Alert.Text);
+        Assert.DoesNotContain("pünktlich", evening.Alert.Text);
+    }
+
+    [Fact]
     public async Task ProblemThatIsSolvedGivesAllClear()
     {
         var (data, shift) = CreateData();

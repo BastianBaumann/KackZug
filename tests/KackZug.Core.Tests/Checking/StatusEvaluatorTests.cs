@@ -23,6 +23,32 @@ public class StatusEvaluatorTests
     }
 
     [Fact]
+    public void WithoutLiveDataItIsOnlyPlanned()
+    {
+        var connection = Connection();
+        var observations = Observations(connection, 0, 0);
+        observations[0]!.HasLiveData = false;
+        observations[2]!.HasLiveData = false;
+
+        var status = StatusEvaluator.Evaluate(connection, observations, new Settings());
+
+        Assert.Equal(LegStatus.PlannedOnly, status.Overall);
+        Assert.False(status.HasLiveData);
+    }
+
+    [Fact]
+    public void TramWithoutLiveDataDoesNotHideTrainData()
+    {
+        var connection = Connection();
+        var observations = Observations(connection, 0, 0);
+        observations[2]!.HasLiveData = false;
+
+        var status = StatusEvaluator.Evaluate(connection, observations, new Settings());
+
+        Assert.Equal(LegStatus.OnTime, status.Overall);
+    }
+
+    [Fact]
     public void SmallDelayBelowThresholdIsOnTime()
     {
         var connection = Connection();
@@ -168,6 +194,7 @@ public class StatusEvaluatorTests
             LiveDeparture = plannedDeparture.AddMinutes(delayMinutes),
             LiveArrival = plannedArrival.AddMinutes(delayMinutes),
             ArrivalKnown = true,
+            HasLiveData = true,
             CurrentPlatform = leg.PlannedPlatform
         };
     }

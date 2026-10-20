@@ -15,6 +15,8 @@ public sealed class LegObservation
 
     public bool ArrivalKnown { get; set; }
 
+    public bool HasLiveData { get; set; }
+
     public bool DepartureCancelled { get; set; }
 
     public bool ArrivalCancelled { get; set; }

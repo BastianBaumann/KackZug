@@ -31,6 +31,8 @@ public class BahnWebTripStatusSourceTests
         Assert.False(observation.DepartureCancelled);
         Assert.Contains("ortExtId=8000001", handler.RequestedPaths[0]);
         Assert.Contains("zeit=06%3A41%3A00", handler.RequestedPaths[0]);
+        Assert.Contains("datum=2026-10-21", handler.RequestedPaths[0]);
+        Assert.True(observation.HasLiveData);
     }
 
     [Fact]
@@ -90,6 +92,34 @@ public class BahnWebTripStatusSourceTests
 
         Assert.Equal(ObservationResult.NotFound, observation.Result);
         Assert.Single(handler.RequestedPaths);
+    }
+
+    [Fact]
+    public async Task PlannedDataWithoutRealtimeIsMarked()
+    {
+        var handler = new FakeHttpHandler();
+        handler.Answer("reiseloesung/abfahrten", HttpStatusCode.OK, BahnJsonBuilder.Board(
+            BahnJsonBuilder.BoardEntry("2026-10-21T06:42:00", "RE7", "NRE", "4711", "2")));
+        handler.Answer("reiseloesung/fahrt", HttpStatusCode.OK, BahnJsonBuilder.Trip(false,
+            BahnJsonBuilder.Stop("8000001", "Musterstadt Hbf", null, null, "2026-10-21T06:42:00", null, "2"),
+            BahnJsonBuilder.Stop("8000002", "Beispielhausen", "2026-10-21T07:10:00", null, null, null, "5")));
+
+        var observation = await CreateSource(handler).ObserveAsync(TrainLeg(), TravelDate, CancellationToken.None);
+
+        Assert.Equal(ObservationResult.Found, observation.Result);
+        Assert.False(observation.HasLiveData);
+    }
+
+    [Fact]
+    public async Task EmptyBoardMeansNotYetKnownInsteadOfNotFound()
+    {
+        var handler = new FakeHttpHandler();
+        handler.Answer("reiseloesung/abfahrten", HttpStatusCode.OK, BahnJsonBuilder.Board());
+
+        var observation = await CreateSource(handler).ObserveAsync(TrainLeg(), TravelDate, CancellationToken.None);
+
+        Assert.Equal(ObservationResult.Unknown, observation.Result);
+        Assert.Contains("noch keine Daten", observation.Problem);
     }
 
     [Fact]

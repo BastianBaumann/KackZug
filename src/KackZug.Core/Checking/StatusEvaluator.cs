@@ -21,6 +21,10 @@ public static class StatusEvaluator
             status.Overall = Worse(status.Overall, result.Status);
         }
 
+        status.HasLiveData = status.Legs.Any(result => result.Observation is not null
+            && result.Observation.Result == ObservationResult.Found
+            && result.Observation.HasLiveData);
+
         EvaluateTransfers(status, settings);
         foreach (var transfer in status.Transfers)
         {
@@ -28,6 +32,11 @@ public static class StatusEvaluator
             {
                 status.Overall = Worse(status.Overall, LegStatus.TransferAtRisk);
             }
+        }
+
+        if (status.Overall == LegStatus.OnTime && !status.HasLiveData)
+        {
+            status.Overall = LegStatus.PlannedOnly;
         }
 
         return status;
