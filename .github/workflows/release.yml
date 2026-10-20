@@ -53,7 +53,7 @@ jobs:
         run: >
           dotnet publish src/KackZug.Android/KackZug.Android.csproj -c Release -f net10.0-android -o out
           -p:AndroidSdkDirectory="$ANDROID_HOME"
-          -p:Version="$VERSION"
+          -p:Version="${VERSION%%-*}"
           -p:ApplicationDisplayVersion="$VERSION"
           -p:ApplicationVersion="$CODE"
           -p:AndroidKeyStore=true
@@ -67,7 +67,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp out/*-Signed.apk "KackZug-$VERSION.apk"
-          gh release create "$GITHUB_REF_NAME" "KackZug-$VERSION.apk" --title "KackZug $VERSION" --generate-notes
+          PRERELEASE=""
+          case "$VERSION" in *-*) PRERELEASE="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" "KackZug-$VERSION.apk" --title "KackZug $VERSION" --generate-notes $PRERELEASE
 
       - name: Remove keystore
         if: always()

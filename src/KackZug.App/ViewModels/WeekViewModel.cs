@@ -11,11 +11,13 @@ namespace KackZug.ViewModels;
 public partial class WeekViewModel : PageViewModel
 {
     private bool _isRefreshing;
+    private bool _isSavingOwnChange;
+    private DateOnly _builtForDay;
 
     public WeekViewModel(MainViewModel main)
     {
         Main = main;
-        main.Services.DataChanged += (_, _) => Refresh();
+        main.Services.DataChanged += (_, _) => OnDataChanged();
         Refresh();
     }
 
@@ -43,7 +45,10 @@ public partial class WeekViewModel : PageViewModel
 
     public override void OnShown()
     {
-        Refresh();
+        if (Today() != _builtForDay)
+        {
+            Refresh();
+        }
     }
 
     public void SaveChanges()
@@ -53,7 +58,25 @@ public partial class WeekViewModel : PageViewModel
             return;
         }
 
-        Main.Services.SaveAndReschedule();
+        _isSavingOwnChange = true;
+        try
+        {
+            Main.Services.SaveAndReschedule();
+        }
+        finally
+        {
+            _isSavingOwnChange = false;
+        }
+    }
+
+    private void OnDataChanged()
+    {
+        if (_isSavingOwnChange)
+        {
+            return;
+        }
+
+        Refresh();
     }
 
     [RelayCommand(CanExecute = nameof(CanCheckNow))]
@@ -137,6 +160,7 @@ public partial class WeekViewModel : PageViewModel
 
             WeekText = "Woche vom " + week.WeekStart.ToString("dd.MM.") + " bis " + week.WeekStart.AddDays(6).ToString("dd.MM.yy");
             HasNoShifts = data.Shifts.Count == 0;
+            _builtForDay = today;
         }
         finally
         {

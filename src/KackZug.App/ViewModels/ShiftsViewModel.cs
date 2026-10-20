@@ -44,7 +44,6 @@ public partial class ShiftsViewModel : PageViewModel
 
     public override void OnShown()
     {
-        Refresh();
     }
 
     public void OpenEditor(Shift shift, bool isNew)

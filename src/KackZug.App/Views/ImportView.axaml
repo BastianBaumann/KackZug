@@ -43,7 +43,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:ImportTarget">
-                            <ToggleButton Classes="choice" IsChecked="{Binding IsSelected, Mode=OneWay}"
+                            <RadioButton Classes="choice" GroupName="target" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsSelected, Mode=OneWay}"
                                           Command="{Binding $parent[UserControl].((vm:ImportViewModel)DataContext).SelectTargetCommand}"
                                           CommandParameter="{Binding}">
                                 <StackPanel Orientation="Horizontal" Spacing="12">
@@ -53,7 +53,7 @@
                                     </Grid>
                                     <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
                                 </StackPanel>
-                            </ToggleButton>
+                            </RadioButton>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -63,12 +63,12 @@
 
             <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
                 <UniformGrid Rows="1">
-                    <ToggleButton Classes="segment" IsChecked="{Binding IsOutbound, Mode=OneWay}" Command="{Binding ChooseOutboundCommand}">
+                    <RadioButton Classes="segment" GroupName="direction" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsOutbound, Mode=OneWay}" Command="{Binding ChooseOutboundCommand}">
                         <TextBlock Text="Hinfahrt" />
-                    </ToggleButton>
-                    <ToggleButton Classes="segment" IsChecked="{Binding IsReturn, Mode=OneWay}" Command="{Binding ChooseReturnCommand}">
+                    </RadioButton>
+                    <RadioButton Classes="segment" GroupName="direction" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsReturn, Mode=OneWay}" Command="{Binding ChooseReturnCommand}">
                         <TextBlock Text="Rückfahrt" />
-                    </ToggleButton>
+                    </RadioButton>
                 </UniformGrid>
             </Border>
 

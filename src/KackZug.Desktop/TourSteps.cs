@@ -135,6 +135,25 @@ internal static class TourSteps
         check(main.Services.Data.Settings.ThemeMode == Core.Models.ThemeMode.Dark, "Dunkel gespeichert");
         await capture(window, Path.Combine(directory, "settings-dark-preset.png"));
         settings.ApplyPresetCommand.Execute(settings.Presets[0]);
+        await capture(window, Path.Combine(directory, "settings-before-radio.png"));
+        var themeRadios = window.GetVisualDescendants().OfType<RadioButton>().Where(radio => radio.GroupName == "theme").ToList();
+        check(themeRadios.Count == 3, "Drei Theme-Knoepfe");
+        themeRadios[2].IsChecked = true;
+        check(themeRadios.Count(radio => radio.IsChecked == true) == 1 && main.Services.Data.Settings.ThemeMode == Core.Models.ThemeMode.Dark, "Dunkel per Knopf, nur einer aktiv");
+        themeRadios[0].IsChecked = true;
+        check(themeRadios.Count(radio => radio.IsChecked == true) == 1 && main.Services.Data.Settings.ThemeMode == Core.Models.ThemeMode.System, "Zurueck auf System per Knopf, nur einer aktiv");
+        var numberField = window.GetVisualDescendants().OfType<NumericUpDown>().First();
+        check(Math.Abs(numberField.Bounds.Height - 48) < 1, "Zahlenfeld 48 hoch: " + numberField.Bounds.Height);
+
+        main.Navigate("week");
+        var weekPage = (WeekViewModel)main.CurrentPage!;
+        var firstRow = weekPage.Days[0];
+        var weekView = window.GetVisualDescendants().OfType<Views.WeekView>().FirstOrDefault();
+        main.Navigate("settings");
+        main.Navigate("week");
+        check(ReferenceEquals(firstRow, weekPage.Days[0]), "Woche wird beim Tab-Wechsel nicht neu aufgebaut");
+        check(weekView is not null && ReferenceEquals(weekView, window.GetVisualDescendants().OfType<Views.WeekView>().FirstOrDefault()), "Ansicht wird wiederverwendet");
+        main.Navigate("settings");
         settings.ThemeSystem = true;
         settings.EveningCheckEnabled = false;
         check(main.Services.Data.Settings.EveningCheckTime is null, "Abend-Check abgeschaltet");

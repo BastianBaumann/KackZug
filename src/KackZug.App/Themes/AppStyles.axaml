@@ -107,8 +107,18 @@
     <Style Selector="Button, ToggleButton, TextBox, ComboBox, NumericUpDown, TimePicker">
         <Setter Property="CornerRadius" Value="8" />
     </Style>
-    <Style Selector="TextBox, ComboBox, NumericUpDown">
+    <Style Selector="TextBox, ComboBox">
         <Setter Property="MinHeight" Value="48" />
+    </Style>
+    <Style Selector="NumericUpDown, TimePicker">
+        <Setter Property="Height" Value="48" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="NumericUpDown">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="ToggleSwitch">
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style Selector="Button">
         <Setter Property="MinHeight" Value="48" />
@@ -296,6 +306,56 @@
     </Style>
     <Style Selector="ToggleButton.segment:pointerover /template/ ContentPresenter">
         <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="RadioButton.segment">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="RadioButton.segment /template/ ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="6" />
+    </Style>
+    <Style Selector="RadioButton.segment TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource AppMutedBrush}" />
+    </Style>
+    <Style Selector="RadioButton.segment:checked /template/ ContentPresenter, RadioButton.segment:checked:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AppSurfaceBrush}" />
+        <Setter Property="BoxShadow" Value="{DynamicResource AppCardShadow}" />
+    </Style>
+    <Style Selector="RadioButton.segment:checked TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextBrush}" />
+    </Style>
+    <Style Selector="RadioButton.segment:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="RadioButton.choice">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="MinHeight" Value="56" />
+        <Setter Property="Padding" Value="16,0" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="RadioButton.choice /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AppSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AppBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="RadioButton.choice:checked /template/ ContentPresenter, RadioButton.choice:checked:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AppAccentSoftBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AppAccentBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="RadioButton.choice:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AppSurfaceAltBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AppBorderBrush}" />
+    </Style>
+    <Style Selector="RadioButton.choice TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextBrush}" />
     </Style>
 
     <Style Selector="Border.dot">

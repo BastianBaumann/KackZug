@@ -157,15 +157,15 @@
                     <Border Classes="setting">
                         <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4" VerticalAlignment="Center">
                             <UniformGrid Rows="1">
-                                <ToggleButton Classes="segment" IsChecked="{Binding ThemeSystem}">
+                                <RadioButton Classes="segment" GroupName="theme" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding ThemeSystem}">
                                     <TextBlock Text="System" />
-                                </ToggleButton>
-                                <ToggleButton Classes="segment" IsChecked="{Binding ThemeLight}">
+                                </RadioButton>
+                                <RadioButton Classes="segment" GroupName="theme" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding ThemeLight}">
                                     <TextBlock Text="Hell" />
-                                </ToggleButton>
-                                <ToggleButton Classes="segment" IsChecked="{Binding ThemeDark}">
+                                </RadioButton>
+                                <RadioButton Classes="segment" GroupName="theme" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding ThemeDark}">
                                     <TextBlock Text="Dunkel" />
-                                </ToggleButton>
+                                </RadioButton>
                             </UniformGrid>
                         </Border>
                     </Border>
