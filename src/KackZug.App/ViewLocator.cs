@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using KackZug.ViewModels;
+using KackZug.Views;
 
 namespace KackZug;
 
@@ -11,6 +12,12 @@ public class ViewLocator : IDataTemplate
     {
         switch (param)
         {
+            case WeekViewModel:
+                return new WeekView();
+            case ShiftsViewModel:
+                return new ShiftsView();
+            case SettingsViewModel:
+                return new SettingsView();
             default:
                 return new TextBlock { Text = "Keine Ansicht fuer " + param?.GetType().Name };
         }

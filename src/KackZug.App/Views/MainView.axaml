@@ -2,10 +2,68 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:KackZug.ViewModels"
              x:Class="KackZug.Views.MainView"
-             x:DataType="vm:MainViewModel">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-        <Image Source="{StaticResource LogoImage}" Width="220" Height="220" HorizontalAlignment="Center" />
-        <TextBlock Text="{Binding Title}" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" />
-        <TextBlock Text="{Binding VersionText}" HorizontalAlignment="Center" />
-    </StackPanel>
+             x:DataType="vm:MainViewModel"
+             Background="{DynamicResource AppBackgroundBrush}">
+    <Grid>
+        <Grid RowDefinitions="Auto,*,Auto">
+            <Border Grid.Row="0" Padding="16,10" Background="{DynamicResource AppSurfaceBrush}"
+                    BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,0,0,1">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Image Source="{StaticResource LogoImage}" Width="40" Height="40" />
+                    <TextBlock Text="KackZug" Classes="h2" VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
+
+            <TransitioningContentControl Grid.Row="1" Content="{Binding CurrentPage}" />
+
+            <Border Grid.Row="2" Background="{DynamicResource AppSurfaceBrush}"
+                    BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,1,0,0" Padding="4,4,4,8">
+                <ItemsControl ItemsSource="{Binding NavItems}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:NavItem">
+                            <Button Classes="tab" Classes.selected="{Binding IsSelected}"
+                                    Command="{Binding $parent[UserControl].((vm:MainViewModel)DataContext).NavigateCommand}"
+                                    CommandParameter="{Binding Key}">
+                                <StackPanel Spacing="3">
+                                    <PathIcon Data="{Binding Icon}" Width="22" Height="22" HorizontalAlignment="Center"
+                                              Foreground="{Binding $parent[Button].Foreground}" />
+                                    <TextBlock Text="{Binding Title}" FontSize="11" HorizontalAlignment="Center"
+                                               Foreground="{Binding $parent[Button].Foreground}" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+        </Grid>
+
+        <Border IsVisible="{Binding HasDialog}" Background="{DynamicResource AppOverlayBrush}">
+            <Border Classes="card" MaxWidth="420" Margin="16" VerticalAlignment="Center" HorizontalAlignment="Center"
+                    DataContext="{Binding Dialog}" x:DataType="vm:ConfirmViewModel">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="{Binding Title}" Classes="h2" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                        <Button Classes="ghost" Command="{Binding CancelCommand}">
+                            <TextBlock Text="Abbrechen" />
+                        </Button>
+                        <Button Classes="accent" Command="{Binding ConfirmCommand}">
+                            <TextBlock Text="{Binding ConfirmText}" />
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+
+        <Border IsVisible="{Binding HasToast}" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                Margin="16,0,16,84" Padding="16,10" CornerRadius="12" MaxWidth="520"
+                Background="{DynamicResource AppTextBrush}">
+            <TextBlock Text="{Binding Toast}" TextWrapping="Wrap" Foreground="{DynamicResource AppBackgroundBrush}" />
+        </Border>
+    </Grid>
 </UserControl>

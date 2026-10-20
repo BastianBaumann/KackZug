@@ -1,0 +1,10 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:KackZug.ViewModels"
+             x:Class="KackZug.Views.ShiftsView"
+             x:DataType="vm:ShiftsViewModel">
+    <StackPanel Margin="16" Spacing="8">
+        <TextBlock Text="{Binding Title}" Classes="h1" />
+        <TextBlock Text="Hier entstehen die Schichten." Classes="muted" />
+    </StackPanel>
+</UserControl>
