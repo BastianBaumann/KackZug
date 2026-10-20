@@ -286,7 +286,7 @@ public partial class DayRowViewModel : ViewModelBase
             badgeText = StatusBadge.ShortText(state.LastStatus);
         }
 
-        var caption = label + " · " + StatusBadge.ShortText(state.LastStatus) + " · geprüft " + CheckedText(state.LastCheckedAt);
+        var caption = label + " · " + badgeText + " · geprüft " + CheckedText(state.LastCheckedAt);
         return new StatusBadge(state.LastStatus, badgeText, caption);
     }
 

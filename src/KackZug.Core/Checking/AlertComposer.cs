@@ -76,6 +76,12 @@ public static class AlertComposer
 
                 return "Gleis " + changed.Leg.PlannedPlatform + " → " + changed.NewPlatform;
             case LegStatus.TransferAtRisk:
+                var lateLeg = DelayedLeg(status);
+                if (lateLeg is not null)
+                {
+                    return "+" + lateLeg.DelayMinutes + " · Anschluss knapp";
+                }
+
                 return "Anschluss knapp";
             case LegStatus.NotFound:
                 return "Nicht gefunden";
@@ -175,7 +181,13 @@ public static class AlertComposer
             }
         }
 
-        return leg.Leg.Name + " · " + leg.Leg.PlannedDeparture.ToString("HH:mm") + " " + leg.Leg.From.Name + " → " + leg.Leg.To.Name;
+        var line = leg.Leg.Name + " · " + leg.Leg.PlannedDeparture.ToString("HH:mm") + " " + leg.Leg.From.Name + " → " + leg.Leg.To.Name;
+        if (status.Overall == LegStatus.TransferAtRisk && leg.Status == LegStatus.Delayed)
+        {
+            line += " · +" + leg.DelayMinutes + " min";
+        }
+
+        return line;
     }
 
     private static string Headline(TripStatus status)
@@ -185,6 +197,12 @@ public static class AlertComposer
         {
             var transfer = status.Transfers.First(item => item.AtRisk);
             var station = status.Legs[transfer.ArrivingLegIndex].Leg.To.Name;
+            var lateLeg = DelayedLeg(status);
+            if (lateLeg is not null)
+            {
+                return Describe(lateLeg) + " +" + lateLeg.DelayMinutes + " Min., Anschluss in " + station + " gefährdet";
+            }
+
             return "Anschluss in " + station + " gefährdet";
         }
 
@@ -246,6 +264,25 @@ public static class AlertComposer
         }
 
         return string.Join("\n", lines);
+    }
+
+    private static LegResult? DelayedLeg(TripStatus status)
+    {
+        LegResult? latest = null;
+        foreach (var result in status.Legs)
+        {
+            if (result.Status != LegStatus.Delayed)
+            {
+                continue;
+            }
+
+            if (latest is null || result.DelayMinutes > latest.DelayMinutes)
+            {
+                latest = result;
+            }
+        }
+
+        return latest;
     }
 
     private static int WorstLegIndex(TripStatus status)

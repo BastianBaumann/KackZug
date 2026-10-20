@@ -49,8 +49,8 @@
                                     <TextBlock Text="{Binding DateText}" Classes="caption" FontFeatures="+tnum" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2" Margin="8,12,12,12" Spacing="8" VerticalAlignment="Center">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <ComboBox Classes="shift" ItemsSource="{Binding Options}" SelectedItem="{Binding SelectedOption}"
+                                    <WrapPanel>
+                                        <ComboBox Classes="shift" Margin="0,0,8,6" ItemsSource="{Binding Options}" SelectedItem="{Binding SelectedOption}"
                                                   IsEnabled="{Binding IsEditable}" Background="{Binding ShiftBrush}" Foreground="{Binding ShiftForeground}"
                                                   HorizontalAlignment="Left" MinWidth="130">
                                             <ComboBox.SelectionBoxItemTemplate>
@@ -65,10 +65,10 @@
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>
-                                        <ContentControl Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center"
+                                        <ContentControl Margin="0,0,0,6" VerticalAlignment="Center"
                                                         Content="{Binding DayBadge}" ContentTemplate="{StaticResource BadgeTemplate}"
                                                         IsVisible="{Binding DayBadge, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                                    </Grid>
+                                    </WrapPanel>
                                     <WrapPanel IsVisible="{Binding HasShift}">
                                         <ToggleButton Classes="trip" Margin="0,0,8,4" IsChecked="{Binding OutboundEnabled}"
                                                       IsEnabled="{Binding CanToggleOutbound}" IsVisible="{Binding HasOutbound}">

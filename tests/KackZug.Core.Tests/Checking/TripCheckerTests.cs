@@ -70,10 +70,44 @@ public class TripCheckerTests
         var outcome = await checker.CheckAsync(data, Day, shift.Id, TripDirection.Outbound, CheckContext.LeadTime, CancellationToken.None);
 
         Assert.Equal(LegStatus.TransferAtRisk, outcome!.Status.Overall);
-        Assert.Equal("FRÜHDIENST HIN: ANSCHLUSS IN BEISPIELHAUSEN GEFÄHRDET", outcome.Alert.Title);
-        Assert.Equal("Anschluss knapp", outcome.Alert.BadgeText);
+        Assert.Equal("FRÜHDIENST HIN: RE7 06:42 +8 MIN., ANSCHLUSS IN BEISPIELHAUSEN GEFÄHRDET", outcome.Alert.Title);
+        Assert.Equal("+8 · Anschluss knapp", outcome.Alert.BadgeText);
+        Assert.Equal("RE7 · 06:42 Musterstadt Hbf → Beispielhausen · +8 min", outcome.Alert.TripLine);
         Assert.Equal("ANSCHLUSS GEFÄHRDET", outcome.Alert.Headline);
         Assert.Contains("Umstieg in Beispielhausen: nur noch 0 Min. Puffer", outcome.Alert.Text);
+    }
+
+    [Fact]
+    public async Task TightTransferWithoutReportableDelayShowsOnlyTransfer()
+    {
+        var (data, shift) = CreateData();
+        var source = new FakeTripStatusSource();
+        source.DelayByName["RE7"] = 3;
+        var checker = new TripChecker(source, new FixedClock(Now));
+
+        var outcome = await checker.CheckAsync(data, Day, shift.Id, TripDirection.Outbound, CheckContext.LeadTime, CancellationToken.None);
+
+        Assert.Equal(LegStatus.TransferAtRisk, outcome!.Status.Overall);
+        Assert.Equal("Anschluss knapp", outcome.Alert.BadgeText);
+        Assert.Equal("FRÜHDIENST HIN: ANSCHLUSS IN BEISPIELHAUSEN GEFÄHRDET", outcome.Alert.Title);
+    }
+
+    [Fact]
+    public async Task LowerThresholdTurnsSmallDelayIntoNewAlert()
+    {
+        var (data, shift) = CreateData();
+        var source = new FakeTripStatusSource();
+        source.DelayByName["RE7"] = 3;
+        source.DelayByName["STR 2"] = 3;
+        var checker = new TripChecker(source, new FixedClock(Now));
+
+        var before = await checker.CheckAsync(data, Day, shift.Id, TripDirection.Outbound, CheckContext.LeadTime, CancellationToken.None);
+        data.Settings.DelayThresholdMinutes = 2;
+        var after = await checker.CheckAsync(data, Day, shift.Id, TripDirection.Outbound, CheckContext.LeadTime, CancellationToken.None);
+
+        Assert.False(before!.ShouldNotify);
+        Assert.True(after!.ShouldNotify);
+        Assert.Equal("+3 min", after.Alert.BadgeText);
     }
 
     [Fact]
