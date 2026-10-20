@@ -33,6 +33,16 @@ public sealed class Leg
 
     public string? PlannedPlatform { get; set; }
 
+    public DateTime DepartureOn(DateOnly travelDate)
+    {
+        return travelDate.AddDays(DepartureDayOffset).ToDateTime(PlannedDeparture);
+    }
+
+    public DateTime ArrivalOn(DateOnly travelDate)
+    {
+        return travelDate.AddDays(ArrivalDayOffset).ToDateTime(PlannedArrival);
+    }
+
     [JsonIgnore]
     public bool IsWalk
     {

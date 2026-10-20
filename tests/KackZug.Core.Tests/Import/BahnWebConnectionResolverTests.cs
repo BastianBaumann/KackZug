@@ -113,7 +113,7 @@ public class BahnWebConnectionResolverTests
 
     private static BahnWebConnectionResolver CreateResolver(FakeHttpHandler handler)
     {
-        var client = new BahnWebClient(handler.CreateClient());
+        var client = handler.CreateBahnClient();
         return new BahnWebConnectionResolver(client, new FixedClock(Now));
     }
 }

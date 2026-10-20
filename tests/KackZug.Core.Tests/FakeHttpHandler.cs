@@ -45,6 +45,11 @@ public sealed class FakeHttpHandler : HttpMessageHandler
         throw new HttpRequestException("Keine Antwort vorbereitet fuer " + path);
     }
 
+    public Bahn.BahnWebClient CreateBahnClient()
+    {
+        return new Bahn.BahnWebClient(CreateClient()) { MinimumGap = TimeSpan.Zero };
+    }
+
     public HttpClient CreateClient()
     {
         return new HttpClient(this) { BaseAddress = new Uri(Bahn.BahnWebClient.BaseAddress) };

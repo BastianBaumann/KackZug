@@ -13,11 +13,15 @@ public sealed class BahnWebClient
     public const string BrowserUserAgent = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36";
 
     private readonly HttpClient _httpClient;
+    private readonly SemaphoreSlim _requestGate = new SemaphoreSlim(1, 1);
+    private DateTime _lastRequestUtc = DateTime.MinValue;
 
     public BahnWebClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
+
+    public TimeSpan MinimumGap { get; set; } = TimeSpan.FromSeconds(1.5);
 
     public static HttpClient CreateHttpClient()
     {
@@ -68,6 +72,31 @@ public sealed class BahnWebClient
     }
 
     private async Task<JsonDocument> SendAsync(HttpMethod method, string path, string? jsonBody, CancellationToken cancellationToken)
+    {
+        await _requestGate.WaitAsync(cancellationToken);
+        try
+        {
+            await WaitForGapAsync(cancellationToken);
+            return await SendNowAsync(method, path, jsonBody, cancellationToken);
+        }
+        finally
+        {
+            _lastRequestUtc = DateTime.UtcNow;
+            _requestGate.Release();
+        }
+    }
+
+    private async Task WaitForGapAsync(CancellationToken cancellationToken)
+    {
+        var nextAllowed = _lastRequestUtc + MinimumGap;
+        var wait = nextAllowed - DateTime.UtcNow;
+        if (wait > TimeSpan.Zero)
+        {
+            await Task.Delay(wait, cancellationToken);
+        }
+    }
+
+    private async Task<JsonDocument> SendNowAsync(HttpMethod method, string path, string? jsonBody, CancellationToken cancellationToken)
     {
         using var request = new HttpRequestMessage(method, path);
         request.Headers.TryAddWithoutValidation("User-Agent", BrowserUserAgent);
