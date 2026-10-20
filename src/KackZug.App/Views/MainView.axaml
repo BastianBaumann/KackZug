@@ -4,6 +4,7 @@
              x:Class="KackZug.Views.MainView"
              x:DataType="vm:MainViewModel">
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+        <Image Source="{StaticResource LogoImage}" Width="220" Height="220" HorizontalAlignment="Center" />
         <TextBlock Text="{Binding Title}" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" />
         <TextBlock Text="{Binding VersionText}" HorizontalAlignment="Center" />
     </StackPanel>

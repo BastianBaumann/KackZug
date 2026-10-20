@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>KackZug</title>
+  <defs>
+    <clipPath id="body-clip">
+      <path d="M40,360 L40,262 Q40,250 52,250 L326,250 C398,250 452,288 468,328 Q474,346 460,354 Q452,360 440,360 Z" />
+    </clipPath>
+  </defs>
+  <g transform="translate(0,-26)" stroke-linejoin="round" stroke-linecap="round">
+    <line x1="24" y1="392" x2="488" y2="392" stroke="#263238" stroke-width="10" />
+    <g fill="#263238">
+      <circle cx="96" cy="370" r="15" />
+      <circle cx="136" cy="370" r="15" />
+      <circle cx="370" cy="370" r="15" />
+      <circle cx="410" cy="370" r="15" />
+    </g>
+    <g clip-path="url(#body-clip)">
+      <rect x="0" y="240" width="512" height="130" fill="#FAFAFA" />
+      <rect x="0" y="318" width="512" height="14" fill="#1E9E8B" />
+      <rect x="0" y="344" width="512" height="20" fill="#CFD8DC" />
+      <g fill="#263238">
+        <rect x="62" y="270" width="34" height="30" rx="6" />
+        <rect x="106" y="270" width="34" height="30" rx="6" />
+        <rect x="150" y="270" width="34" height="30" rx="6" />
+        <rect x="194" y="270" width="34" height="30" rx="6" />
+        <rect x="238" y="270" width="34" height="30" rx="6" />
+        <rect x="282" y="270" width="34" height="30" rx="6" />
+        <path d="M336,262 C380,262 418,280 440,304 L360,304 Q344,304 340,290 Z" />
+      </g>
+    </g>
+    <path d="M40,360 L40,262 Q40,250 52,250 L326,250 C398,250 452,288 468,328 Q474,346 460,354 Q452,360 440,360 Z" fill="none" stroke="#263238" stroke-width="8" />
+    <g stroke="#3E2414" stroke-width="7">
+      <path d="M118,252 C112,226 140,212 190,212 C240,212 268,226 262,252 Z" fill="#8B5A2B" />
+      <path d="M138,216 C134,194 160,182 190,182 C220,182 246,194 242,216 Z" fill="#9C6634" />
+      <path d="M158,186 C154,166 172,154 192,150 C188,138 196,128 210,124 C208,136 214,146 222,156 C230,166 226,180 222,186 Z" fill="#A9733D" />
+    </g>
+    <g>
+      <circle cx="172" cy="198" r="9" fill="#FFFFFF" stroke="#3E2414" stroke-width="3" />
+      <circle cx="206" cy="198" r="9" fill="#FFFFFF" stroke="#3E2414" stroke-width="3" />
+      <circle cx="174" cy="200" r="4" fill="#3E2414" />
+      <circle cx="208" cy="200" r="4" fill="#3E2414" />
+      <path d="M170,230 Q190,244 212,230" fill="none" stroke="#3E2414" stroke-width="5" />
+    </g>
+  </g>
+</svg>

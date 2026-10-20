@@ -8,7 +8,7 @@ namespace KackZug.Android;
 [Activity(
     Label = "KackZug",
     Theme = "@style/KackZugTheme",
-    Icon = "@drawable/icon",
+    Icon = "@mipmap/icon",
     MainLauncher = true,
     LaunchMode = LaunchMode.SingleTop,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
