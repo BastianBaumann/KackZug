@@ -33,7 +33,9 @@ public sealed class FakeHttpHandler : HttpMessageHandler
 
         foreach (var answer in _answers)
         {
-            if (path.StartsWith("/web/api/" + answer.PathStart, StringComparison.Ordinal))
+            var matches = path.StartsWith("/web/api/" + answer.PathStart, StringComparison.Ordinal)
+                || path.StartsWith(answer.PathStart, StringComparison.Ordinal);
+            if (matches)
             {
                 return new HttpResponseMessage(answer.Status)
                 {
