@@ -33,8 +33,8 @@ cancelled, delayed, changes platform or a connection gets tight, KackZug lets yo
   full-screen alarm opens, even on the lock screen. It rings and comes back every five minutes until
   you tap "Seen". KackZug has its own shrill tone for this. If you want, it also rings in "Do not
   disturb" mode.
-- **Colours you understand at a glance:** messages that everything is on time are green, problems
-  are red.
+- **Colours you understand at a glance:** messages that everything is on time are green and come
+  without a sound, problems are red and loud.
 - **Honest status:** bahn.de has the timetable days in advance, but real-time data only shortly
   before departure. As long as there is no real-time data, KackZug shows "As scheduled" ("Laut
   Fahrplan") instead of "On time" ("Planmäßig").

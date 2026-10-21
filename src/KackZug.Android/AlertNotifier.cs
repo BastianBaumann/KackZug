@@ -14,7 +14,7 @@ public static class AlertNotifier
 {
     public const string ProblemChannelId = "stoerung_v2";
     public const string ProblemDoNotDisturbChannelId = "stoerung_dnd_v2";
-    public const string InfoChannelId = "info_v1";
+    public const string InfoChannelId = "info_v2";
     public const string DbNavigatorPackage = "de.hafas.android.db";
 
     public const int ProblemColor = unchecked((int)0xFFD1001A);
@@ -24,7 +24,7 @@ public static class AlertNotifier
     private static readonly long[] VibrationPattern = { 0, 800, 400, 800, 400, 800, 400, 1200 };
 
     /// <remarks>Ein Kanal behaelt seinen Ton fuer immer, deshalb bekommt jeder neue Ton neue Kanal-Kennungen.</remarks>
-    private static readonly string[] OldChannelIds = { "stoerung_v1", "stoerung_dnd_v1" };
+    private static readonly string[] OldChannelIds = { "stoerung_v1", "stoerung_dnd_v1", "info_v1" };
 
     public static void EnsureChannels(Context context)
     {
@@ -63,6 +63,8 @@ public static class AlertNotifier
             {
                 Description = Strings.Android_ChannelInfoDescription
             };
+            info.SetSound(null, null);
+            info.EnableVibration(false);
             manager.CreateNotificationChannel(info);
         }
         else
