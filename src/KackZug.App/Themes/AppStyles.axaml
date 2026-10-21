@@ -161,6 +161,11 @@
         <Setter Property="Foreground" Value="{DynamicResource AppDisabledBrush}" />
     </Style>
 
+    <Style Selector="Button.primary.compact">
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Padding" Value="16,0" />
+    </Style>
+
     <Style Selector="Button.secondary">
         <Setter Property="MinHeight" Value="52" />
         <Setter Property="Foreground" Value="{DynamicResource AppTextBrush}" />

@@ -29,7 +29,7 @@
                                         <Border Classes="badge" Background="{DynamicResource AppCancelBrush}" IsVisible="{Binding Missing}" HorizontalAlignment="Right">
                                             <TextBlock Text="{x:Static l:UiStrings.Settings_Missing}" Foreground="{DynamicResource AppOnCancelBrush}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
                                         </Border>
-                                        <Button Classes="ghost" IsVisible="{Binding Missing}"
+                                        <Button Classes="primary compact" IsVisible="{Binding Missing}"
                                                 Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).FixPermissionCommand}"
                                                 CommandParameter="{Binding}">
                                             <TextBlock Text="{x:Static l:UiStrings.Settings_Allow}" />
