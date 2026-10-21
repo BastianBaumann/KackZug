@@ -211,6 +211,8 @@ internal static class TourSteps
         var timeField = window.GetVisualDescendants().OfType<TextBox>().First(box => box.Classes.Contains("time"));
         check(timeField.Text == "20:00" && Math.Abs(timeField.Bounds.Height - 48) < 1, "Uhrzeit als Textfeld 20:00, 48 hoch");
         timeField.Text = "1930";
+        check(timeField.Text == "19:30", "Doppelpunkt kommt beim Tippen von selbst");
+        check(settings.ShowSaved, "Aenderung zeigt kurz Gespeichert");
         check(main.Services.Store.Load().Settings.EveningCheckTime == new TimeOnly(19, 30) && !settings.EveningCheckTimeInvalid, "Uhrzeit 1930 gespeichert");
         settings.TidyTextFields();
         check(timeField.Text == "19:30", "Uhrzeit aufgeraeumt zu 19:30");

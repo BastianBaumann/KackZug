@@ -7,287 +7,298 @@
              x:Class="KackZug.Views.SettingsView"
              x:DataType="vm:SettingsViewModel"
              xmlns:loc="using:KackZug.Core.Localization">
-    <ScrollViewer>
-        <StackPanel Margin="16" Spacing="4">
-            <TextBlock Text="{Binding Title}" Classes="title-lg" Margin="0,0,0,8" />
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Margin="16" Spacing="4">
+                <TextBlock Text="{Binding Title}" Classes="title-lg" Margin="0,0,0,8" />
 
-            <TextBlock Text="{x:Static l:UiStrings.Settings_SectionPermissions}" Classes="section" />
-            <Border Classes="group">
-                <ItemsControl ItemsSource="{Binding Permissions}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="services:PermissionInfo">
-                            <Border Classes="setting">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <StackPanel Spacing="2" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Title}" Classes="body-lg" />
-                                        <TextBlock Text="{Binding Explanation}" Classes="caption" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1" Spacing="4" Margin="12,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                        <Border Classes="badge" Background="{DynamicResource AppOkBrush}" IsVisible="{Binding Granted}" HorizontalAlignment="Right">
-                                            <TextBlock Text="{x:Static l:UiStrings.Settings_Granted}" Foreground="{DynamicResource AppOnOkBrush}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
-                                        </Border>
-                                        <Border Classes="badge" Background="{DynamicResource AppCancelBrush}" IsVisible="{Binding Missing}" HorizontalAlignment="Right">
-                                            <TextBlock Text="{x:Static l:UiStrings.Settings_Missing}" Foreground="{DynamicResource AppOnCancelBrush}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
-                                        </Border>
-                                        <Button Classes="primary compact" IsVisible="{Binding Missing}"
-                                                Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).FixPermissionCommand}"
-                                                CommandParameter="{Binding}">
-                                            <TextBlock Text="{x:Static l:UiStrings.Settings_Allow}" />
-                                        </Button>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Border>
-            <TextBlock Classes="caption" TextWrapping="Wrap" Margin="4,6,4,0" IsVisible="{Binding HasNoPermissions}"
-                       Text="{x:Static l:UiStrings.Settings_NoPermissions}" />
+                <TextBlock Text="{x:Static l:UiStrings.Settings_SectionPermissions}" Classes="section" />
+                <Border Classes="group">
+                    <ItemsControl ItemsSource="{Binding Permissions}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="services:PermissionInfo">
+                                <Border Classes="setting">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Spacing="2" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Title}" Classes="body-lg" />
+                                            <TextBlock Text="{Binding Explanation}" Classes="caption" TextWrapping="Wrap" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Spacing="4" Margin="12,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <Border Classes="badge" Background="{DynamicResource AppOkBrush}" IsVisible="{Binding Granted}" HorizontalAlignment="Right">
+                                                <TextBlock Text="{x:Static l:UiStrings.Settings_Granted}" Foreground="{DynamicResource AppOnOkBrush}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
+                                            </Border>
+                                            <Border Classes="badge" Background="{DynamicResource AppCancelBrush}" IsVisible="{Binding Missing}" HorizontalAlignment="Right">
+                                                <TextBlock Text="{x:Static l:UiStrings.Settings_Missing}" Foreground="{DynamicResource AppOnCancelBrush}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
+                                            </Border>
+                                            <Button Classes="primary compact" IsVisible="{Binding Missing}"
+                                                    Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).FixPermissionCommand}"
+                                                    CommandParameter="{Binding}">
+                                                <TextBlock Text="{x:Static l:UiStrings.Settings_Allow}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+                <TextBlock Classes="caption" TextWrapping="Wrap" Margin="4,6,4,0" IsVisible="{Binding HasNoPermissions}"
+                           Text="{x:Static l:UiStrings.Settings_NoPermissions}" />
 
-            <TextBlock Text="{x:Static l:UiStrings.Settings_SectionWhen}" Classes="section" />
-            <Border Classes="group">
-                <StackPanel>
-                    <Border Classes="setting">
-                        <StackPanel Spacing="8">
-                            <StackPanel Spacing="2">
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_LeadTime}" Classes="body-lg" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_LeadTimeHint}" Classes="caption" />
+                <TextBlock Text="{x:Static l:UiStrings.Settings_SectionWhen}" Classes="section" />
+                <Border Classes="group">
+                    <StackPanel>
+                        <Border Classes="setting">
+                            <StackPanel Spacing="8">
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_LeadTime}" Classes="body-lg" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_LeadTimeHint}" Classes="caption" />
+                                </StackPanel>
+                                <ItemsControl ItemsSource="{Binding LeadTimes}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:LeadTimeOption">
+                                            <CheckBox IsChecked="{Binding IsChecked}" Margin="0,0,16,0">
+                                                <TextBlock Text="{Binding Text}" />
+                                            </CheckBox>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </StackPanel>
-                            <ItemsControl ItemsSource="{Binding LeadTimes}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:LeadTimeOption">
-                                        <CheckBox IsChecked="{Binding IsChecked}" Margin="0,0,16,0">
-                                            <TextBlock Text="{Binding Text}" />
-                                        </CheckBox>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </Border>
-                    <Border Classes="setting">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_EveningCheck}" Classes="body-lg" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_EveningCheckHint}" Classes="caption" TextWrapping="Wrap" />
-                            </StackPanel>
-                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding EveningCheckEnabled}" OnContent="" OffContent="" />
-                        </Grid>
-                    </Border>
-                    <Border Classes="setting" IsVisible="{Binding EveningCheckEnabled}">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_Time}" Classes="body-lg" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_TimeInvalid}" Classes="caption" Foreground="{DynamicResource AppLateInkBrush}"
-                                           TextWrapping="Wrap" IsVisible="{Binding EveningCheckTimeInvalid}" />
-                            </StackPanel>
-                            <TextBox Grid.Column="1" Classes="time" Text="{Binding EveningCheckTimeText}" PlaceholderText="20:00" MaxLength="8"
-                                     TextInputOptions.ContentType="Number" LostFocus="OnTextFieldLostFocus" />
-                        </Grid>
-                    </Border>
-                    <Border Classes="setting" BorderThickness="0">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_EveningOk}" Classes="body-lg" TextWrapping="Wrap" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_EveningOkHint}" Classes="caption" />
-                            </StackPanel>
-                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding EveningOkNotification}" OnContent="" OffContent="" />
-                        </Grid>
-                    </Border>
-                </StackPanel>
-            </Border>
+                        </Border>
+                        <Border Classes="setting">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_EveningCheck}" Classes="body-lg" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_EveningCheckHint}" Classes="caption" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EveningCheckEnabled}" OnContent="" OffContent="" />
+                            </Grid>
+                        </Border>
+                        <Border Classes="setting" IsVisible="{Binding EveningCheckEnabled}">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_Time}" Classes="body-lg" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_TimeInvalid}" Classes="caption" Foreground="{DynamicResource AppLateInkBrush}"
+                                               TextWrapping="Wrap" IsVisible="{Binding EveningCheckTimeInvalid}" />
+                                </StackPanel>
+                                <TextBox Grid.Column="1" Classes="time" Text="{Binding EveningCheckTimeText}" PlaceholderText="20:00" MaxLength="8"
+                                         TextInputOptions.ContentType="Number" LostFocus="OnTextFieldLostFocus" />
+                            </Grid>
+                        </Border>
+                        <Border Classes="setting" BorderThickness="0">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_EveningOk}" Classes="body-lg" TextWrapping="Wrap" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_EveningOkHint}" Classes="caption" />
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EveningOkNotification}" OnContent="" OffContent="" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
 
-            <TextBlock Text="{x:Static l:UiStrings.Settings_SectionWhat}" Classes="section" />
-            <Border Classes="group">
-                <StackPanel>
-                    <Border Classes="setting">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_DelayFrom}" Classes="body-lg" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_Minutes}" Classes="caption" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_DelayInvalid}" Classes="caption" Foreground="{DynamicResource AppLateInkBrush}" IsVisible="{Binding DelayThresholdInvalid}" />
-                            </StackPanel>
-                            <TextBox Grid.Column="1" Classes="number" Text="{Binding DelayThresholdText}" PlaceholderText="5" MaxLength="3"
-                                     TextInputOptions.ContentType="Digits" LostFocus="OnTextFieldLostFocus" />
-                        </Grid>
-                    </Border>
-                    <Border Classes="setting">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_Transfer}" Classes="body-lg" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_TransferHint}" Classes="caption" TextWrapping="Wrap" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_TransferInvalid}" Classes="caption" Foreground="{DynamicResource AppLateInkBrush}" IsVisible="{Binding MinTransferInvalid}" />
-                            </StackPanel>
-                            <TextBox Grid.Column="1" Classes="number" Text="{Binding MinTransferText}" PlaceholderText="4" MaxLength="3"
-                                     TextInputOptions.ContentType="Digits" LostFocus="OnTextFieldLostFocus" />
-                        </Grid>
-                    </Border>
-                    <Border Classes="setting">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_Insistent}" Classes="body-lg" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_InsistentHint}" Classes="caption" TextWrapping="Wrap" />
-                            </StackPanel>
-                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding InsistentAlerts}" OnContent="" OffContent="" />
-                        </Grid>
-                    </Border>
-                    <Border Classes="setting">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_Dnd}" Classes="body-lg" TextWrapping="Wrap" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_DndHint}" Classes="caption" TextWrapping="Wrap" />
-                            </StackPanel>
-                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding BreakThroughDoNotDisturb}" OnContent="" OffContent="" />
-                        </Grid>
-                    </Border>
-                    <Border Classes="setting" BorderThickness="0">
-                        <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding TestAlarmCommand}">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <c:OutlineIcon Data="{StaticResource IconBell}" Width="20" Height="20" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_TestAlarm}" />
-                            </StackPanel>
-                        </Button>
-                    </Border>
-                </StackPanel>
-            </Border>
+                <TextBlock Text="{x:Static l:UiStrings.Settings_SectionWhat}" Classes="section" />
+                <Border Classes="group">
+                    <StackPanel>
+                        <Border Classes="setting">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_DelayFrom}" Classes="body-lg" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_Minutes}" Classes="caption" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_DelayInvalid}" Classes="caption" Foreground="{DynamicResource AppLateInkBrush}" IsVisible="{Binding DelayThresholdInvalid}" />
+                                </StackPanel>
+                                <TextBox Grid.Column="1" Classes="number" Text="{Binding DelayThresholdText}" PlaceholderText="5" MaxLength="3"
+                                         TextInputOptions.ContentType="Digits" LostFocus="OnTextFieldLostFocus" />
+                            </Grid>
+                        </Border>
+                        <Border Classes="setting">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_Transfer}" Classes="body-lg" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_TransferHint}" Classes="caption" TextWrapping="Wrap" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_TransferInvalid}" Classes="caption" Foreground="{DynamicResource AppLateInkBrush}" IsVisible="{Binding MinTransferInvalid}" />
+                                </StackPanel>
+                                <TextBox Grid.Column="1" Classes="number" Text="{Binding MinTransferText}" PlaceholderText="4" MaxLength="3"
+                                         TextInputOptions.ContentType="Digits" LostFocus="OnTextFieldLostFocus" />
+                            </Grid>
+                        </Border>
+                        <Border Classes="setting">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_Insistent}" Classes="body-lg" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_InsistentHint}" Classes="caption" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" IsChecked="{Binding InsistentAlerts}" OnContent="" OffContent="" />
+                            </Grid>
+                        </Border>
+                        <Border Classes="setting">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_Dnd}" Classes="body-lg" TextWrapping="Wrap" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_DndHint}" Classes="caption" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" IsChecked="{Binding BreakThroughDoNotDisturb}" OnContent="" OffContent="" />
+                            </Grid>
+                        </Border>
+                        <Border Classes="setting" BorderThickness="0">
+                            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding TestAlarmCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <c:OutlineIcon Data="{StaticResource IconBell}" Width="20" Height="20" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_TestAlarm}" />
+                                </StackPanel>
+                            </Button>
+                        </Border>
+                    </StackPanel>
+                </Border>
 
-            <TextBlock Text="{x:Static l:UiStrings.Settings_SectionNewWeek}" Classes="section" />
-            <Border Classes="group">
-                <StackPanel>
-                    <Border Classes="setting">
-                        <RadioButton GroupName="week" IsChecked="{Binding CopyPreviousWeek}" VerticalAlignment="Center">
-                            <TextBlock Text="{x:Static l:UiStrings.Settings_CopyWeek}" Classes="body-lg" />
-                        </RadioButton>
-                    </Border>
-                    <Border Classes="setting" BorderThickness="0">
-                        <RadioButton GroupName="week" IsChecked="{Binding StartWeekEmpty}" VerticalAlignment="Center">
-                            <TextBlock Text="{x:Static l:UiStrings.Settings_EmptyWeek}" Classes="body-lg" />
-                        </RadioButton>
-                    </Border>
-                </StackPanel>
-            </Border>
+                <TextBlock Text="{x:Static l:UiStrings.Settings_SectionNewWeek}" Classes="section" />
+                <Border Classes="group">
+                    <StackPanel>
+                        <Border Classes="setting">
+                            <RadioButton GroupName="week" IsChecked="{Binding CopyPreviousWeek}" VerticalAlignment="Center">
+                                <TextBlock Text="{x:Static l:UiStrings.Settings_CopyWeek}" Classes="body-lg" />
+                            </RadioButton>
+                        </Border>
+                        <Border Classes="setting" BorderThickness="0">
+                            <RadioButton GroupName="week" IsChecked="{Binding StartWeekEmpty}" VerticalAlignment="Center">
+                                <TextBlock Text="{x:Static l:UiStrings.Settings_EmptyWeek}" Classes="body-lg" />
+                            </RadioButton>
+                        </Border>
+                    </StackPanel>
+                </Border>
 
-            <TextBlock Text="{x:Static l:UiStrings.Settings_SectionLook}" Classes="section" />
-            <Border Classes="group">
-                <StackPanel>
-                    <Border Classes="setting">
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="{x:Static loc:Strings.Settings_Language}" />
-                            <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
+                <TextBlock Text="{x:Static l:UiStrings.Settings_SectionLook}" Classes="section" />
+                <Border Classes="group">
+                    <StackPanel>
+                        <Border Classes="setting">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{x:Static loc:Strings.Settings_Language}" />
+                                <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
+                                    <UniformGrid Rows="1">
+                                        <RadioButton Classes="segment" GroupName="language" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding LanguageSystem}">
+                                            <TextBlock Text="{x:Static loc:Strings.Settings_LanguageSystem}" />
+                                        </RadioButton>
+                                        <RadioButton Classes="segment" GroupName="language" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding LanguageGerman}">
+                                            <TextBlock Text="Deutsch" />
+                                        </RadioButton>
+                                        <RadioButton Classes="segment" GroupName="language" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding LanguageEnglish}">
+                                            <TextBlock Text="English" />
+                                        </RadioButton>
+                                    </UniformGrid>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                        <Border Classes="setting">
+                            <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4" VerticalAlignment="Center">
                                 <UniformGrid Rows="1">
-                                    <RadioButton Classes="segment" GroupName="language" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding LanguageSystem}">
-                                        <TextBlock Text="{x:Static loc:Strings.Settings_LanguageSystem}" />
+                                    <RadioButton Classes="segment" GroupName="theme" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding ThemeSystem}">
+                                        <TextBlock Text="{x:Static l:UiStrings.Settings_ThemeSystem}" />
                                     </RadioButton>
-                                    <RadioButton Classes="segment" GroupName="language" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding LanguageGerman}">
-                                        <TextBlock Text="Deutsch" />
+                                    <RadioButton Classes="segment" GroupName="theme" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding ThemeLight}">
+                                        <TextBlock Text="{x:Static l:UiStrings.Settings_ThemeLight}" />
                                     </RadioButton>
-                                    <RadioButton Classes="segment" GroupName="language" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding LanguageEnglish}">
-                                        <TextBlock Text="English" />
+                                    <RadioButton Classes="segment" GroupName="theme" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding ThemeDark}">
+                                        <TextBlock Text="{x:Static l:UiStrings.Settings_ThemeDark}" />
                                     </RadioButton>
                                 </UniformGrid>
                             </Border>
-                        </StackPanel>
-                    </Border>
-                    <Border Classes="setting">
-                        <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4" VerticalAlignment="Center">
-                            <UniformGrid Rows="1">
-                                <RadioButton Classes="segment" GroupName="theme" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding ThemeSystem}">
-                                    <TextBlock Text="{x:Static l:UiStrings.Settings_ThemeSystem}" />
-                                </RadioButton>
-                                <RadioButton Classes="segment" GroupName="theme" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding ThemeLight}">
-                                    <TextBlock Text="{x:Static l:UiStrings.Settings_ThemeLight}" />
-                                </RadioButton>
-                                <RadioButton Classes="segment" GroupName="theme" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding ThemeDark}">
-                                    <TextBlock Text="{x:Static l:UiStrings.Settings_ThemeDark}" />
-                                </RadioButton>
-                            </UniformGrid>
                         </Border>
-                    </Border>
-                    <Border Classes="setting" BorderThickness="0">
-                        <StackPanel Spacing="8">
+                        <Border Classes="setting" BorderThickness="0">
+                            <StackPanel Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel Spacing="2" VerticalAlignment="Center">
+                                        <TextBlock Text="{x:Static l:UiStrings.Settings_Accent}" Classes="body-lg" />
+                                        <TextBlock Text="{x:Static l:UiStrings.Settings_AccentHint}" Classes="caption" />
+                                    </StackPanel>
+                                    <ColorPicker Grid.Column="1" Color="{Binding AccentColor}" />
+                                </Grid>
+                                <ItemsControl ItemsSource="{Binding Presets}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ColorPreset">
+                                            <Button Classes="secondary" MinHeight="44" Margin="0,0,8,8"
+                                                    Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).ApplyPresetCommand}"
+                                                    CommandParameter="{Binding}">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <Border Width="20" Height="20" CornerRadius="10" Background="{Binding Brush}" />
+                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="{x:Static l:UiStrings.Settings_SectionUpdates}" Classes="section" />
+                <Border Classes="group">
+                    <StackPanel>
+                        <Border Classes="setting">
                             <Grid ColumnDefinitions="*,Auto">
                                 <StackPanel Spacing="2" VerticalAlignment="Center">
-                                    <TextBlock Text="{x:Static l:UiStrings.Settings_Accent}" Classes="body-lg" />
-                                    <TextBlock Text="{x:Static l:UiStrings.Settings_AccentHint}" Classes="caption" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_UpdateCheck}" Classes="body-lg" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_UpdateCheckHint}" Classes="caption" />
                                 </StackPanel>
-                                <ColorPicker Grid.Column="1" Color="{Binding AccentColor}" />
+                                <ToggleSwitch Grid.Column="1" IsChecked="{Binding UpdateCheckEnabled}" OnContent="" OffContent="" />
                             </Grid>
-                            <ItemsControl ItemsSource="{Binding Presets}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:ColorPreset">
-                                        <Button Classes="secondary" MinHeight="44" Margin="0,0,8,8"
-                                                Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).ApplyPresetCommand}"
-                                                CommandParameter="{Binding}">
-                                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                                <Border Width="20" Height="20" CornerRadius="10" Background="{Binding Brush}" />
-                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
-                                            </StackPanel>
-                                        </Button>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </Border>
-
-            <TextBlock Text="{x:Static l:UiStrings.Settings_SectionUpdates}" Classes="section" />
-            <Border Classes="group">
-                <StackPanel>
-                    <Border Classes="setting">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_UpdateCheck}" Classes="body-lg" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_UpdateCheckHint}" Classes="caption" />
-                            </StackPanel>
-                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding UpdateCheckEnabled}" OnContent="" OffContent="" />
-                        </Grid>
-                    </Border>
-                    <Border Classes="setting">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_IncludePrereleases}" Classes="body-lg" />
-                                <TextBlock Text="{x:Static l:UiStrings.Settings_IncludePrereleasesHint}" Classes="caption" TextWrapping="Wrap" />
-                            </StackPanel>
-                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding IncludePrereleases}" OnContent="" OffContent="" />
-                        </Grid>
-                    </Border>
-                    <Border Classes="setting" BorderThickness="0">
-                        <StackPanel Spacing="8">
-                            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CheckUpdatesNowCommand}">
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <c:OutlineIcon Data="{StaticResource IconRefresh}" Width="20" Height="20" />
-                                    <TextBlock Text="{x:Static l:UiStrings.Settings_CheckUpdatesNow}" />
+                        </Border>
+                        <Border Classes="setting">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_IncludePrereleases}" Classes="body-lg" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_IncludePrereleasesHint}" Classes="caption" TextWrapping="Wrap" />
                                 </StackPanel>
-                            </Button>
-                            <TextBlock Text="{Binding UpdateStatusText}" Classes="caption" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"
-                                       IsVisible="{Binding UpdateStatusText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </Border>
+                                <ToggleSwitch Grid.Column="1" IsChecked="{Binding IncludePrereleases}" OnContent="" OffContent="" />
+                            </Grid>
+                        </Border>
+                        <Border Classes="setting" BorderThickness="0">
+                            <StackPanel Spacing="8">
+                                <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CheckUpdatesNowCommand}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <c:OutlineIcon Data="{StaticResource IconRefresh}" Width="20" Height="20" />
+                                        <TextBlock Text="{x:Static l:UiStrings.Settings_CheckUpdatesNow}" />
+                                    </StackPanel>
+                                </Button>
+                                <TextBlock Text="{Binding UpdateStatusText}" Classes="caption" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"
+                                           IsVisible="{Binding UpdateStatusText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
 
-            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,16,0,0" Command="{Binding ShowTutorialCommand}">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <c:OutlineIcon Data="{StaticResource IconUnknown}" Width="20" Height="20" />
-                    <TextBlock Text="{x:Static l:UiStrings.Settings_ShowTutorial}" />
-                </StackPanel>
-            </Button>
+                <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,16,0,0" Command="{Binding ShowTutorialCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <c:OutlineIcon Data="{StaticResource IconUnknown}" Width="20" Height="20" />
+                        <TextBlock Text="{x:Static l:UiStrings.Settings_ShowTutorial}" />
+                    </StackPanel>
+                </Button>
 
-            <StackPanel Spacing="4" Margin="4,16,4,16">
-                <TextBlock Text="{Binding VersionText}" Classes="caption" TextWrapping="Wrap" />
-                <TextBlock Classes="caption" TextWrapping="Wrap"
-                           Text="{x:Static l:UiStrings.Settings_Disclaimer}" />
+                <StackPanel Spacing="4" Margin="4,16,4,16">
+                    <TextBlock Text="{Binding VersionText}" Classes="caption" TextWrapping="Wrap" />
+                    <TextBlock Classes="caption" TextWrapping="Wrap"
+                               Text="{x:Static l:UiStrings.Settings_Disclaimer}" />
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
-    </ScrollViewer>
+        </ScrollViewer>
+
+        <Border Classes="saved" Classes.shown="{Binding ShowSaved}" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                Margin="16,0,16,16" Padding="14,8" CornerRadius="20" IsHitTestVisible="False"
+                Background="{DynamicResource AppOkBrush}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <c:OutlineIcon Data="{StaticResource IconOk}" Width="18" Height="18" Foreground="{DynamicResource AppOnOkBrush}" />
+                <TextBlock Text="{x:Static l:UiStrings.Settings_Saved}" Foreground="{DynamicResource AppOnOkBrush}" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </StackPanel>
+        </Border>
+    </Grid>
 </UserControl>

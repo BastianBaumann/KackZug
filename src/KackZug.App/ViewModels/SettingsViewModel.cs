@@ -18,7 +18,10 @@ public partial class SettingsViewModel : PageViewModel
 {
     private static readonly int[] OfferedLeadTimes = { 120, 90, 60, 45, 30, 15 };
 
+    private static readonly TimeSpan SavedHintDuration = TimeSpan.FromSeconds(1.6);
+
     private bool _isLoading;
+    private CancellationTokenSource? _savedTimer;
     private TimeOnly _eveningTime = new TimeOnly(20, 0);
 
     public SettingsViewModel(MainViewModel main)
@@ -108,6 +111,9 @@ public partial class SettingsViewModel : PageViewModel
 
     [ObservableProperty]
     public partial bool ThemeDark { get; set; }
+
+    [ObservableProperty]
+    public partial bool ShowSaved { get; set; }
 
     [ObservableProperty]
     public partial bool LanguageSystem { get; set; }
@@ -256,6 +262,31 @@ public partial class SettingsViewModel : PageViewModel
         }
 
         Main.Services.SaveAndReschedule();
+        ConfirmSaved();
+    }
+
+    /// <summary>Kurzer Hinweis "Gespeichert", weil Einstellungen ohne Speichern-Knopf sofort gelten</summary>
+    public void ConfirmSaved()
+    {
+        _savedTimer?.Cancel();
+        var timer = new CancellationTokenSource();
+        _savedTimer = timer;
+        ShowSaved = true;
+        _ = HideSavedLaterAsync(timer.Token);
+    }
+
+    private async Task HideSavedLaterAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await Task.Delay(SavedHintDuration, cancellationToken);
+        }
+        catch (TaskCanceledException)
+        {
+            return;
+        }
+
+        ShowSaved = false;
     }
 
     private void SaveColors()
@@ -268,6 +299,7 @@ public partial class SettingsViewModel : PageViewModel
         Settings.AccentColor = ThemeService.ToHex(AccentColor);
         Main.Services.Theme.Apply(Settings);
         Main.Services.Store.Save(Main.Services.Data);
+        ConfirmSaved();
     }
 
     private void SaveTheme(ThemeMode mode)
@@ -280,6 +312,7 @@ public partial class SettingsViewModel : PageViewModel
         Settings.ThemeMode = mode;
         Main.Services.Theme.Apply(Settings);
         Main.Services.Store.Save(Main.Services.Data);
+        ConfirmSaved();
     }
 
     partial void OnEveningCheckEnabledChanged(bool value)
@@ -387,6 +420,7 @@ public partial class SettingsViewModel : PageViewModel
         }
 
         Main.Services.Store.Save(Main.Services.Data);
+        ConfirmSaved();
         RefreshPermissions();
         var missing = Permissions.FirstOrDefault(permission => permission.Key == "dnd" && permission.Missing);
         if (value && missing is not null)
@@ -518,10 +552,14 @@ public partial class SettingsViewModel : PageViewModel
         Settings.Language = language;
         Main.Services.SaveAndReschedule();
         UiLanguage.Apply(language);
-        if (Language.Culture.Name != before.Name)
+        if (Language.Culture.Name == before.Name)
         {
-            App.ReloadUi();
+            ConfirmSaved();
+            return;
         }
+
+        App.ReloadUi();
+        (App.Main?.CurrentPage as SettingsViewModel)?.ConfirmSaved();
     }
 
     partial void OnThemeSystemChanged(bool value)
