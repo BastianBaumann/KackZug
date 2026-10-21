@@ -18,7 +18,8 @@ public interface IPlatform
 
     void OpenUrl(string url);
 
-    void OpenInNavigator(string url);
+    /// <remarks>Ohne Link startet nur der DB Navigator selbst.</remarks>
+    void OpenInNavigator(string? connectionUrl);
 
     IReadOnlyList<PermissionInfo> GetPermissions();
 

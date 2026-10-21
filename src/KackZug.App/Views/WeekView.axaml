@@ -194,11 +194,11 @@
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
                                             <TextBlock Text="{Binding CheckedText}" Classes="caption" />
-                                            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding OpenInNavigatorCommand}"
-                                                    IsVisible="{Binding NavigatorUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding OpenInNavigatorCommand}">
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                                     <c:OutlineIcon Data="{StaticResource IconTrain}" Width="20" Height="20" />
-                                                    <TextBlock Text="Im DB Navigator öffnen" />
+                                                    <TextBlock Text="Im DB Navigator öffnen" IsVisible="{Binding !IsPreparingNavigator}" />
+                                                    <TextBlock Text="Verbindung wird vorbereitet …" IsVisible="{Binding IsPreparingNavigator}" />
                                                 </StackPanel>
                                             </Button>
                                         </StackPanel>

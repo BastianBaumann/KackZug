@@ -65,6 +65,31 @@ public sealed class BahnWebClient
         return SendAsync(HttpMethod.Get, path, null, cancellationToken);
     }
 
+    public Task<JsonDocument> SearchConnectionsAsync(string fromId, string toId, DateTime departure, CancellationToken cancellationToken)
+    {
+        var body = CreateSearchBody(fromId, toId, departure);
+        return SendAsync(HttpMethod.Post, "angebote/fahrplan", body, cancellationToken);
+    }
+
+    public async Task<string> CreateShareAsync(string startName, string targetName, DateTimeOffset departure, string recon, CancellationToken cancellationToken)
+    {
+        var body = new JsonObject
+        {
+            ["startOrt"] = startName,
+            ["zielOrt"] = targetName,
+            ["hinfahrtDatum"] = departure.ToString("yyyy-MM-dd'T'HH:mm:sszzz"),
+            ["hinfahrtRecon"] = recon
+        };
+        using var document = await SendAsync(HttpMethod.Post, "angebote/verbindung/teilen", body.ToJsonString(), cancellationToken);
+        var vbid = BahnJson.GetString(document.RootElement, "vbid");
+        if (string.IsNullOrEmpty(vbid))
+        {
+            throw new BahnApiException(BahnApiErrorKind.Format, "vbid fehlt.");
+        }
+
+        return vbid;
+    }
+
     public Task<JsonDocument> FindLocationsAsync(string term, CancellationToken cancellationToken)
     {
         var path = "reiseloesung/orte?suchbegriff=" + Uri.EscapeDataString(term) + "&typ=ALL&limit=10";
@@ -166,7 +191,7 @@ public sealed class BahnWebClient
         }
     }
 
-    private static string CreateReconBody(string recon)
+    private static JsonArray CreateTravellers()
     {
         var discount = new JsonObject
         {
@@ -180,10 +205,38 @@ public sealed class BahnWebClient
             ["alter"] = new JsonArray(),
             ["anzahl"] = 1
         };
+        return new JsonArray(traveller);
+    }
+
+    private static string CreateSearchBody(string fromId, string toId, DateTime departure)
+    {
+        var products = new JsonArray("ICE", "EC_IC", "IR", "REGIONAL", "SBAHN", "BUS", "SCHIFF", "UBAHN", "TRAM", "ANRUFPFLICHTIG");
+        var body = new JsonObject
+        {
+            ["abfahrtsHalt"] = fromId,
+            ["ankunftsHalt"] = toId,
+            ["anfrageZeitpunkt"] = departure.ToString("yyyy-MM-dd'T'HH:mm:ss"),
+            ["ankunftSuche"] = "ABFAHRT",
+            ["klasse"] = "KLASSE_2",
+            ["maxUmstiege"] = 5,
+            ["produktgattungen"] = products,
+            ["reisende"] = CreateTravellers(),
+            ["schnelleVerbindungen"] = false,
+            ["sitzplatzOnly"] = false,
+            ["bikeCarriage"] = false,
+            ["reservierungsKontingenteVorhanden"] = false,
+            ["nurDeutschlandTicketVerbindungen"] = false,
+            ["deutschlandTicketVorhanden"] = false
+        };
+        return body.ToJsonString();
+    }
+
+    private static string CreateReconBody(string recon)
+    {
         var body = new JsonObject
         {
             ["klasse"] = "KLASSE_2",
-            ["reisende"] = new JsonArray(traveller),
+            ["reisende"] = CreateTravellers(),
             ["ctxRecon"] = recon,
             ["deutschlandTicketVorhanden"] = false,
             ["nurDeutschlandTicketVerbindungen"] = false,

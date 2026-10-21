@@ -4,6 +4,7 @@ using KackZug.Core.Checking;
 using KackZug.Core.Import;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
+using KackZug.Core.Sharing;
 using KackZug.Core.Storage;
 using KackZug.Core.Updates;
 
@@ -14,6 +15,7 @@ public sealed class AppServices
 {
     private IConnectionResolver? _resolver;
     private IStationSearch? _stationSearch;
+    private IShareLinkCreator? _shareLinks;
     private BahnWebClient? _bahnClient;
 
     private AppServices(IPlatform platform, AppDataStore store, AppData data, IClock clock)
@@ -63,6 +65,20 @@ public sealed class AppServices
             return _stationSearch;
         }
         set { _stationSearch = value; }
+    }
+
+    public IShareLinkCreator ShareLinks
+    {
+        get
+        {
+            if (_shareLinks is null)
+            {
+                _shareLinks = new ShareLinkCreator(BahnClient);
+            }
+
+            return _shareLinks;
+        }
+        set { _shareLinks = value; }
     }
 
     public Func<ITripStatusSource>? StatusSourceFactory { get; set; }

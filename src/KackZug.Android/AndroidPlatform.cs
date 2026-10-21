@@ -79,13 +79,26 @@ public sealed class AndroidPlatform : IPlatform
         _context.StartActivity(intent);
     }
 
-    /// <remarks>Der DB Navigator nimmt den Suchlink nicht an, deshalb startet die App selbst; nur ohne Navigator geht es in den Browser.</remarks>
-    public void OpenInNavigator(string url)
+    public void OpenInNavigator(string? connectionUrl)
     {
-        var intent = _context.PackageManager?.GetLaunchIntentForPackage(AlertNotifier.DbNavigatorPackage);
-        if (intent is null)
+        Intent? intent = null;
+        if (connectionUrl is not null)
         {
-            intent = new Intent(Intent.ActionView, global::Android.Net.Uri.Parse(url));
+            var uri = global::Android.Net.Uri.Parse(connectionUrl);
+            intent = new Intent(Intent.ActionView, uri);
+            intent.SetPackage(AlertNotifier.DbNavigatorPackage);
+            if (_context.PackageManager?.ResolveActivity(intent, 0) is null)
+            {
+                intent = new Intent(Intent.ActionView, uri);
+            }
+        }
+        else
+        {
+            intent = _context.PackageManager?.GetLaunchIntentForPackage(AlertNotifier.DbNavigatorPackage);
+            if (intent is null)
+            {
+                intent = new Intent(Intent.ActionView, global::Android.Net.Uri.Parse("https://www.bahn.de"));
+            }
         }
 
         intent.AddFlags(ActivityFlags.NewTask);

@@ -52,15 +52,23 @@ public sealed class DefaultPlatform : IPlatform
         ShowAlert(TestAlert.Create(DateTimeOffset.Now));
     }
 
+    public Action<string>? UrlOpener { get; set; }
+
     public void OpenUrl(string url)
     {
+        if (UrlOpener is not null)
+        {
+            UrlOpener(url);
+            return;
+        }
+
         var start = new ProcessStartInfo(url) { UseShellExecute = true };
         Process.Start(start);
     }
 
-    public void OpenInNavigator(string url)
+    public void OpenInNavigator(string? connectionUrl)
     {
-        OpenUrl(url);
+        OpenUrl(connectionUrl ?? "https://www.bahn.de");
     }
 
     public IReadOnlyList<PermissionInfo> GetPermissions()

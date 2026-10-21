@@ -143,8 +143,17 @@ internal static class TourSteps
         var firstTrip = week.Detail.Trips[0];
         check(firstTrip.NowText == "jetzt 05:50" && firstTrip.Legs[0].Badge is not null && firstTrip.Legs[0].Badge!.Text == "+8 min", "Detail zeigt +8 und neue Zeit");
         check(firstTrip.Notes.Any(note => note.Contains("Anschluss gefährdet")), "Detail zeigt gefaehrdeten Umstieg");
-        check(firstTrip.NavigatorUrl is not null && firstTrip.NavigatorUrl.StartsWith("https://www.bahn.de/buchung/fahrplan/suche#")
-              && firstTrip.NavigatorUrl.Contains("hd=" + detailDay.Date.ToString("yyyy-MM-dd")), "Detail hat Navigator-Link fuer den Tag");
+        var opened = new List<string>();
+        ((Services.DefaultPlatform)main.Services.Platform).UrlOpener = url => opened.Add(url);
+        var shareLinks = new DemoShareLinks();
+        main.Services.ShareLinks = shareLinks;
+        await firstTrip.OpenInNavigatorCommand.ExecuteAsync(null);
+        check(opened.Count == 1 && opened[0] == "https://www.bahn.de" && main.HasToast, "Navigator ohne gefundene Verbindung oeffnet nur die App, mit Hinweis");
+        shareLinks.Link = "https://www.bahn.de/buchung/start?vbid=demo";
+        await firstTrip.OpenInNavigatorCommand.ExecuteAsync(null);
+        check(opened.Count == 2 && opened[1] == shareLinks.Link && shareLinks.RequestedDays.All(day => day == detailDay.Date), "Navigator bekommt den Teilen-Link fuer diesen Tag");
+        await firstTrip.OpenInNavigatorCommand.ExecuteAsync(null);
+        check(opened.Count == 3 && shareLinks.RequestedDays.Count == 2, "Teilen-Link wird nur einmal erzeugt");
         await capture(window, Path.Combine(directory, "trip-detail.png"));
         check(window.GetVisualDescendants().OfType<TextBlock>().Any(text => text.Text == "Im DB Navigator öffnen" && text.IsEffectivelyVisible), "Navigator-Knopf sichtbar");
         check(main.HandleBack() && !week.HasDetail, "Zurueck schliesst die Detailansicht");

@@ -1,22 +1,22 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using KackZug.Core.Bahn;
 using KackZug.Core.Checking;
 using KackZug.Core.Models;
-using KackZug.Services;
 
 namespace KackZug.ViewModels;
 
 /// <summary>Eine Fahrt (Hin oder Rueck) in der Detailansicht: grosse Zeit, Status und Teilstrecken</summary>
 public partial class TripCardViewModel : ViewModelBase
 {
-    private readonly IPlatform _platform;
+    private readonly MainViewModel _main;
+    private readonly DateOnly _date;
+    private string? _shareLink;
 
-    public TripCardViewModel(IPlatform platform, DateOnly date, Shift shift, TripDirection direction, SavedConnection connection, CheckState? state)
+    public TripCardViewModel(MainViewModel main, DateOnly date, Shift shift, TripDirection direction, SavedConnection connection, CheckState? state)
     {
-        _platform = platform;
-        NavigatorUrl = NavigatorLink.ForTrip(connection, date);
+        _main = main;
+        _date = date;
         Shift = shift;
         Direction = direction;
         Connection = connection;
@@ -35,8 +35,6 @@ public partial class TripCardViewModel : ViewModelBase
 
     public string BigTime { get; }
 
-    public string? NavigatorUrl { get; }
-
     public ObservableCollection<LegDetailLine> Legs { get; } = new ObservableCollection<LegDetailLine>();
 
     public ObservableCollection<string> Notes { get; } = new ObservableCollection<string>();
@@ -53,13 +51,41 @@ public partial class TripCardViewModel : ViewModelBase
     [ObservableProperty]
     public partial string CheckedText { get; set; } = "";
 
-    [RelayCommand]
-    private void OpenInNavigator()
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(OpenInNavigatorCommand))]
+    public partial bool IsPreparingNavigator { get; set; }
+
+    [RelayCommand(CanExecute = nameof(CanOpenInNavigator))]
+    public async Task OpenInNavigatorAsync()
     {
-        if (NavigatorUrl is not null)
+        if (_shareLink is null)
         {
-            _platform.OpenInNavigator(NavigatorUrl);
+            IsPreparingNavigator = true;
+            try
+            {
+                _shareLink = await _main.Services.ShareLinks.CreateAsync(Connection, _date, CancellationToken.None);
+            }
+            catch (Exception exception) when (exception is not OutOfMemoryException)
+            {
+                _shareLink = null;
+            }
+            finally
+            {
+                IsPreparingNavigator = false;
+            }
         }
+
+        if (_shareLink is null)
+        {
+            _main.ShowToast("Die Verbindung an diesem Tag fand ich bei bahn.de nicht. Der Navigator öffnet ohne sie.", true);
+        }
+
+        _main.Services.Platform.OpenInNavigator(_shareLink);
+    }
+
+    private bool CanOpenInNavigator()
+    {
+        return !IsPreparingNavigator;
     }
 
     public void Show(TripStatus? status, CheckState? state)

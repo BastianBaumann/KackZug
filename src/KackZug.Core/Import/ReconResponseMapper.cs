@@ -10,7 +10,11 @@ public static class ReconResponseMapper
 {
     public static ResolvedConnection Map(JsonElement root, DateTimeOffset importedAt)
     {
-        var connectionElement = FirstConnection(root);
+        return MapConnection(FirstConnection(root), importedAt);
+    }
+
+    public static ResolvedConnection MapConnection(JsonElement connectionElement, DateTimeOffset importedAt)
+    {
         if (!connectionElement.TryGetProperty("verbindungsAbschnitte", out var sections))
         {
             throw new FormatException("Antwort enthaelt keine Teilstrecken.");

@@ -1,0 +1,181 @@
+{
+ "verbindungen": [
+  {
+   "tripId": "erfunden",
+   "verbindungsAbschnitte": [
+    {
+     "abfahrtsOrt": "Musterstadt Hbf",
+     "abfahrtsOrtExtId": "8000001",
+     "ankunftsOrt": "Beispielhausen",
+     "ankunftsOrtExtId": "8000002",
+     "originCancelled": false,
+     "destinationCancelled": false,
+     "abfahrt": {
+      "sollzeit": "2026-10-22T06:12:00",
+      "echtzeit": "2026-10-22T06:50:00"
+     },
+     "ankunft": {
+      "sollzeit": "2026-10-22T07:10:00",
+      "echtzeit": "2026-10-22T07:18:00"
+     },
+     "journeyId": "2|#VN#1#ST#1#PI#0#ZI#1#TA#0#DA#221026#1S#8000001#1T#642#LS#8000002#LT#710#PU#80#RT#1#CA#NRE#ZE#4711#ZB#             4711#PC#3#FR#8000001#FT#642#TO#8000002#TT#710#",
+     "verkehrsmittel": {
+      "produktGattung": "REGIONAL",
+      "kategorie": "NRE",
+      "name": "4709",
+      "nummer": "4709",
+      "linienNummer": "7",
+      "richtung": "Endhausen",
+      "typ": "PUBLICTRANSPORT",
+      "kurzText": "RE",
+      "mittelText": "RE7",
+      "langText": "RE7 (4709)"
+     },
+     "halte": [
+      {
+       "name": "Musterstadt Hbf",
+       "extId": "8000001",
+       "gleis": "2",
+       "abfahrt": {
+        "sollzeit": "2026-10-22T06:12:00",
+        "echtzeit": "2026-10-22T06:50:00"
+       },
+       "risNotizen": []
+      },
+      {
+       "name": "Beispielhausen",
+       "extId": "8000002",
+       "gleis": "5",
+       "ankunft": {
+        "sollzeit": "2026-10-22T07:10:00",
+        "echtzeit": "2026-10-22T07:18:00"
+       },
+       "risNotizen": []
+      }
+     ]
+    }
+   ],
+   "ctxRecon": "recon-frueher"
+  },
+  {
+   "tripId": "erfunden",
+   "verbindungsAbschnitte": [
+    {
+     "abfahrtsOrt": "Musterstadt Hbf",
+     "abfahrtsOrtExtId": "8000001",
+     "ankunftsOrt": "Beispielhausen",
+     "ankunftsOrtExtId": "8000002",
+     "originCancelled": false,
+     "destinationCancelled": false,
+     "abfahrt": {
+      "sollzeit": "2026-10-22T06:42:00",
+      "echtzeit": "2026-10-22T06:50:00"
+     },
+     "ankunft": {
+      "sollzeit": "2026-10-22T07:10:00",
+      "echtzeit": "2026-10-22T07:18:00"
+     },
+     "journeyId": "2|#VN#1#ST#1#PI#0#ZI#1#TA#0#DA#221026#1S#8000001#1T#642#LS#8000002#LT#710#PU#80#RT#1#CA#NRE#ZE#4711#ZB#             4711#PC#3#FR#8000001#FT#642#TO#8000002#TT#710#",
+     "verkehrsmittel": {
+      "produktGattung": "REGIONAL",
+      "kategorie": "NRE",
+      "name": "4711",
+      "nummer": "4711",
+      "linienNummer": "7",
+      "richtung": "Endhausen",
+      "typ": "PUBLICTRANSPORT",
+      "kurzText": "RE",
+      "mittelText": "RE7",
+      "langText": "RE7 (4711)"
+     },
+     "halte": [
+      {
+       "name": "Musterstadt Hbf",
+       "extId": "8000001",
+       "gleis": "2",
+       "abfahrt": {
+        "sollzeit": "2026-10-22T06:42:00",
+        "echtzeit": "2026-10-22T06:50:00"
+       },
+       "risNotizen": []
+      },
+      {
+       "name": "Beispielhausen",
+       "extId": "8000002",
+       "gleis": "5",
+       "ankunft": {
+        "sollzeit": "2026-10-22T07:10:00",
+        "echtzeit": "2026-10-22T07:18:00"
+       },
+       "risNotizen": []
+      }
+     ]
+    },
+    {
+     "abfahrtsOrt": "Beispielhausen",
+     "abfahrtsOrtExtId": "8000002",
+     "ankunftsOrt": "Markt, Beispielhausen",
+     "ankunftsOrtExtId": "900001",
+     "abfahrt": {
+      "sollzeit": "2026-10-22T07:10:00",
+      "echtzeit": "2026-10-22T07:18:00"
+     },
+     "ankunft": {
+      "sollzeit": "2026-10-22T07:15:00",
+      "echtzeit": "2026-10-22T07:23:00"
+     },
+     "abschnittsDauer": 300,
+     "verkehrsmittel": {
+      "name": "Fussweg",
+      "typ": "WALK"
+     },
+     "halte": []
+    },
+    {
+     "abfahrtsOrt": "Markt, Beispielhausen",
+     "abfahrtsOrtExtId": "900001",
+     "ankunftsOrt": "Werkstor, Beispielhausen",
+     "ankunftsOrtExtId": "900002",
+     "abfahrt": {
+      "sollzeit": "2026-10-22T07:20:00"
+     },
+     "ankunft": {
+      "sollzeit": "2026-10-22T07:28:00"
+     },
+     "journeyId": "2|#VN#1#ST#1#PI#0#ZI#2#TA#0#DA#221026#1S#900003#1T#700#LS#900002#LT#728#PU#80#RT#1#CA#STR#ZE#2#ZB#STR             2#PC#8#FR#900003#FT#700#TO#900002#TT#728#",
+     "verkehrsmittel": {
+      "produktGattung": "TRAM",
+      "kategorie": "STR",
+      "name": "STR 2",
+      "nummer": "2",
+      "linienNummer": "2",
+      "richtung": "Werkstor, Beispielhausen",
+      "typ": "PUBLICTRANSPORT",
+      "kurzText": "STR",
+      "mittelText": "STR 2",
+      "langText": "STR 2"
+     },
+     "halte": [
+      {
+       "name": "Markt, Beispielhausen",
+       "extId": "900001",
+       "abfahrt": {
+        "sollzeit": "2026-10-22T07:20:00"
+       },
+       "risNotizen": []
+      },
+      {
+       "name": "Werkstor, Beispielhausen",
+       "extId": "900002",
+       "ankunft": {
+        "sollzeit": "2026-10-22T07:28:00"
+       },
+       "risNotizen": []
+      }
+     ]
+    }
+   ],
+   "ctxRecon": "recon-passend"
+  }
+ ]
+}
