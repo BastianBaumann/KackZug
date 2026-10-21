@@ -362,7 +362,11 @@ public partial class ImportViewModel : ViewModelBase
 
                 break;
             case TripDateProblem.Past:
-                error = UiStrings.Import_DatePast;
+                if (HasFullYear(TripDateText))
+                {
+                    error = UiStrings.Import_DatePast;
+                }
+
                 break;
             case TripDateProblem.AlreadyOver:
                 error = UiStrings.Import_DateOver;
@@ -371,6 +375,13 @@ public partial class ImportViewModel : ViewModelBase
 
         TripDateError = error;
         SaveCommand.NotifyCanExecuteChanged();
+    }
+
+    /// <remarks>Waehrend "23.10.20" noch getippt wird, waere das Jahr 2020 und der Hinweis "vorbei" falsch.</remarks>
+    private static bool HasFullYear(string text)
+    {
+        var lastDot = text.LastIndexOf('.');
+        return lastDot >= 0 && text.Length - lastDot - 1 >= 4;
     }
 
     private TripDateProblem TripDateProblemNow(DateOnly? date)

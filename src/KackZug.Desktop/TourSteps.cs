@@ -509,6 +509,8 @@ internal static class TourSteps
         var dateBox = window.GetVisualDescendants().OfType<TextBox>().First(box => box.Classes.Contains("date"));
         check(dateBox.IsEffectivelyVisible && Math.Abs(dateBox.Bounds.Height - 48) < 1, "Datumsfeld sichtbar, 48 hoch");
         var yesterday = today.AddDays(-1);
+        dateBox.Text = today.AddDays(1).ToString("ddMM") + "20";
+        check(!import.HasTripDateError, "Halb getipptes Jahr 20.. zeigt noch keinen Hinweis: " + dateBox.Text);
         dateBox.Text = yesterday.ToString("ddMMyyyy");
         check(dateBox.Text == DateText.Format(yesterday), "Punkte im Datum kommen beim Tippen von selbst: " + dateBox.Text);
         check(import.HasTripDateError && import.TripDateError!.Contains("vorbei") && !import.SaveCommand.CanExecute(null), "Datum in der Vergangenheit wird abgelehnt");
