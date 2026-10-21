@@ -158,12 +158,12 @@ public partial class MainViewModel : ViewModelBase
             }
             catch (UpdateVerificationException)
             {
-                ShowToast("Die geladene Datei war fehlerhaft und wurde verworfen. Versuch es später noch mal.", true);
+                ShowToast(UiStrings.Update_Corrupt, true);
                 return;
             }
             catch (Exception)
             {
-                ShowToast("Download hat nicht geklappt. Internet da? Tipp dann noch mal auf „Jetzt aktualisieren“.", true);
+                ShowToast(UiLanguage.Format(UiStrings.Update_DownloadFailed, UiStrings.Update_Now), true);
                 return;
             }
         }
@@ -187,7 +187,7 @@ public partial class MainViewModel : ViewModelBase
         var result = await Updates.InstallAsync();
         if (result.Status == InstallStartStatus.Failed)
         {
-            ShowToast("Das Update ließ sich nicht installieren. Über die Download-Seite auf GitHub geht es auch von Hand.", true);
+            ShowToast(UiStrings.Update_InstallFailed, true);
             return;
         }
 
@@ -198,12 +198,11 @@ public partial class MainViewModel : ViewModelBase
 
         if (!askForPermission)
         {
-            ShowToast("Ohne diese Erlaubnis kann sich KackZug nicht selbst aktualisieren.", false);
+            ShowToast(UiStrings.Update_PermissionMissing, false);
             return;
         }
 
-        var allowed = await ConfirmAsync("Apps installieren erlauben",
-            "Erlaube KackZug einmal, Apps zu installieren. Danach geht es von selbst weiter.", "Erlauben");
+        var allowed = await ConfirmAsync(UiStrings.Update_PermissionTitle, UiStrings.Update_PermissionText, UiStrings.Settings_Allow);
         if (allowed)
         {
             Updates.OpenInstallPermissionSettings();
@@ -221,11 +220,11 @@ public partial class MainViewModel : ViewModelBase
 
         if (aborted)
         {
-            ShowToast("Update abgebrochen. Oben kannst du es jederzeit neu starten.", false);
+            ShowToast(UiStrings.Update_Aborted, false);
             return;
         }
 
-        ShowToast("Android hat das Update nicht installiert. Oben kannst du es noch mal versuchen.", true);
+        ShowToast(UiStrings.Update_NotInstalled, true);
     }
 
     [RelayCommand]

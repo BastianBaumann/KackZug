@@ -18,9 +18,21 @@
   <data name="Common_Outbound" xml:space="preserve"><value>Outbound</value></data>
   <data name="Common_Return" xml:space="preserve"><value>Return</value></data>
   <data name="Format_DayMonth" xml:space="preserve"><value>dd/MM</value></data>
-  <data name="Update_Available" xml:space="preserve"><value>Version {0} is out.</value></data>
-  <data name="Update_Download" xml:space="preserve"><value>Download</value></data>
+  <data name="Update_Available" xml:space="preserve"><value>Version {0} is here.</value></data>
+  <data name="Update_Now" xml:space="preserve"><value>Update now</value></data>
+  <data name="Update_OpenPage" xml:space="preserve"><value>Open download page</value></data>
+  <data name="Update_Downloading" xml:space="preserve"><value>Downloading …</value></data>
+  <data name="Update_DownloadingPercent" xml:space="preserve"><value>Downloading … {0} %</value></data>
+  <data name="Update_Installing" xml:space="preserve"><value>Installing version {0} …</value></data>
   <data name="Update_Dismiss" xml:space="preserve"><value>Dismiss</value></data>
+  <data name="Update_Corrupt" xml:space="preserve"><value>The downloaded file was broken and got thrown away. Try again later.</value></data>
+  <data name="Update_DownloadFailed" xml:space="preserve"><value>Download didn't work. Are you online? Then tap “{0}” again.</value></data>
+  <data name="Update_InstallFailed" xml:space="preserve"><value>Couldn't install the update. You can also do it by hand from the download page on GitHub.</value></data>
+  <data name="Update_PermissionTitle" xml:space="preserve"><value>Allow installing apps</value></data>
+  <data name="Update_PermissionText" xml:space="preserve"><value>Allow KackZug to install apps once. After that it carries on by itself.</value></data>
+  <data name="Update_PermissionMissing" xml:space="preserve"><value>Without this permission KackZug can't update itself.</value></data>
+  <data name="Update_Aborted" xml:space="preserve"><value>Update cancelled. You can restart it at the top any time.</value></data>
+  <data name="Update_NotInstalled" xml:space="preserve"><value>Android didn't install the update. You can try again at the top.</value></data>
   <data name="Week_ThisWeek" xml:space="preserve"><value>This week</value></data>
   <data name="Week_NextWeek" xml:space="preserve"><value>Next week</value></data>
   <data name="Week_Range" xml:space="preserve"><value>Week of {0:dd/MM} to {1:dd/MM/yy}</value></data>
@@ -183,11 +195,16 @@
   <data name="Settings_SectionUpdates" xml:space="preserve"><value>Updates</value></data>
   <data name="Settings_UpdateCheck" xml:space="preserve"><value>Look for new versions</value></data>
   <data name="Settings_UpdateCheckHint" xml:space="preserve"><value>Once a day on GitHub.</value></data>
+  <data name="Settings_IncludePrereleases" xml:space="preserve"><value>Offer pre-releases</value></data>
+  <data name="Settings_IncludePrereleasesHint" xml:space="preserve"><value>Test builds from dev, may have bugs.</value></data>
   <data name="Settings_CheckUpdatesNow" xml:space="preserve"><value>Check for updates</value></data>
   <data name="Settings_UpdateChecking" xml:space="preserve"><value>Checking GitHub …</value></data>
-  <data name="Settings_UpdateNew" xml:space="preserve"><value>Version {0} is out. Tap “Download” at the top.</value></data>
+  <data name="Settings_UpdateNew" xml:space="preserve"><value>Version {0} is here. Tap “{1}” at the top.</value></data>
   <data name="Settings_UpdateCurrent" xml:space="preserve"><value>You have the latest version ({0}).</value></data>
-  <data name="Settings_UpdateFailed" xml:space="preserve"><value>Couldn't check GitHub. Are you online? Is the project public?</value></data>
+  <data name="Settings_UpdateRateLimited" xml:space="preserve"><value>GitHub isn't taking requests right now. Try again in an hour.</value></data>
+  <data name="Settings_UpdateNoAsset" xml:space="preserve"><value>The latest version has no app file yet. Try again later.</value></data>
+  <data name="Settings_UpdateNotPublic" xml:space="preserve"><value>Couldn't check GitHub. Is the project public?</value></data>
+  <data name="Settings_UpdateOffline" xml:space="preserve"><value>Couldn't check GitHub. Are you online?</value></data>
   <data name="Settings_ShowTutorial" xml:space="preserve"><value>Show the introduction again</value></data>
   <data name="Settings_Disclaimer" xml:space="preserve"><value>KackZug is a private open source project and has nothing to do with Deutsche Bahn. The data comes from bahn.de.</value></data>
 </root>

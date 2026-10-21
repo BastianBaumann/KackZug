@@ -439,30 +439,30 @@ public partial class SettingsViewModel : PageViewModel
 
         if (result.Outcome == UpdateCheckOutcome.UpdateAvailable)
         {
-            return "Version " + result.Release!.Version + " ist da. Oben auf „" + actionText + "“ tippen.";
+            return UiLanguage.Format(UiStrings.Settings_UpdateNew, result.Release!.Version, actionText);
         }
 
         if (result.Outcome == UpdateCheckOutcome.UpToDate)
         {
-            return "Du hast die neueste Version (" + AppInfo.FullVersion + ").";
+            return UiLanguage.Format(UiStrings.Settings_UpdateCurrent, AppInfo.FullVersion);
         }
 
         if (result.FailureReason == UpdateFailureReason.RateLimited)
         {
-            return "GitHub lässt gerade keine Abfragen zu. Versuch es in einer Stunde noch mal.";
+            return UiStrings.Settings_UpdateRateLimited;
         }
 
         if (result.FailureReason == UpdateFailureReason.NoMatchingAsset)
         {
-            return "Zur neuesten Version gibt es noch keine App-Datei. Versuch es später noch mal.";
+            return UiStrings.Settings_UpdateNoAsset;
         }
 
         if (result.FailureReason == UpdateFailureReason.InvalidResponse)
         {
-            return "Konnte bei GitHub nicht nachsehen. Ist das Projekt öffentlich?";
+            return UiStrings.Settings_UpdateNotPublic;
         }
 
-        return "Konnte bei GitHub nicht nachsehen. Internet da?";
+        return UiStrings.Settings_UpdateOffline;
     }
 
     private bool CanCheckUpdatesNow()

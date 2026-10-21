@@ -2,6 +2,7 @@ using AppUpdater;
 using CommunityToolkit.Mvvm.ComponentModel;
 using KackZug.Core;
 using KackZug.Core.Updates;
+using KackZug.Localization;
 
 namespace KackZug.Services;
 
@@ -84,18 +85,18 @@ public sealed partial class UpdateController : ObservableObject
             {
                 if (ProgressPercent is null)
                 {
-                    return "Lädt …";
+                    return UiStrings.Update_Downloading;
                 }
 
-                return "Lädt … " + ProgressPercent.Value + " %";
+                return UiLanguage.Format(UiStrings.Update_DownloadingPercent, ProgressPercent.Value);
             }
 
             if (IsInstalling)
             {
-                return "Version " + Release.Version + " wird installiert …";
+                return UiLanguage.Format(UiStrings.Update_Installing, Release.Version);
             }
 
-            return "Version " + Release.Version + " ist da.";
+            return UiLanguage.Format(UiStrings.Update_Available, Release.Version);
         }
     }
 
@@ -105,10 +106,10 @@ public sealed partial class UpdateController : ObservableObject
         {
             if (CanInstall)
             {
-                return "Jetzt aktualisieren";
+                return UiStrings.Update_Now;
             }
 
-            return "Download-Seite öffnen";
+            return UiStrings.Update_OpenPage;
         }
     }
 

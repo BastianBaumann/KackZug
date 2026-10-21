@@ -255,8 +255,8 @@
                     <Border Classes="setting">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="Vorabversionen anbieten" Classes="body-lg" />
-                                <TextBlock Text="Testversionen von dev, können Fehler haben." Classes="caption" TextWrapping="Wrap" />
+                                <TextBlock Text="{x:Static l:UiStrings.Settings_IncludePrereleases}" Classes="body-lg" />
+                                <TextBlock Text="{x:Static l:UiStrings.Settings_IncludePrereleasesHint}" Classes="caption" TextWrapping="Wrap" />
                             </StackPanel>
                             <ToggleSwitch Grid.Column="1" IsChecked="{Binding IncludePrereleases}" OnContent="" OffContent="" />
                         </Grid>

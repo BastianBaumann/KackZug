@@ -19,8 +19,20 @@
   <data name="Common_Return" xml:space="preserve"><value>Rückfahrt</value></data>
   <data name="Format_DayMonth" xml:space="preserve"><value>dd.MM.</value></data>
   <data name="Update_Available" xml:space="preserve"><value>Version {0} ist da.</value></data>
-  <data name="Update_Download" xml:space="preserve"><value>Herunterladen</value></data>
+  <data name="Update_Now" xml:space="preserve"><value>Jetzt aktualisieren</value></data>
+  <data name="Update_OpenPage" xml:space="preserve"><value>Download-Seite öffnen</value></data>
+  <data name="Update_Downloading" xml:space="preserve"><value>Lädt …</value></data>
+  <data name="Update_DownloadingPercent" xml:space="preserve"><value>Lädt … {0} %</value></data>
+  <data name="Update_Installing" xml:space="preserve"><value>Version {0} wird installiert …</value></data>
   <data name="Update_Dismiss" xml:space="preserve"><value>Ausblenden</value></data>
+  <data name="Update_Corrupt" xml:space="preserve"><value>Die geladene Datei war fehlerhaft und wurde verworfen. Versuch es später noch mal.</value></data>
+  <data name="Update_DownloadFailed" xml:space="preserve"><value>Download hat nicht geklappt. Internet da? Tipp dann noch mal auf „{0}“.</value></data>
+  <data name="Update_InstallFailed" xml:space="preserve"><value>Das Update ließ sich nicht installieren. Über die Download-Seite auf GitHub geht es auch von Hand.</value></data>
+  <data name="Update_PermissionTitle" xml:space="preserve"><value>Apps installieren erlauben</value></data>
+  <data name="Update_PermissionText" xml:space="preserve"><value>Erlaube KackZug einmal, Apps zu installieren. Danach geht es von selbst weiter.</value></data>
+  <data name="Update_PermissionMissing" xml:space="preserve"><value>Ohne diese Erlaubnis kann sich KackZug nicht selbst aktualisieren.</value></data>
+  <data name="Update_Aborted" xml:space="preserve"><value>Update abgebrochen. Oben kannst du es jederzeit neu starten.</value></data>
+  <data name="Update_NotInstalled" xml:space="preserve"><value>Android hat das Update nicht installiert. Oben kannst du es noch mal versuchen.</value></data>
   <data name="Week_ThisWeek" xml:space="preserve"><value>Diese Woche</value></data>
   <data name="Week_NextWeek" xml:space="preserve"><value>Nächste Woche</value></data>
   <data name="Week_Range" xml:space="preserve"><value>Woche vom {0:dd.MM.} bis {1:dd.MM.yy}</value></data>
@@ -183,11 +195,16 @@
   <data name="Settings_SectionUpdates" xml:space="preserve"><value>Updates</value></data>
   <data name="Settings_UpdateCheck" xml:space="preserve"><value>Nach neuer Version schauen</value></data>
   <data name="Settings_UpdateCheckHint" xml:space="preserve"><value>Einmal am Tag auf GitHub.</value></data>
+  <data name="Settings_IncludePrereleases" xml:space="preserve"><value>Vorabversionen anbieten</value></data>
+  <data name="Settings_IncludePrereleasesHint" xml:space="preserve"><value>Testversionen von dev, können Fehler haben.</value></data>
   <data name="Settings_CheckUpdatesNow" xml:space="preserve"><value>Nach Updates suchen</value></data>
   <data name="Settings_UpdateChecking" xml:space="preserve"><value>Schaue auf GitHub nach …</value></data>
-  <data name="Settings_UpdateNew" xml:space="preserve"><value>Version {0} ist da. Oben auf „Herunterladen“ tippen.</value></data>
+  <data name="Settings_UpdateNew" xml:space="preserve"><value>Version {0} ist da. Oben auf „{1}“ tippen.</value></data>
   <data name="Settings_UpdateCurrent" xml:space="preserve"><value>Du hast die neueste Version ({0}).</value></data>
-  <data name="Settings_UpdateFailed" xml:space="preserve"><value>Konnte bei GitHub nicht nachsehen. Internet da? Ist das Projekt öffentlich?</value></data>
+  <data name="Settings_UpdateRateLimited" xml:space="preserve"><value>GitHub lässt gerade keine Abfragen zu. Versuch es in einer Stunde noch mal.</value></data>
+  <data name="Settings_UpdateNoAsset" xml:space="preserve"><value>Zur neuesten Version gibt es noch keine App-Datei. Versuch es später noch mal.</value></data>
+  <data name="Settings_UpdateNotPublic" xml:space="preserve"><value>Konnte bei GitHub nicht nachsehen. Ist das Projekt öffentlich?</value></data>
+  <data name="Settings_UpdateOffline" xml:space="preserve"><value>Konnte bei GitHub nicht nachsehen. Internet da?</value></data>
   <data name="Settings_ShowTutorial" xml:space="preserve"><value>Einführung noch einmal ansehen</value></data>
   <data name="Settings_Disclaimer" xml:space="preserve"><value>KackZug ist ein privates Open-Source-Projekt und hat nichts mit der Deutschen Bahn zu tun. Die Daten kommen von bahn.de.</value></data>
 </root>

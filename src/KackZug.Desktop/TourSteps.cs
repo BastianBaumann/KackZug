@@ -248,8 +248,12 @@ internal static class TourSteps
     /// <remarks>Der Sprachwechsel baut Hauptansicht und ViewModel neu, deshalb werden alle Bezuege danach neu geholt.</remarks>
     private static async Task RunLanguageAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)
     {
+        main.Services.UpdateInstaller = null;
+        main.Services.UpdateClientFactory = () => new HttpClient(new DemoUpdateHandler("v9.9.9"));
+        await main.Updates.CheckAsync();
         main.Navigate("settings");
         await SettleAsync();
+        check(main.Updates.HasUpdate && HasText(window, "Version 9.9.9 ist da."), "Update-Hinweis vor dem Sprachwechsel");
         var languageRadios = LanguageRadios(window);
         check(languageRadios.Count == 3, "Drei Sprach-Knoepfe");
         languageRadios[2].IsChecked = true;
@@ -258,6 +262,8 @@ internal static class TourSteps
         check(!ReferenceEquals(english, main) && !Language.IsGerman && main.Services.Store.Load().Settings.Language == Core.Models.AppLanguage.English, "Englisch gewaehlt und gespeichert");
         check(english.NavItems.Select(item => item.Title).SequenceEqual(new[] { "Week", "Shifts", "Settings" }), "Tabs auf Englisch");
         check(english.CurrentPage is SettingsViewModel && HasText(window, "Language") && HasText(window, "Check for updates"), "Neu aufgebaute Einstellungen auf Englisch");
+        check(HasText(window, "Offer pre-releases") && HasText(window, "Test builds from dev, may have bugs."), "Schalter Vorabversionen auf Englisch");
+        check(english.Updates.HasUpdate && HasText(window, "Version 9.9.9 is here.") && HasText(window, "Open download page"), "Update-Hinweis bleibt nach dem Sprachwechsel, auf Englisch");
         await capture(window, Path.Combine(directory, "settings-en.png"));
 
         english.Navigate("week");
@@ -280,7 +286,10 @@ internal static class TourSteps
         var german = App.Main!;
         check(!ReferenceEquals(german, english) && Language.IsGerman && german.Services.Store.Load().Settings.Language == Core.Models.AppLanguage.German, "Zurueck auf Deutsch");
         check(german.NavItems.Select(item => item.Title).SequenceEqual(new[] { "Woche", "Schichten", "Einstellungen" }) && HasText(window, "Sprache") && HasText(window, "Nach Updates suchen"), "Oberflaeche wieder auf Deutsch");
+        check(german.Updates.HasUpdate && HasText(window, "Version 9.9.9 ist da.") && HasText(window, "Download-Seite öffnen"), "Update-Hinweis wieder auf Deutsch");
         await capture(window, Path.Combine(directory, "settings-de.png"));
+        german.DismissUpdateCommand.Execute(null);
+        main.Services.UpdateClientFactory = null;
         german.Navigate("week");
         check(((WeekViewModel)german.CurrentPage!).Days[0].DayName == "Montag", "Wochentage wieder auf Deutsch");
     }
