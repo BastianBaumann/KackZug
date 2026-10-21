@@ -85,9 +85,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp out/*-Signed.apk "KackZug-$VERSION.apk"
+          # fallback for the in-app updater if GitHub's asset digest is missing
+          sha256sum "KackZug-$VERSION.apk" > "KackZug-$VERSION.apk.sha256"
           PRERELEASE=""
           case "$VERSION" in *-*) PRERELEASE="--prerelease" ;; esac
-          gh release create "$GITHUB_REF_NAME" "KackZug-$VERSION.apk" --title "KackZug $VERSION" --generate-notes $PRERELEASE
+          gh release create "$GITHUB_REF_NAME" "KackZug-$VERSION.apk" "KackZug-$VERSION.apk.sha256" --title "KackZug $VERSION" --generate-notes $PRERELEASE
 
       - name: Remove keystore
         if: always()
