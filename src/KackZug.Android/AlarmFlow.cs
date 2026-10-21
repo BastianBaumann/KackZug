@@ -37,7 +37,7 @@ public static class AlarmFlow
         builder.SetVisibility(NotificationCompat.VisibilityPublic);
         builder.SetOngoing(true);
         builder.SetAutoCancel(false);
-        builder.SetColor(unchecked((int)0xFFD1001A));
+        builder.SetColor(AlertNotifier.ProblemColor);
         builder.SetContentIntent(AlarmScreenIntent(context, id));
         builder.SetFullScreenIntent(AlarmScreenIntent(context, id), true);
         builder.SetDeleteIntent(ActionIntent(context, NotificationActionReceiver.ActionRepost, id));
@@ -196,6 +196,12 @@ public static class AlarmFlow
         }
 
         launch.AddFlags(ActivityFlags.NewTask);
-        context.StartActivity(launch);
+        try
+        {
+            context.StartActivity(launch);
+        }
+        catch (ActivityNotFoundException)
+        {
+        }
     }
 }

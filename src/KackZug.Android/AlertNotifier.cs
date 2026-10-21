@@ -16,6 +16,10 @@ public static class AlertNotifier
     public const string InfoChannelId = "info_v1";
     public const string DbNavigatorPackage = "de.hafas.android.db";
 
+    public const int ProblemColor = unchecked((int)0xFFD1001A);
+    private const int OkColor = unchecked((int)0xFF1B7A35);
+    private const int UnknownColor = unchecked((int)0xFF56606B);
+
     private static readonly long[] VibrationPattern = { 0, 800, 400, 800, 400, 800, 400, 1200 };
 
     /// <remarks>Ein Kanal behaelt seinen Ton fuer immer, deshalb bekommt jeder neue Ton neue Kanal-Kennungen.</remarks>
@@ -119,14 +123,30 @@ public static class AlertNotifier
             return;
         }
 
+        if (AlarmFlow.Store(context).Find(notificationId) is not null)
+        {
+            AlarmFlow.Acknowledge(context, notificationId);
+        }
+
         var builder = new NotificationCompat.Builder(context, InfoChannelId);
         builder.SetSmallIcon(Resource.Drawable.ic_notification);
+        builder.SetColor(InfoColorFor(alert.Status));
         builder.SetContentTitle(alert.Title);
         builder.SetContentText(alert.Text);
         builder.SetStyle(new NotificationCompat.BigTextStyle().BigText(alert.Text));
         builder.SetAutoCancel(true);
         builder.SetContentIntent(OpenAppIntent(context, notificationId));
         NotificationManagerCompat.From(context)!.Notify(notificationId, builder.Build()!);
+    }
+
+    private static int InfoColorFor(LegStatus status)
+    {
+        if (status == LegStatus.Unknown)
+        {
+            return UnknownColor;
+        }
+
+        return OkColor;
     }
 
     private static PendingIntent OpenAppIntent(Context context, int notificationId)
