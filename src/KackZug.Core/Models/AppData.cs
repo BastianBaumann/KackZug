@@ -11,6 +11,8 @@ public sealed class AppData
 
     public WeekPlan? CurrentWeek { get; set; }
 
+    public WeekPlan? NextWeek { get; set; }
+
     public Settings Settings { get; set; } = new Settings();
 
     public List<CheckState> CheckStates { get; set; } = new List<CheckState>();
@@ -32,17 +34,37 @@ public sealed class AppData
         Shifts.RemoveAll(shift => shift.Id == shiftId);
         CheckStates.RemoveAll(state => state.ShiftId == shiftId);
 
-        if (CurrentWeek is null)
+        foreach (var week in new[] { CurrentWeek, NextWeek })
         {
-            return;
-        }
-
-        foreach (var day in CurrentWeek.Days)
-        {
-            if (day.ShiftId == shiftId)
+            if (week is null)
             {
-                day.ShiftId = null;
+                continue;
+            }
+
+            foreach (var day in week.Days)
+            {
+                if (day.ShiftId == shiftId)
+                {
+                    day.ShiftId = null;
+                }
             }
         }
+    }
+
+    public WeekPlan EnsureNextWeek()
+    {
+        if (CurrentWeek is null)
+        {
+            throw new InvalidOperationException("Die aktuelle Woche fehlt.");
+        }
+
+        var nextMonday = CurrentWeek.WeekStart.AddDays(7);
+        if (NextWeek is not null && NextWeek.WeekStart == nextMonday)
+        {
+            return NextWeek;
+        }
+
+        NextWeek = WeekPlan.CreateFrom(CurrentWeek, nextMonday, Settings.NewWeekMode == NewWeekMode.CopyPrevious);
+        return NextWeek;
     }
 }

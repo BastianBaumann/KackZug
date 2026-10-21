@@ -47,12 +47,17 @@ public static class TripCalendar
             return null;
         }
 
-        var weekEnd = week.WeekStart.AddDays(7);
-        if (date >= week.WeekStart && date < weekEnd)
+        if (week.Contains(date))
         {
             return week.GetDay(date.DayOfWeek);
         }
 
+        if (data.NextWeek is not null && data.NextWeek.Contains(date))
+        {
+            return data.NextWeek.GetDay(date.DayOfWeek);
+        }
+
+        var weekEnd = week.WeekStart.AddDays(7);
         var isNextWeek = date >= weekEnd && date < weekEnd.AddDays(7);
         if (isNextWeek && data.Settings.NewWeekMode == NewWeekMode.CopyPrevious)
         {

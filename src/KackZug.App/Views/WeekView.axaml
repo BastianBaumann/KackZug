@@ -6,8 +6,19 @@
              x:DataType="vm:WeekViewModel">
     <ScrollViewer>
         <StackPanel Margin="16" Spacing="12">
+            <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
+                <UniformGrid Rows="1">
+                    <RadioButton Classes="segment" GroupName="week" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsThisWeek}">
+                        <TextBlock Text="Diese Woche" />
+                    </RadioButton>
+                    <RadioButton Classes="segment" GroupName="week" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsNextWeek}">
+                        <TextBlock Text="Nächste Woche" />
+                    </RadioButton>
+                </UniformGrid>
+            </Border>
+
             <StackPanel Spacing="2">
-                <TextBlock Text="Diese Woche" Classes="title-lg" />
+                <TextBlock Text="{Binding WeekTitle}" Classes="title-lg" />
                 <TextBlock Text="{Binding WeekText}" Classes="caption" />
             </StackPanel>
 

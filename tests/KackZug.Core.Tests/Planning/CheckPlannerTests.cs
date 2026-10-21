@@ -76,6 +76,18 @@ public class CheckPlannerTests
     }
 
     [Fact]
+    public void PlannedNextWeekWinsOverCopy()
+    {
+        var data = DataWithShiftOn(new DateOnly(2026, 10, 19), DayOfWeek.Monday);
+        data.EnsureNextWeek().GetDay(DayOfWeek.Monday).ShiftId = null;
+        var now = At(2026, 10, 25, 12, 0);
+
+        var checks = CheckPlanner.Plan(data, now, Berlin);
+
+        Assert.DoesNotContain(checks, check => check.TravelDate == new DateOnly(2026, 10, 26));
+    }
+
+    [Fact]
     public void MondayAfterWeekEndIsEmptyWhenWeeksStartEmpty()
     {
         var data = DataWithShiftOn(new DateOnly(2026, 10, 19), DayOfWeek.Monday);

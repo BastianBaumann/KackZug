@@ -123,6 +123,19 @@ internal static class TourSteps
         await capture(window, Path.Combine(directory, "week-checked.png"));
         check(monday.DayName == "Montag", "Wochentage auf Deutsch");
 
+        var weekRadios = window.GetVisualDescendants().OfType<RadioButton>().Where(radio => radio.GroupName == "week").ToList();
+        check(weekRadios.Count == 2, "Wochen-Umschalter sichtbar");
+        weekRadios[1].IsChecked = true;
+        check(week.WeekTitle == "Nächste Woche" && week.Days[0].Date == main.Services.Data.CurrentWeek!.WeekStart.AddDays(7), "Naechste Woche angezeigt");
+        check(week.Days.All(day => !day.IsPast && !day.IsToday), "Naechste Woche komplett aenderbar");
+        var nextMondayRow = week.Days[0];
+        nextMondayRow.SelectedOption = nextMondayRow.Options.First(option => option.Name == "Spätdienst");
+        var storedNext = main.Services.Store.Load().NextWeek;
+        check(storedNext is not null && storedNext.GetDay(DayOfWeek.Monday).ShiftId == nextMondayRow.Shift!.Id, "Naechste Woche gespeichert");
+        await capture(window, Path.Combine(directory, "week-next.png"));
+        weekRadios[0].IsChecked = true;
+        check(week.WeekTitle == "Diese Woche", "Zurueck zur laufenden Woche");
+
         main.Navigate("settings");
         var settings = (SettingsViewModel)main.CurrentPage!;
         check(settings.LeadTimes.Count(option => option.IsChecked) == 3, "Drei Vorlaufzeiten aktiv");

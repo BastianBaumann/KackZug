@@ -57,6 +57,56 @@ public class DataMaintenanceTests
     }
 
     [Fact]
+    public void PlannedNextWeekBecomesCurrentWeek()
+    {
+        var data = DataWithPlannedTuesday(NewWeekMode.CopyPrevious);
+        var next = data.EnsureNextWeek();
+        next.GetDay(DayOfWeek.Tuesday).ShiftId = null;
+        next.GetDay(DayOfWeek.Friday).ShiftId = data.Shifts[0].Id;
+
+        DataMaintenance.Apply(data, NextMonday);
+
+        Assert.Equal(NextMonday, data.CurrentWeek!.WeekStart);
+        Assert.Null(data.CurrentWeek.GetDay(DayOfWeek.Tuesday).ShiftId);
+        Assert.Equal(data.Shifts[0].Id, data.CurrentWeek.GetDay(DayOfWeek.Friday).ShiftId);
+        Assert.Null(data.NextWeek);
+    }
+
+    [Fact]
+    public void NextWeekStartsAsCopyOrEmpty()
+    {
+        var copied = DataWithPlannedTuesday(NewWeekMode.CopyPrevious).EnsureNextWeek();
+        var empty = DataWithPlannedTuesday(NewWeekMode.Empty).EnsureNextWeek();
+
+        Assert.Equal(NextMonday, copied.WeekStart);
+        Assert.NotNull(copied.GetDay(DayOfWeek.Tuesday).ShiftId);
+        Assert.Null(empty.GetDay(DayOfWeek.Tuesday).ShiftId);
+    }
+
+    [Fact]
+    public void OutdatedNextWeekIsDropped()
+    {
+        var data = DataWithPlannedTuesday(NewWeekMode.CopyPrevious);
+        data.EnsureNextWeek();
+
+        DataMaintenance.Apply(data, NextMonday.AddDays(7));
+
+        Assert.Equal(NextMonday.AddDays(7), data.CurrentWeek!.WeekStart);
+        Assert.Null(data.NextWeek);
+    }
+
+    [Fact]
+    public void RemoveShiftAlsoFreesNextWeek()
+    {
+        var data = DataWithPlannedTuesday(NewWeekMode.CopyPrevious);
+        var next = data.EnsureNextWeek();
+
+        data.RemoveShift(data.Shifts[0].Id);
+
+        Assert.Null(next.GetDay(DayOfWeek.Tuesday).ShiftId);
+    }
+
+    [Fact]
     public void SundayBelongsToTheWeekBefore()
     {
         var sunday = new DateOnly(2026, 10, 25);

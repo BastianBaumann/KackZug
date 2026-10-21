@@ -34,6 +34,15 @@ public partial class WeekViewModel : PageViewModel
     public partial string WeekText { get; set; } = "";
 
     [ObservableProperty]
+    public partial string WeekTitle { get; set; } = "Diese Woche";
+
+    [ObservableProperty]
+    public partial bool IsThisWeek { get; set; } = true;
+
+    [ObservableProperty]
+    public partial bool IsNextWeek { get; set; }
+
+    [ObservableProperty]
     public partial bool HasNoShifts { get; set; }
 
     [ObservableProperty]
@@ -67,6 +76,16 @@ public partial class WeekViewModel : PageViewModel
         {
             _isSavingOwnChange = false;
         }
+    }
+
+    partial void OnIsNextWeekChanged(bool value)
+    {
+        if (_isRefreshing)
+        {
+            return;
+        }
+
+        Refresh();
     }
 
     private void OnDataChanged()
@@ -139,6 +158,12 @@ public partial class WeekViewModel : PageViewModel
             var today = Today();
             Main.Services.RunMaintenance();
             var week = data.CurrentWeek!;
+            WeekTitle = "Diese Woche";
+            if (IsNextWeek)
+            {
+                week = data.EnsureNextWeek();
+                WeekTitle = "Nächste Woche";
+            }
 
             foreach (var oldRow in Days)
             {

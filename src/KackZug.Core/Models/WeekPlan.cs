@@ -43,6 +43,31 @@ public sealed class WeekPlan
         return date.AddDays(-offset);
     }
 
+    public static WeekPlan CreateFrom(WeekPlan template, DateOnly weekStart, bool copyDays)
+    {
+        var week = CreateEmpty(weekStart);
+        if (!copyDays)
+        {
+            return week;
+        }
+
+        foreach (var day in OrderedDays)
+        {
+            var source = template.GetDay(day);
+            var target = week.GetDay(day);
+            target.ShiftId = source.ShiftId;
+            target.OutboundEnabled = source.OutboundEnabled;
+            target.ReturnEnabled = source.ReturnEnabled;
+        }
+
+        return week;
+    }
+
+    public bool Contains(DateOnly date)
+    {
+        return date >= WeekStart && date < WeekStart.AddDays(7);
+    }
+
     public static WeekPlan CreateEmpty(DateOnly weekStart)
     {
         var week = new WeekPlan { WeekStart = weekStart };

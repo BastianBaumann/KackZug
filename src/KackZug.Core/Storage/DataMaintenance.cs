@@ -31,28 +31,46 @@ public static class DataMaintenance
     {
         var monday = WeekPlan.MondayOf(today);
         var previous = data.CurrentWeek;
+        var changed = false;
 
         if (previous is not null && previous.WeekStart == monday)
         {
-            return CompleteDays(previous);
+            changed = CompleteDays(previous);
         }
-
-        var newWeek = WeekPlan.CreateEmpty(monday);
-        var copyPrevious = previous is not null && data.Settings.NewWeekMode == NewWeekMode.CopyPrevious;
-        if (copyPrevious)
+        else if (data.NextWeek is not null && data.NextWeek.WeekStart == monday)
         {
-            foreach (var day in WeekPlan.OrderedDays)
+            data.CurrentWeek = data.NextWeek;
+            data.NextWeek = null;
+            CompleteDays(data.CurrentWeek);
+            changed = true;
+        }
+        else
+        {
+            var copyPrevious = previous is not null && data.Settings.NewWeekMode == NewWeekMode.CopyPrevious;
+            if (copyPrevious)
             {
-                var copy = previous!.GetDay(day).Copy();
-                var target = newWeek.GetDay(day);
-                target.ShiftId = copy.ShiftId;
-                target.OutboundEnabled = copy.OutboundEnabled;
-                target.ReturnEnabled = copy.ReturnEnabled;
+                data.CurrentWeek = WeekPlan.CreateFrom(previous!, monday, true);
             }
+            else
+            {
+                data.CurrentWeek = WeekPlan.CreateEmpty(monday);
+            }
+
+            changed = true;
         }
 
-        data.CurrentWeek = newWeek;
-        return true;
+        if (data.NextWeek is not null && data.NextWeek.WeekStart != monday.AddDays(7))
+        {
+            data.NextWeek = null;
+            changed = true;
+        }
+
+        if (data.NextWeek is not null && CompleteDays(data.NextWeek))
+        {
+            changed = true;
+        }
+
+        return changed;
     }
 
     private static bool CompleteDays(WeekPlan week)
@@ -68,18 +86,21 @@ public static class DataMaintenance
 
     private static bool FreeDaysOfMissingShifts(AppData data)
     {
-        if (data.CurrentWeek is null)
-        {
-            return false;
-        }
-
         var changed = false;
-        foreach (var day in data.CurrentWeek.Days)
+        foreach (var week in new[] { data.CurrentWeek, data.NextWeek })
         {
-            if (day.ShiftId is not null && data.FindShift(day.ShiftId) is null)
+            if (week is null)
             {
-                day.ShiftId = null;
-                changed = true;
+                continue;
+            }
+
+            foreach (var day in week.Days)
+            {
+                if (day.ShiftId is not null && data.FindShift(day.ShiftId) is null)
+                {
+                    day.ShiftId = null;
+                    changed = true;
+                }
             }
         }
 
