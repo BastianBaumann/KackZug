@@ -78,8 +78,13 @@
                     </Border>
                     <Border Classes="setting" IsVisible="{Binding EveningCheckEnabled}">
                         <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Text="Uhrzeit" Classes="body-lg" VerticalAlignment="Center" />
-                            <TimePicker Grid.Column="1" SelectedTime="{Binding EveningCheckTime}" ClockIdentifier="24HourClock" MinuteIncrement="5" />
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="Uhrzeit" Classes="body-lg" />
+                                <TextBlock Text="Bitte als HH:mm eingeben, z. B. 20:00." Classes="caption" Foreground="{DynamicResource AppLateInkBrush}"
+                                           TextWrapping="Wrap" IsVisible="{Binding EveningCheckTimeInvalid}" />
+                            </StackPanel>
+                            <TextBox Grid.Column="1" Classes="time" Text="{Binding EveningCheckTimeText}" PlaceholderText="20:00" MaxLength="8"
+                                     TextInputOptions.ContentType="Number" LostFocus="OnEveningTimeLostFocus" />
                         </Grid>
                     </Border>
                     <Border Classes="setting" BorderThickness="0">

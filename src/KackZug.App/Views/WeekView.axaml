@@ -194,6 +194,13 @@
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
                                             <TextBlock Text="{Binding CheckedText}" Classes="caption" />
+                                            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding OpenInNavigatorCommand}"
+                                                    IsVisible="{Binding NavigatorUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <c:OutlineIcon Data="{StaticResource IconTrain}" Width="20" Height="20" />
+                                                    <TextBlock Text="Im DB Navigator öffnen" />
+                                                </StackPanel>
+                                            </Button>
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>

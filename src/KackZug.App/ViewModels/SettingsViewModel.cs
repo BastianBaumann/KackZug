@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using KackZug.Core;
 using KackZug.Core.Checking;
 using KackZug.Core.Models;
+using KackZug.Core.Planning;
 using KackZug.Services;
 
 namespace KackZug.ViewModels;
@@ -15,6 +16,7 @@ public partial class SettingsViewModel : PageViewModel
     private static readonly int[] OfferedLeadTimes = { 120, 90, 60, 45, 30, 15 };
 
     private bool _isLoading;
+    private TimeOnly _eveningTime = new TimeOnly(20, 0);
 
     public SettingsViewModel(MainViewModel main)
     {
@@ -50,7 +52,10 @@ public partial class SettingsViewModel : PageViewModel
     public partial bool EveningCheckEnabled { get; set; }
 
     [ObservableProperty]
-    public partial TimeSpan? EveningCheckTime { get; set; }
+    public partial string EveningCheckTimeText { get; set; } = "";
+
+    [ObservableProperty]
+    public partial bool EveningCheckTimeInvalid { get; set; }
 
     [ObservableProperty]
     public partial bool EveningOkNotification { get; set; }
@@ -160,13 +165,13 @@ public partial class SettingsViewModel : PageViewModel
         }
 
         EveningCheckEnabled = settings.EveningCheckTime is not null;
-        var evening = new TimeOnly(20, 0);
         if (settings.EveningCheckTime is not null)
         {
-            evening = settings.EveningCheckTime.Value;
+            _eveningTime = settings.EveningCheckTime.Value;
         }
 
-        EveningCheckTime = evening.ToTimeSpan();
+        EveningCheckTimeText = ClockText.Format(_eveningTime);
+        EveningCheckTimeInvalid = false;
         EveningOkNotification = settings.EveningOkNotification;
         DelayThreshold = settings.DelayThresholdMinutes;
         MinTransfer = settings.MinTransferMinutes;
@@ -244,9 +249,22 @@ public partial class SettingsViewModel : PageViewModel
         SaveEveningCheck();
     }
 
-    partial void OnEveningCheckTimeChanged(TimeSpan? value)
+    partial void OnEveningCheckTimeTextChanged(string value)
     {
+        var time = ClockText.Parse(value);
+        EveningCheckTimeInvalid = time is null;
+        if (time is null || time.Value == _eveningTime)
+        {
+            return;
+        }
+
+        _eveningTime = time.Value;
         SaveEveningCheck();
+    }
+
+    public void TidyEveningCheckTime()
+    {
+        EveningCheckTimeText = ClockText.Format(_eveningTime);
     }
 
     private void SaveEveningCheck()
@@ -257,9 +275,9 @@ public partial class SettingsViewModel : PageViewModel
         }
 
         Settings.EveningCheckTime = null;
-        if (EveningCheckEnabled && EveningCheckTime is not null)
+        if (EveningCheckEnabled)
         {
-            Settings.EveningCheckTime = TimeOnly.FromTimeSpan(EveningCheckTime.Value);
+            Settings.EveningCheckTime = _eveningTime;
         }
 
         Save();

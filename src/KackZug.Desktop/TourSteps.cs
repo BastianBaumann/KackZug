@@ -143,7 +143,10 @@ internal static class TourSteps
         var firstTrip = week.Detail.Trips[0];
         check(firstTrip.NowText == "jetzt 05:50" && firstTrip.Legs[0].Badge is not null && firstTrip.Legs[0].Badge!.Text == "+8 min", "Detail zeigt +8 und neue Zeit");
         check(firstTrip.Notes.Any(note => note.Contains("Anschluss gefährdet")), "Detail zeigt gefaehrdeten Umstieg");
+        check(firstTrip.NavigatorUrl is not null && firstTrip.NavigatorUrl.StartsWith("https://www.bahn.de/buchung/fahrplan/suche#")
+              && firstTrip.NavigatorUrl.Contains("hd=" + detailDay.Date.ToString("yyyy-MM-dd")), "Detail hat Navigator-Link fuer den Tag");
         await capture(window, Path.Combine(directory, "trip-detail.png"));
+        check(window.GetVisualDescendants().OfType<TextBlock>().Any(text => text.Text == "Im DB Navigator öffnen" && text.IsEffectivelyVisible), "Navigator-Knopf sichtbar");
         check(main.HandleBack() && !week.HasDetail, "Zurueck schliesst die Detailansicht");
 
         var editable = week.Days.Where(day => day.IsEditable).Take(3).ToList();
@@ -182,6 +185,17 @@ internal static class TourSteps
         check(themeRadios.Count(radio => radio.IsChecked == true) == 1 && main.Services.Data.Settings.ThemeMode == Core.Models.ThemeMode.System, "Zurueck auf System per Knopf, nur einer aktiv");
         var numberField = window.GetVisualDescendants().OfType<NumericUpDown>().First();
         check(Math.Abs(numberField.Bounds.Height - 48) < 1, "Zahlenfeld 48 hoch: " + numberField.Bounds.Height);
+        var timeField = window.GetVisualDescendants().OfType<TextBox>().First(box => box.Classes.Contains("time"));
+        check(timeField.Text == "20:00" && Math.Abs(timeField.Bounds.Height - 48) < 1, "Uhrzeit als Textfeld 20:00, 48 hoch");
+        timeField.Text = "1930";
+        check(main.Services.Store.Load().Settings.EveningCheckTime == new TimeOnly(19, 30) && !settings.EveningCheckTimeInvalid, "Uhrzeit 1930 gespeichert");
+        settings.TidyEveningCheckTime();
+        check(timeField.Text == "19:30", "Uhrzeit aufgeraeumt zu 19:30");
+        timeField.Text = "25:00";
+        check(settings.EveningCheckTimeInvalid && main.Services.Store.Load().Settings.EveningCheckTime == new TimeOnly(19, 30), "Falsche Uhrzeit zeigt Hinweis, alte bleibt");
+        await capture(window, Path.Combine(directory, "settings-time-invalid.png"));
+        settings.TidyEveningCheckTime();
+        check(!settings.EveningCheckTimeInvalid && timeField.Text == "19:30", "Nach Verlassen wieder 19:30");
 
         main.Navigate("week");
         var weekPage = (WeekViewModel)main.CurrentPage!;

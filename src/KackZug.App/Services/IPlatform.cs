@@ -18,6 +18,8 @@ public interface IPlatform
 
     void OpenUrl(string url);
 
+    void OpenInNavigator(string url);
+
     IReadOnlyList<PermissionInfo> GetPermissions();
 
     void OpenPermissionSettings(string key);

@@ -1,15 +1,22 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using KackZug.Core.Bahn;
 using KackZug.Core.Checking;
 using KackZug.Core.Models;
+using KackZug.Services;
 
 namespace KackZug.ViewModels;
 
 /// <summary>Eine Fahrt (Hin oder Rueck) in der Detailansicht: grosse Zeit, Status und Teilstrecken</summary>
 public partial class TripCardViewModel : ViewModelBase
 {
-    public TripCardViewModel(Shift shift, TripDirection direction, SavedConnection connection, CheckState? state)
+    private readonly IPlatform _platform;
+
+    public TripCardViewModel(IPlatform platform, DateOnly date, Shift shift, TripDirection direction, SavedConnection connection, CheckState? state)
     {
+        _platform = platform;
+        NavigatorUrl = NavigatorLink.ForTrip(connection, date);
         Shift = shift;
         Direction = direction;
         Connection = connection;
@@ -28,6 +35,8 @@ public partial class TripCardViewModel : ViewModelBase
 
     public string BigTime { get; }
 
+    public string? NavigatorUrl { get; }
+
     public ObservableCollection<LegDetailLine> Legs { get; } = new ObservableCollection<LegDetailLine>();
 
     public ObservableCollection<string> Notes { get; } = new ObservableCollection<string>();
@@ -43,6 +52,15 @@ public partial class TripCardViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial string CheckedText { get; set; } = "";
+
+    [RelayCommand]
+    private void OpenInNavigator()
+    {
+        if (NavigatorUrl is not null)
+        {
+            _platform.OpenInNavigator(NavigatorUrl);
+        }
+    }
 
     public void Show(TripStatus? status, CheckState? state)
     {

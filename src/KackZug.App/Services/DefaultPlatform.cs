@@ -58,6 +58,11 @@ public sealed class DefaultPlatform : IPlatform
         Process.Start(start);
     }
 
+    public void OpenInNavigator(string url)
+    {
+        OpenUrl(url);
+    }
+
     public IReadOnlyList<PermissionInfo> GetPermissions()
     {
         return new List<PermissionInfo>();

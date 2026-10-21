@@ -78,6 +78,20 @@ public sealed class AndroidPlatform : IPlatform
         _context.StartActivity(intent);
     }
 
+    public void OpenInNavigator(string url)
+    {
+        var uri = global::Android.Net.Uri.Parse(url);
+        var intent = new Intent(Intent.ActionView, uri);
+        intent.SetPackage(AlertNotifier.DbNavigatorPackage);
+        if (_context.PackageManager?.ResolveActivity(intent, 0) is null)
+        {
+            intent = new Intent(Intent.ActionView, uri);
+        }
+
+        intent.AddFlags(ActivityFlags.NewTask);
+        _context.StartActivity(intent);
+    }
+
     public IReadOnlyList<PermissionInfo> GetPermissions()
     {
         var notificationsAllowed = NotificationManagerCompat.From(_context)!.AreNotificationsEnabled();

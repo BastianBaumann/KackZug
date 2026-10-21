@@ -19,7 +19,8 @@ er verspätet, wechselt das Gleis oder wird der Anschluss knapp, meldet sich Kac
   setzen“ (oder langem Druck auf einen Tag) bekommen gleich mehrere Tage dieselbe Schicht. Eine neue
   Woche übernimmt auf Wunsch den Plan der Vorwoche.
 - **Details zu jeder Fahrt:** große Abfahrtszeit, aktueller Stand jeder Teilstrecke (Verspätung, neues
-  Gleis, Ausfall) und wie viel Puffer beim Umsteigen bleibt.
+  Gleis, Ausfall) und wie viel Puffer beim Umsteigen bleibt. Von dort lässt sich die Verbindung für
+  genau diesen Tag im DB Navigator öffnen.
 - **Prüfen zu festen Zeiten:** am Abend vorher und kurz vor der Abfahrt, standardmäßig 90, 45 und
   15 Minuten vorher. Die Zeiten sind einstellbar.
 - **Laute Meldungen bei Störungen:** Ausfall, Teilausfall, Verspätung ab einer einstellbaren Schwelle,

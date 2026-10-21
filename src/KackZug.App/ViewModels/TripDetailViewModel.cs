@@ -34,7 +34,7 @@ public partial class TripDetailViewModel : ViewModelBase
 
             var state = main.Services.Data.CheckStates.FirstOrDefault(item =>
                 item.Date == date && item.ShiftId == shift.Id && item.Direction == direction);
-            Trips.Add(new TripCardViewModel(shift, direction, connection, state));
+            Trips.Add(new TripCardViewModel(main.Services.Platform, date, shift, direction, connection, state));
         }
 
         HasNoTrips = Trips.Count == 0;
