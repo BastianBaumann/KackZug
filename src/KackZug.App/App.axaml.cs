@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using KackZug.Localization;
@@ -18,6 +19,8 @@ public partial class App : Application
     public static MainViewModel? Main { get; private set; }
 
     private static string? _pendingSharedText;
+
+    private static ContentControl? _activityHost;
 
     public static void HandleSharedText(string text)
     {
@@ -54,7 +57,11 @@ public partial class App : Application
         var main = new MainViewModel(services);
         Main = main;
         main.Navigate("settings");
-        if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow is not null)
+        if (_activityHost is not null)
+        {
+            _activityHost.Content = new MainView { DataContext = main };
+        }
+        else if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow is not null)
         {
             desktop.MainWindow.Content = new MainView { DataContext = main };
         }
@@ -66,6 +73,15 @@ public partial class App : Application
         {
             Platform.RecreateMainView();
         }
+    }
+
+    /// <remarks>Die Aktivitaet bekommt einen festen Rahmen, damit ein Sprachwechsel nur dessen Inhalt tauscht und die Aktivitaet bleibt.
+    /// Auf Android ist die Lebensdauer auch eine ISingleViewApplicationLifetime, deren MainView dort aber nicht angezeigt wird.</remarks>
+    private static Control CreateActivityContent()
+    {
+        var host = new ContentControl { Content = new MainView { DataContext = Main } };
+        _activityHost = host;
+        return host;
     }
 
     /// <summary>Beim Zurueckkehren in die App: wartet ein Update auf die Erlaubnis zum Installieren, geht es weiter</summary>
@@ -116,7 +132,7 @@ public partial class App : Application
         }
         else if (ApplicationLifetime is IActivityApplicationLifetime activity)
         {
-            activity.MainViewFactory = () => new MainView { DataContext = Main };
+            activity.MainViewFactory = CreateActivityContent;
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
         {
