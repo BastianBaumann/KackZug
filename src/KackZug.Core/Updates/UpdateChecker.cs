@@ -3,7 +3,7 @@ using KackZug.Core.Bahn;
 
 namespace KackZug.Core.Updates;
 
-/// <summary>Schaut hoechstens einmal am Tag auf GitHub nach, ob es eine neuere Version gibt</summary>
+/// <summary>Schaut auf GitHub nach, ob es eine neuere Version gibt: von selbst hoechstens einmal am Tag, auf Knopfdruck sofort</summary>
 public sealed class UpdateChecker
 {
     public const string LatestReleaseUrl = "https://api.github.com/repos/BastianBaumann/KackZug/releases/latest";
@@ -29,6 +29,13 @@ public sealed class UpdateChecker
 
     public async Task<UpdateInfo?> FindNewerAsync(string currentVersion, CancellationToken cancellationToken)
     {
+        var result = await CheckAsync(currentVersion, cancellationToken);
+        return result.Update;
+    }
+
+    public async Task<UpdateCheckResult> CheckAsync(string currentVersion, CancellationToken cancellationToken)
+    {
+        var failed = new UpdateCheckResult(UpdateCheckOutcome.Failed, null, null);
         try
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, LatestReleaseUrl);
@@ -37,7 +44,7 @@ public sealed class UpdateChecker
             using var response = await _httpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                return null;
+                return failed;
             }
 
             var text = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -46,27 +53,28 @@ public sealed class UpdateChecker
             var pageUrl = BahnJson.GetString(document.RootElement, "html_url");
             if (tag is null || pageUrl is null)
             {
-                return null;
+                return failed;
             }
 
+            var latest = CleanVersion(tag);
             if (!IsNewer(tag, currentVersion))
             {
-                return null;
+                return new UpdateCheckResult(UpdateCheckOutcome.UpToDate, null, latest);
             }
 
-            return new UpdateInfo(CleanVersion(tag), pageUrl);
+            return new UpdateCheckResult(UpdateCheckOutcome.NewVersion, new UpdateInfo(latest, pageUrl), latest);
         }
         catch (HttpRequestException)
         {
-            return null;
+            return failed;
         }
         catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            return null;
+            return failed;
         }
         catch (JsonException)
         {
-            return null;
+            return failed;
         }
     }
 

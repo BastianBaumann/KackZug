@@ -222,15 +222,29 @@
 
             <TextBlock Text="Updates" Classes="section" />
             <Border Classes="group">
-                <Border Classes="setting" BorderThickness="0">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <StackPanel Spacing="2" VerticalAlignment="Center">
-                            <TextBlock Text="Nach neuer Version schauen" Classes="body-lg" />
-                            <TextBlock Text="Einmal am Tag auf GitHub." Classes="caption" />
+                <StackPanel>
+                    <Border Classes="setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="Nach neuer Version schauen" Classes="body-lg" />
+                                <TextBlock Text="Einmal am Tag auf GitHub." Classes="caption" />
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding UpdateCheckEnabled}" OnContent="" OffContent="" />
+                        </Grid>
+                    </Border>
+                    <Border Classes="setting" BorderThickness="0">
+                        <StackPanel Spacing="8">
+                            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CheckUpdatesNowCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <c:OutlineIcon Data="{StaticResource IconRefresh}" Width="20" Height="20" />
+                                    <TextBlock Text="Nach Updates suchen" />
+                                </StackPanel>
+                            </Button>
+                            <TextBlock Text="{Binding UpdateStatusText}" Classes="caption" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"
+                                       IsVisible="{Binding UpdateStatusText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
                         </StackPanel>
-                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding UpdateCheckEnabled}" OnContent="" OffContent="" />
-                    </Grid>
-                </Border>
+                    </Border>
+                </StackPanel>
             </Border>
 
             <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,16,0,0" Command="{Binding ShowTutorialCommand}">

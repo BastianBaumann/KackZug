@@ -26,7 +26,8 @@ er verspätet, wechselt das Gleis oder wird der Anschluss knapp, meldet sich Kac
 - **Laute Meldungen bei Störungen:** Ausfall, Teilausfall, Verspätung ab einer einstellbaren Schwelle,
   Gleiswechsel, gefährdeter Anschluss oder eine Fahrt, die es so nicht mehr gibt. Es öffnet sich ein
   Vollbild-Alarm, auch auf dem Sperrbildschirm. Er klingelt und kommt alle fünf Minuten wieder, bis du
-  „Gesehen“ tippst. Auf Wunsch klingelt er auch bei „Bitte nicht stören“.
+  „Gesehen“ tippst. Dafür hat KackZug einen eigenen, schrillen Ton. Auf Wunsch klingelt er auch bei
+  „Bitte nicht stören“.
 - **Ehrliche Anzeige:** bahn.de hat den Fahrplan schon Tage vorher, Echtzeitdaten aber erst kurz vor der
   Abfahrt. Solange es keine Echtzeit gibt, zeigt KackZug „Laut Fahrplan“ statt „Planmäßig“.
 - **„Jetzt prüfen“** für heute und morgen, ein **Test-Alarm** und eine kurze **Einführung** beim
@@ -50,7 +51,8 @@ KackZug gibt es nicht im Play Store. Die fertige APK liegt auf der
 KackZug schaut einmal am Tag auf GitHub nach, ob es eine neue Version gibt, und zeigt dann oben einen
 Hinweis mit Link zur Release-Seite. Die neue APK einfach herunterladen und öffnen: Android installiert
 sie als Update über die alte Version, deine Schichten und der Wochenplan bleiben erhalten. Die Prüfung
-lässt sich in den Einstellungen abschalten.
+lässt sich in den Einstellungen abschalten. Mit „Nach Updates suchen“ in den Einstellungen schaut die
+App sofort nach. Vorabversionen (Tags mit Bindestrich, z. B. `v0.3.0-dev.1`) bietet sie nicht an.
 
 Wer Updates automatisch haben möchte, kann [Obtainium](https://github.com/ImranR98/Obtainium)
 verwenden und dort `https://github.com/BastianBaumann/KackZug` eintragen.
@@ -112,6 +114,9 @@ dotnet test KackZug.slnx
 Für die Entwicklung der Oberfläche gibt es einen Desktop-Start:
 `dotnet run --project src/KackZug.Desktop`. Er zeigt dieselben Seiten in einem schmalen Fenster,
 Alarme und Benachrichtigungen landen dort nur im Log.
+
+Der Störungston wird mit `python tools/sound/build_alarm.py` erzeugt, die App-Grafiken mit
+`python tools/design/build_assets.py`.
 
 ### Release erstellen
 

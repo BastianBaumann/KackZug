@@ -68,6 +68,7 @@ public sealed class StatusBadge
         switch (status.Value)
         {
             case LegStatus.OnTime:
+            case LegStatus.PlannedOnly:
                 return "Ok";
             case LegStatus.PlatformChanged:
             case LegStatus.Delayed:

@@ -5,6 +5,7 @@ using KackZug.Core.Import;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
 using KackZug.Core.Storage;
+using KackZug.Core.Updates;
 
 namespace KackZug.Services;
 
@@ -65,6 +66,18 @@ public sealed class AppServices
     }
 
     public Func<ITripStatusSource>? StatusSourceFactory { get; set; }
+
+    public Func<HttpClient>? UpdateClientFactory { get; set; }
+
+    public UpdateChecker CreateUpdateChecker()
+    {
+        if (UpdateClientFactory is not null)
+        {
+            return new UpdateChecker(UpdateClientFactory());
+        }
+
+        return new UpdateChecker(new HttpClient { Timeout = TimeSpan.FromSeconds(10) });
+    }
 
     public ITripStatusSource CreateStatusSource()
     {

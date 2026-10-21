@@ -65,4 +65,21 @@ public class UpdateCheckerTests
 
         Assert.Null(update);
     }
+
+    [Fact]
+    public async Task ManualCheckTellsUpToDateAndFailedApart()
+    {
+        var handler = new FakeHttpHandler();
+        handler.Answer("/repos/BastianBaumann/KackZug/releases/latest", HttpStatusCode.OK,
+            "{\"tag_name\":\"v0.2.1\",\"html_url\":\"https://github.com/BastianBaumann/KackZug/releases/tag/v0.2.1\"}");
+        var upToDate = await new UpdateChecker(handler.CreateClient()).CheckAsync("0.2.1", CancellationToken.None);
+        var newer = await new UpdateChecker(handler.CreateClient()).CheckAsync("0.2.0", CancellationToken.None);
+        var offline = await new UpdateChecker(new FakeHttpHandler().CreateClient()).CheckAsync("0.2.1", CancellationToken.None);
+
+        Assert.Equal(UpdateCheckOutcome.UpToDate, upToDate.Outcome);
+        Assert.Equal("0.2.1", upToDate.LatestVersion);
+        Assert.Equal(UpdateCheckOutcome.NewVersion, newer.Outcome);
+        Assert.Equal("0.2.1", newer.Update!.Version);
+        Assert.Equal(UpdateCheckOutcome.Failed, offline.Outcome);
+    }
 }

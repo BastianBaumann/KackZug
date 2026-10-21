@@ -6,6 +6,7 @@ using KackZug.Core;
 using KackZug.Core.Checking;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
+using KackZug.Core.Updates;
 using KackZug.Services;
 
 namespace KackZug.ViewModels;
@@ -86,6 +87,13 @@ public partial class SettingsViewModel : PageViewModel
 
     [ObservableProperty]
     public partial bool UpdateCheckEnabled { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CheckUpdatesNowCommand))]
+    public partial bool IsCheckingUpdates { get; set; }
+
+    [ObservableProperty]
+    public partial string? UpdateStatusText { get; set; }
 
     [ObservableProperty]
     public partial bool ThemeSystem { get; set; }
@@ -385,6 +393,41 @@ public partial class SettingsViewModel : PageViewModel
             Settings.NewWeekMode = NewWeekMode.Empty;
             Save();
         }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanCheckUpdatesNow))]
+    public async Task CheckUpdatesNowAsync()
+    {
+        IsCheckingUpdates = true;
+        UpdateStatusText = "Schaue auf GitHub nach …";
+        try
+        {
+            var result = await Main.Services.CreateUpdateChecker().CheckAsync(AppInfo.Version, CancellationToken.None);
+            Main.Services.Data.LastUpdateCheck = Main.Services.Clock.Now;
+            Main.Services.Store.Save(Main.Services.Data);
+            if (result.Outcome == UpdateCheckOutcome.NewVersion)
+            {
+                Main.ShowUpdate(result.Update!);
+                UpdateStatusText = "Version " + result.Update!.Version + " ist da. Oben auf „Herunterladen“ tippen.";
+            }
+            else if (result.Outcome == UpdateCheckOutcome.UpToDate)
+            {
+                UpdateStatusText = "Du hast die neueste Version (" + AppInfo.Version + ").";
+            }
+            else
+            {
+                UpdateStatusText = "Konnte bei GitHub nicht nachsehen. Internet da? Ist das Projekt öffentlich?";
+            }
+        }
+        finally
+        {
+            IsCheckingUpdates = false;
+        }
+    }
+
+    private bool CanCheckUpdatesNow()
+    {
+        return !IsCheckingUpdates;
     }
 
     partial void OnUpdateCheckEnabledChanged(bool value)

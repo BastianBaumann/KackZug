@@ -150,8 +150,7 @@ public partial class MainViewModel : ViewModelBase
 
         data.LastUpdateCheck = Services.Clock.Now;
         Services.Store.Save(data);
-        using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
-        var checker = new UpdateChecker(httpClient);
+        var checker = Services.CreateUpdateChecker();
         var update = await checker.FindNewerAsync(AppInfo.Version, CancellationToken.None);
         if (update is not null)
         {

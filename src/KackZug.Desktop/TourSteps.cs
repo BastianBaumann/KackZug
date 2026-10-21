@@ -229,6 +229,34 @@ internal static class TourSteps
         check(!main.Services.Store.Load().Settings.BreakThroughDoNotDisturb, "Bitte-nicht-stoeren-Schalter wieder aus");
 
         await RunManualEntryAsync(main, window, directory, check, capture);
+        await RunUpdateCheckAsync(main, window, directory, check, capture);
+    }
+
+    private static async Task RunUpdateCheckAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)
+    {
+        var plannedOnly = new StatusBadge(Core.Checking.LegStatus.PlannedOnly, "Laut Fahrplan", "");
+        var onTime = new StatusBadge(Core.Checking.LegStatus.OnTime, "Planmäßig", "");
+        var notChecked = new StatusBadge(null, "—", "");
+        check(ReferenceEquals(plannedOnly.Background, onTime.Background) && !ReferenceEquals(plannedOnly.Background, notChecked.Background), "Laut Fahrplan gruen, nicht geprueft grau");
+
+        main.Navigate("settings");
+        var settings = (SettingsViewModel)main.CurrentPage!;
+        main.DismissUpdateCommand.Execute(null);
+
+        main.Services.UpdateClientFactory = () => new HttpClient(new DemoUpdateHandler("v" + Core.AppInfo.Version));
+        await settings.CheckUpdatesNowCommand.ExecuteAsync(null);
+        check(settings.UpdateStatusText is not null && settings.UpdateStatusText.StartsWith("Du hast die neueste Version") && !main.HasUpdate, "Updates: aktuell");
+
+        main.Services.UpdateClientFactory = () => new HttpClient(new DemoUpdateHandler(null));
+        await settings.CheckUpdatesNowCommand.ExecuteAsync(null);
+        check(settings.UpdateStatusText is not null && settings.UpdateStatusText.StartsWith("Konnte bei GitHub nicht nachsehen"), "Updates: 404 wird als nicht pruefbar gemeldet");
+
+        main.Services.UpdateClientFactory = () => new HttpClient(new DemoUpdateHandler("v9.9.9"));
+        await settings.CheckUpdatesNowCommand.ExecuteAsync(null);
+        check(main.HasUpdate && settings.UpdateStatusText is not null && settings.UpdateStatusText.Contains("9.9.9"), "Updates: neue Version zeigt Banner");
+        check(window.GetVisualDescendants().OfType<TextBlock>().Any(text => text.Text == "Nach Updates suchen"), "Knopf Nach Updates suchen sichtbar");
+        await capture(window, Path.Combine(directory, "settings-update-check.png"));
+        main.DismissUpdateCommand.Execute(null);
     }
 
     private static async Task RunManualEntryAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)

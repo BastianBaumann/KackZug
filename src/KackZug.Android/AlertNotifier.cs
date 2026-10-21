@@ -11,12 +11,15 @@ namespace KackZug.Android;
 /// <summary>Zeigt Meldungen: Stoerungen laut und auffaellig, Infos ruhig</summary>
 public static class AlertNotifier
 {
-    public const string ProblemChannelId = "stoerung_v1";
-    public const string ProblemDoNotDisturbChannelId = "stoerung_dnd_v1";
+    public const string ProblemChannelId = "stoerung_v2";
+    public const string ProblemDoNotDisturbChannelId = "stoerung_dnd_v2";
     public const string InfoChannelId = "info_v1";
     public const string DbNavigatorPackage = "de.hafas.android.db";
 
     private static readonly long[] VibrationPattern = { 0, 800, 400, 800, 400, 800, 400, 1200 };
+
+    /// <remarks>Ein Kanal behaelt seinen Ton fuer immer, deshalb bekommt jeder neue Ton neue Kanal-Kennungen.</remarks>
+    private static readonly string[] OldChannelIds = { "stoerung_v1", "stoerung_dnd_v1" };
 
     public static void EnsureChannels(Context context)
     {
@@ -31,9 +34,17 @@ public static class AlertNotifier
             return;
         }
 
+        foreach (var oldId in OldChannelIds)
+        {
+            if (manager.GetNotificationChannel(oldId) is not null)
+            {
+                manager.DeleteNotificationChannel(oldId);
+            }
+        }
+
         if (manager.GetNotificationChannel(ProblemChannelId) is null)
         {
-            var problem = CreateProblemChannel(ProblemChannelId, "Störung");
+            var problem = CreateProblemChannel(context, ProblemChannelId, "Störung");
             manager.CreateNotificationChannel(problem);
         }
 
@@ -70,7 +81,7 @@ public static class AlertNotifier
 
         if (manager.GetNotificationChannel(ProblemDoNotDisturbChannelId) is null)
         {
-            var channel = CreateProblemChannel(ProblemDoNotDisturbChannelId, "Störung (auch bei Bitte nicht stören)");
+            var channel = CreateProblemChannel(context, ProblemDoNotDisturbChannelId, "Störung (auch bei Bitte nicht stören)");
             channel.SetBypassDnd(true);
             manager.CreateNotificationChannel(channel);
         }
@@ -78,7 +89,7 @@ public static class AlertNotifier
         return ProblemDoNotDisturbChannelId;
     }
 
-    private static NotificationChannel CreateProblemChannel(string id, string name)
+    private static NotificationChannel CreateProblemChannel(Context context, string id, string name)
     {
         var channel = new NotificationChannel(id, name, NotificationImportance.High)
         {
@@ -88,7 +99,7 @@ public static class AlertNotifier
         channel.EnableVibration(true);
         channel.SetVibrationPattern(VibrationPattern);
         channel.EnableLights(true);
-        var sound = RingtoneManager.GetDefaultUri(RingtoneType.Alarm) ?? RingtoneManager.GetDefaultUri(RingtoneType.Notification);
+        var sound = global::Android.Net.Uri.Parse("android.resource://" + context.PackageName + "/" + Resource.Raw.kackzug_alarm);
         var audio = new AudioAttributes.Builder()!
             .SetUsage(AudioUsageKind.Alarm)!
             .SetContentType(AudioContentType.Sonification)!
