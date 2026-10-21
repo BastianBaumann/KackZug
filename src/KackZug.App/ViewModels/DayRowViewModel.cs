@@ -99,6 +99,29 @@ public partial class DayRowViewModel : ViewModelBase
     public partial ShiftOption? SelectedOption { get; set; }
 
     [ObservableProperty]
+    public partial bool IsMarked { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsSelecting { get; set; }
+
+    public bool CanMark
+    {
+        get { return IsSelecting && IsEditable; }
+    }
+
+    public void ApplyShift(Shift? shift)
+    {
+        _plan.ShiftId = null;
+        if (shift is not null)
+        {
+            _plan.ShiftId = shift.Id;
+        }
+
+        _plan.OutboundEnabled = true;
+        _plan.ReturnEnabled = true;
+    }
+
+    [ObservableProperty]
     public partial bool OutboundEnabled { get; set; }
 
     [ObservableProperty]
@@ -189,6 +212,15 @@ public partial class DayRowViewModel : ViewModelBase
         OnPropertyChanged(nameof(StripeBrush));
         OnPropertyChanged(nameof(ShiftBrush));
         OnPropertyChanged(nameof(ShiftForeground));
+    }
+
+    partial void OnIsSelectingChanged(bool value)
+    {
+        OnPropertyChanged(nameof(CanMark));
+        if (!value)
+        {
+            IsMarked = false;
+        }
     }
 
     partial void OnSelectedOptionChanged(ShiftOption? value)

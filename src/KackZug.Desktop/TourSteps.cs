@@ -136,6 +136,21 @@ internal static class TourSteps
         weekRadios[0].IsChecked = true;
         check(week.WeekTitle == "Diese Woche", "Zurueck zur laufenden Woche");
 
+        var editable = week.Days.Where(day => day.IsEditable).Take(3).ToList();
+        week.StartSelectingCommand.Execute(null);
+        check(week.IsSelecting && week.Days.Where(day => day.IsPast).All(day => !day.CanMark), "Auswahlmodus, vergangene Tage nicht markierbar");
+        foreach (var day in editable)
+        {
+            day.IsMarked = true;
+        }
+
+        week.BulkOption = week.BulkOptions.First(option => option.Name == "Spätdienst");
+        await capture(window, Path.Combine(directory, "week-select.png"));
+        week.ApplySelectionCommand.Execute(null);
+        var currentPlan = main.Services.Store.Load().CurrentWeek!;
+        var spaetId = main.Services.Data.Shifts.First(shift => shift.Name == "Spätdienst").Id;
+        check(!week.IsSelecting && editable.All(day => currentPlan.GetDay(day.Date.DayOfWeek).ShiftId == spaetId), "Drei Tage auf einmal gesetzt und gespeichert");
+
         main.Navigate("settings");
         var settings = (SettingsViewModel)main.CurrentPage!;
         check(settings.LeadTimes.Count(option => option.IsChecked) == 3, "Drei Vorlaufzeiten aktiv");

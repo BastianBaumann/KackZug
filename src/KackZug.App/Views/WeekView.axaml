@@ -4,7 +4,8 @@
              xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.WeekView"
              x:DataType="vm:WeekViewModel">
-    <ScrollViewer>
+    <Grid RowDefinitions="*,Auto">
+    <ScrollViewer Grid.Row="0">
         <StackPanel Margin="16" Spacing="12">
             <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
                 <UniformGrid Rows="1">
@@ -55,6 +56,7 @@
                             <Grid ColumnDefinitions="6,56,*">
                                 <Border Grid.Column="0" Background="{Binding StripeBrush}" />
                                 <StackPanel Grid.Column="1" Margin="12,12,0,12" VerticalAlignment="Center">
+                                    <CheckBox IsChecked="{Binding IsMarked}" IsVisible="{Binding CanMark}" Margin="0,0,0,4" />
                                     <TextBlock Text="HEUTE" Classes="kicker" IsVisible="{Binding IsToday}" />
                                     <TextBlock Text="{Binding WeekdayShort}" Classes="title" FontWeight="Bold" />
                                     <TextBlock Text="{Binding DateText}" Classes="caption" FontFeatures="+tnum" />
@@ -100,6 +102,37 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                    Command="{Binding StartSelectingCommand}" CommandParameter="{x:Null}"
+                    IsVisible="{Binding !IsSelecting}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <c:OutlineIcon Data="{StaticResource IconWeek}" Width="20" Height="20" />
+                    <TextBlock Text="Mehrere Tage setzen" />
+                </StackPanel>
+            </Button>
         </StackPanel>
     </ScrollViewer>
+
+    <Border Grid.Row="1" IsVisible="{Binding IsSelecting}" Background="{DynamicResource AppSurfaceBrush}"
+            BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,1,0,0" Padding="16,12" BoxShadow="{DynamicResource AppSheetShadow}">
+        <StackPanel Spacing="10">
+            <TextBlock Text="Markierte Tage bekommen diese Schicht:" Classes="caption" />
+            <ComboBox ItemsSource="{Binding BulkOptions}" SelectedItem="{Binding BulkOption}" HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ShiftOption">
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <UniformGrid Rows="1">
+                <Button Classes="secondary" Margin="0,0,4,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CancelSelectingCommand}">
+                    <TextBlock Text="Abbrechen" />
+                </Button>
+                <Button Classes="primary" Margin="4,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding ApplySelectionCommand}">
+                    <TextBlock Text="Übernehmen" />
+                </Button>
+            </UniformGrid>
+        </StackPanel>
+    </Border>
+    </Grid>
 </UserControl>

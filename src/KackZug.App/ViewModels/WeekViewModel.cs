@@ -40,6 +40,14 @@ public partial class WeekViewModel : PageViewModel
     public partial bool IsThisWeek { get; set; } = true;
 
     [ObservableProperty]
+    public partial bool IsSelecting { get; set; }
+
+    [ObservableProperty]
+    public partial ShiftOption? BulkOption { get; set; }
+
+    public ObservableCollection<ShiftOption> BulkOptions { get; } = new ObservableCollection<ShiftOption>();
+
+    [ObservableProperty]
     public partial bool IsNextWeek { get; set; }
 
     [ObservableProperty]
@@ -78,6 +86,66 @@ public partial class WeekViewModel : PageViewModel
         }
     }
 
+    [RelayCommand]
+    public void StartSelecting(DayRowViewModel? firstDay)
+    {
+        BulkOptions.Clear();
+        BulkOptions.Add(new ShiftOption(null));
+        foreach (var shift in Main.Services.Data.Shifts)
+        {
+            BulkOptions.Add(new ShiftOption(shift));
+        }
+
+        BulkOption = BulkOptions.FirstOrDefault(option => option.Shift is not null) ?? BulkOptions[0];
+        IsSelecting = true;
+        foreach (var day in Days)
+        {
+            day.IsSelecting = true;
+        }
+
+        if (firstDay is not null && firstDay.IsEditable)
+        {
+            firstDay.IsMarked = true;
+        }
+    }
+
+    [RelayCommand]
+    private void CancelSelecting()
+    {
+        IsSelecting = false;
+        foreach (var day in Days)
+        {
+            day.IsSelecting = false;
+        }
+    }
+
+    [RelayCommand]
+    private void ApplySelection()
+    {
+        var marked = Days.Where(day => day.IsMarked && day.IsEditable).ToList();
+        if (marked.Count == 0 || BulkOption is null)
+        {
+            Main.ShowToast("Markier erst ein paar Tage.", false);
+            return;
+        }
+
+        foreach (var day in marked)
+        {
+            day.ApplyShift(BulkOption.Shift);
+        }
+
+        IsSelecting = false;
+        Main.Services.SaveAndReschedule();
+        Refresh();
+        var dayText = marked.Count + " Tage";
+        if (marked.Count == 1)
+        {
+            dayText = "1 Tag";
+        }
+
+        Main.ShowToast(dayText + " auf „" + BulkOption.Name + "“ gesetzt.", false);
+    }
+
     partial void OnIsNextWeekChanged(bool value)
     {
         if (_isRefreshing)
@@ -90,7 +158,7 @@ public partial class WeekViewModel : PageViewModel
 
     private void OnDataChanged()
     {
-        if (_isSavingOwnChange)
+        if (_isSavingOwnChange || IsSelecting)
         {
             return;
         }
@@ -180,7 +248,9 @@ public partial class WeekViewModel : PageViewModel
                 }
 
                 var date = week.DateOf(day);
-                Days.Add(new DayRowViewModel(this, week.GetDay(day), date, today, options));
+                var row = new DayRowViewModel(this, week.GetDay(day), date, today, options);
+                row.IsSelecting = IsSelecting;
+                Days.Add(row);
             }
 
             WeekText = "Woche vom " + week.WeekStart.ToString("dd.MM.") + " bis " + week.WeekStart.AddDays(6).ToString("dd.MM.yy");
