@@ -19,12 +19,23 @@ public sealed class TripChecker
     public async Task<TripCheckOutcome?> CheckAsync(AppData data, DateOnly travelDate, Guid shiftId, TripDirection direction, CheckContext context, CancellationToken cancellationToken)
     {
         var shift = data.FindShift(shiftId);
-        if (shift is null)
+        OneOffTrip? trip = null;
+        SavedConnection? connection;
+        if (shift is not null)
         {
-            return null;
+            connection = shift.GetConnection(direction);
+        }
+        else
+        {
+            trip = data.FindTrip(shiftId);
+            if (trip is null || trip.TravelDate != travelDate)
+            {
+                return null;
+            }
+
+            connection = trip.Connection;
         }
 
-        var connection = shift.GetConnection(direction);
         if (connection is null || connection.FirstRide is null)
         {
             return null;
@@ -44,7 +55,16 @@ public sealed class TripChecker
         }
 
         var status = StatusEvaluator.Evaluate(connection, observations, data.Settings);
-        var alert = AlertComposer.Compose(shift, direction, travelDate, status);
+        TripAlert alert;
+        if (shift is not null)
+        {
+            alert = AlertComposer.Compose(shift, direction, travelDate, status);
+        }
+        else
+        {
+            alert = AlertComposer.Compose(trip!, status);
+        }
+
         alert.RepeatUntil = BerlinTime.ToInstant(connection.FirstRide.DepartureOn(travelDate), BerlinTime.Zone);
         var state = FindOrCreateState(data, travelDate, shiftId, direction);
         var shouldNotify = ShouldNotify(state, alert, context, data.Settings);

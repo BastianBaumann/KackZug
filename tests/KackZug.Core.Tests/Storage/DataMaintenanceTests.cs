@@ -1,4 +1,5 @@
 using KackZug.Core.Models;
+using KackZug.Core.Planning;
 using KackZug.Core.Storage;
 
 namespace KackZug.Core.Tests.Storage;
@@ -6,6 +7,7 @@ namespace KackZug.Core.Tests.Storage;
 /// <summary>Prueft Wochenwechsel und Aufraeumen</summary>
 public class DataMaintenanceTests
 {
+    private static readonly TimeZoneInfo Berlin = BerlinTime.Zone;
     private static readonly DateOnly Wednesday = new DateOnly(2026, 10, 21);
     private static readonly DateOnly Monday = new DateOnly(2026, 10, 19);
     private static readonly DateOnly NextMonday = new DateOnly(2026, 10, 26);
@@ -15,7 +17,7 @@ public class DataMaintenanceTests
     {
         var data = new AppData();
 
-        var changed = DataMaintenance.Apply(data, Wednesday);
+        var changed = DataMaintenance.Apply(data, Noon(Wednesday), Berlin);
 
         Assert.True(changed);
         Assert.Equal(Monday, data.CurrentWeek!.WeekStart);
@@ -26,9 +28,9 @@ public class DataMaintenanceTests
     public void SameWeekStaysUntouched()
     {
         var data = new AppData();
-        DataMaintenance.Apply(data, Monday);
+        DataMaintenance.Apply(data, Noon(Monday), Berlin);
 
-        var changed = DataMaintenance.Apply(data, Wednesday);
+        var changed = DataMaintenance.Apply(data, Noon(Wednesday), Berlin);
 
         Assert.False(changed);
     }
@@ -38,7 +40,7 @@ public class DataMaintenanceTests
     {
         var data = DataWithPlannedTuesday(NewWeekMode.CopyPrevious);
 
-        DataMaintenance.Apply(data, NextMonday);
+        DataMaintenance.Apply(data, Noon(NextMonday), Berlin);
 
         Assert.Equal(NextMonday, data.CurrentWeek!.WeekStart);
         var tuesday = data.CurrentWeek.GetDay(DayOfWeek.Tuesday);
@@ -51,7 +53,7 @@ public class DataMaintenanceTests
     {
         var data = DataWithPlannedTuesday(NewWeekMode.Empty);
 
-        DataMaintenance.Apply(data, NextMonday);
+        DataMaintenance.Apply(data, Noon(NextMonday), Berlin);
 
         Assert.All(data.CurrentWeek!.Days, day => Assert.Null(day.ShiftId));
     }
@@ -64,7 +66,7 @@ public class DataMaintenanceTests
         next.GetDay(DayOfWeek.Tuesday).ShiftId = null;
         next.GetDay(DayOfWeek.Friday).ShiftId = data.Shifts[0].Id;
 
-        DataMaintenance.Apply(data, NextMonday);
+        DataMaintenance.Apply(data, Noon(NextMonday), Berlin);
 
         Assert.Equal(NextMonday, data.CurrentWeek!.WeekStart);
         Assert.Null(data.CurrentWeek.GetDay(DayOfWeek.Tuesday).ShiftId);
@@ -89,7 +91,7 @@ public class DataMaintenanceTests
         var data = DataWithPlannedTuesday(NewWeekMode.CopyPrevious);
         data.EnsureNextWeek();
 
-        DataMaintenance.Apply(data, NextMonday.AddDays(7));
+        DataMaintenance.Apply(data, Noon(NextMonday.AddDays(7)), Berlin);
 
         Assert.Equal(NextMonday.AddDays(7), data.CurrentWeek!.WeekStart);
         Assert.Null(data.NextWeek);
@@ -123,7 +125,7 @@ public class DataMaintenanceTests
         data.CheckStates.Add(new CheckState { Date = Wednesday.AddDays(-1) });
         data.CheckStates.Add(new CheckState { Date = Wednesday });
 
-        DataMaintenance.Apply(data, Wednesday);
+        DataMaintenance.Apply(data, Noon(Wednesday), Berlin);
 
         Assert.Equal(2, data.CheckStates.Count);
     }
@@ -134,7 +136,7 @@ public class DataMaintenanceTests
         var data = DataWithPlannedTuesday(NewWeekMode.CopyPrevious);
         data.Shifts.Clear();
 
-        DataMaintenance.Apply(data, Monday.AddDays(1));
+        DataMaintenance.Apply(data, Noon(Monday.AddDays(1)), Berlin);
 
         Assert.Null(data.CurrentWeek!.GetDay(DayOfWeek.Tuesday).ShiftId);
     }
@@ -148,6 +150,67 @@ public class DataMaintenanceTests
 
         Assert.Empty(data.Shifts);
         Assert.Null(data.CurrentWeek!.GetDay(DayOfWeek.Tuesday).ShiftId);
+    }
+
+    [Fact]
+    public void OneOffTripStaysUntilAnHourAfterArrival()
+    {
+        var data = new AppData();
+        var trip = SampleData.CreateTrip("Konzert", Wednesday);
+        data.Trips.Add(trip);
+        data.CheckStates.Add(new CheckState { Date = Wednesday, ShiftId = trip.Id });
+
+        DataMaintenance.Apply(data, At(Wednesday, 8, 27), Berlin);
+
+        Assert.Single(data.Trips);
+        Assert.Single(data.CheckStates);
+    }
+
+    [Fact]
+    public void OneOffTripIsRemovedAnHourAfterArrivalWithItsCheckStates()
+    {
+        var data = new AppData();
+        var trip = SampleData.CreateTrip("Konzert", Wednesday);
+        var later = SampleData.CreateTrip("Messe", Wednesday.AddDays(1));
+        data.Trips.Add(trip);
+        data.Trips.Add(later);
+        data.CheckStates.Add(new CheckState { Date = Wednesday, ShiftId = trip.Id });
+        data.CheckStates.Add(new CheckState { Date = Wednesday, ShiftId = Guid.NewGuid() });
+
+        var changed = DataMaintenance.Apply(data, At(Wednesday, 8, 28), Berlin);
+
+        Assert.True(changed);
+        Assert.Equal(later.Id, Assert.Single(data.Trips).Id);
+        Assert.DoesNotContain(data.CheckStates, state => state.ShiftId == trip.Id);
+        Assert.Single(data.CheckStates);
+    }
+
+    [Fact]
+    public void OneOffTripArrivingAfterMidnightStaysUntilTheNextNight()
+    {
+        var data = new AppData();
+        var trip = SampleData.CreateTrip("Heimweg", Wednesday);
+        var lastRide = trip.Connection.LastRide!;
+        lastRide.PlannedDeparture = new TimeOnly(23, 50);
+        lastRide.PlannedArrival = new TimeOnly(0, 30);
+        lastRide.ArrivalDayOffset = 1;
+        data.Trips.Add(trip);
+
+        DataMaintenance.Apply(data, At(Wednesday.AddDays(1), 1, 29), Berlin);
+        Assert.Single(data.Trips);
+
+        DataMaintenance.Apply(data, At(Wednesday.AddDays(1), 1, 30), Berlin);
+        Assert.Empty(data.Trips);
+    }
+
+    private static DateTimeOffset Noon(DateOnly date)
+    {
+        return At(date, 12, 0);
+    }
+
+    private static DateTimeOffset At(DateOnly date, int hour, int minute)
+    {
+        return BerlinTime.ToInstant(date.ToDateTime(new TimeOnly(hour, minute)), Berlin);
     }
 
     private static AppData DataWithPlannedTuesday(NewWeekMode mode)

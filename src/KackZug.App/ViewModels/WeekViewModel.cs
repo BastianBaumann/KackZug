@@ -232,7 +232,7 @@ public partial class WeekViewModel : PageViewModel
             {
                 foreach (var trip in TripCalendar.TripsOn(services.Data, date))
                 {
-                    var outcome = await checker.CheckAsync(services.Data, date, trip.Shift.Id, trip.Direction, CheckContext.Manual, CancellationToken.None);
+                    var outcome = await checker.CheckAsync(services.Data, date, trip.Id, trip.Direction, CheckContext.Manual, CancellationToken.None);
                     if (outcome is not null)
                     {
                         checkedTrips++;

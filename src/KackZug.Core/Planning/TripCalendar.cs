@@ -2,10 +2,24 @@ using KackZug.Core.Models;
 
 namespace KackZug.Core.Planning;
 
-/// <summary>Ermittelt, welche Fahrten an einem Tag laut Wochenplan anstehen</summary>
+/// <summary>Ermittelt, welche Fahrten an einem Tag anstehen: laut Wochenplan und als Einzelfahrt</summary>
 public static class TripCalendar
 {
     public static List<TripPlan> TripsOn(AppData data, DateOnly date)
+    {
+        var trips = ShiftTripsOn(data, date);
+        foreach (var trip in data.Trips)
+        {
+            if (trip.TravelDate == date && trip.Connection.FirstRide is not null)
+            {
+                trips.Add(new TripPlan(trip));
+            }
+        }
+
+        return trips;
+    }
+
+    private static List<TripPlan> ShiftTripsOn(AppData data, DateOnly date)
     {
         var trips = new List<TripPlan>();
         var dayPlan = DayPlanFor(data, date);

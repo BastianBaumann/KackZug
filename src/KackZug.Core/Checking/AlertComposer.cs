@@ -9,10 +9,24 @@ public static class AlertComposer
 {
     public static TripAlert Compose(Shift shift, TripDirection direction, DateOnly travelDate, TripStatus status)
     {
+        var name = shift.Name + " " + DirectionName(direction);
+        var shortName = shift.Name + " " + ShortDirectionName(direction);
+        var kicker = shift.Name + " · " + DirectionName(direction);
+        return Compose(shift.Id, direction, travelDate, status, name, shortName, kicker);
+    }
+
+    /// <summary>Meldung zu einer Einzelfahrt: nur ihr Name, ohne Hin- oder Rueckfahrt</summary>
+    public static TripAlert Compose(OneOffTrip trip, TripStatus status)
+    {
+        return Compose(trip.Id, TripDirection.Outbound, trip.TravelDate, status, trip.Name, trip.Name, trip.Name);
+    }
+
+    private static TripAlert Compose(Guid id, TripDirection direction, DateOnly travelDate, TripStatus status, string name, string shortName, string kicker)
+    {
         var alert = new TripAlert
         {
             TravelDate = travelDate,
-            ShiftId = shift.Id,
+            ShiftId = id,
             Direction = direction,
             Status = status.Overall,
             Severity = SeverityOf(status.Overall),
@@ -20,15 +34,15 @@ public static class AlertComposer
         };
 
         var headline = Headline(status);
-        alert.Title = shift.Name + " " + DirectionName(direction) + ": " + headline;
+        alert.Title = name + ": " + headline;
         if (alert.Severity == AlertSeverity.Problem)
         {
-            alert.Title = (shift.Name + " " + ShortDirectionName(direction) + ": " + headline).ToUpper(Language.Culture);
+            alert.Title = (shortName + ": " + headline).ToUpper(Language.Culture);
         }
 
         alert.BadgeText = BadgeText(status);
         alert.Text = Details(status);
-        alert.Kicker = Kicker(shift, direction, travelDate);
+        alert.Kicker = Kicker(kicker, travelDate);
         alert.Headline = AlarmHeadline(status);
         alert.TripLine = TripLine(status);
         return alert;
@@ -125,10 +139,10 @@ public static class AlertComposer
         return builder.ToString();
     }
 
-    private static string Kicker(Shift shift, TripDirection direction, DateOnly travelDate)
+    private static string Kicker(string name, DateOnly travelDate)
     {
         var day = Language.Culture.DateTimeFormat.GetAbbreviatedDayName(travelDate.DayOfWeek);
-        var text = shift.Name + " · " + DirectionName(direction) + " · " + Format(Strings.Alert_KickerDate, day, travelDate);
+        var text = name + " · " + Format(Strings.Alert_KickerDate, day, travelDate);
         return text.ToUpper(Language.Culture);
     }
 

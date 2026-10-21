@@ -43,4 +43,10 @@ public static class SampleData
 
         return new Shift { Name = name, Outbound = outbound };
     }
+
+    public static OneOffTrip CreateTrip(string name, DateOnly travelDate)
+    {
+        var connection = CreateShift(name).Outbound!;
+        return new OneOffTrip { Name = name, TravelDate = travelDate, Connection = connection };
+    }
 }

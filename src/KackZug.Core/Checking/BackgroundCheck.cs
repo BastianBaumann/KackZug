@@ -26,8 +26,7 @@ public sealed class BackgroundCheck
         var result = new BackgroundCheckResult();
         var data = _store.Load();
         Language.Apply(data.Settings.Language);
-        var today = DateOnly.FromDateTime(BerlinTime.ToWallClock(_clock.Now, BerlinTime.Zone));
-        DataMaintenance.Apply(data, today);
+        DataMaintenance.Apply(data, _clock.Now, BerlinTime.Zone);
 
         if (check.Kind != CheckKind.Maintenance && IsStillPlanned(data, check))
         {
@@ -60,7 +59,7 @@ public sealed class BackgroundCheck
     private static bool IsStillPlanned(AppData data, PlannedCheck check)
     {
         var trips = TripCalendar.TripsOn(data, check.TravelDate);
-        return trips.Any(trip => trip.Shift.Id == check.ShiftId && trip.Direction == check.Direction);
+        return trips.Any(trip => trip.Id == check.ShiftId && trip.Direction == check.Direction);
     }
 
     private static CheckContext ContextFor(PlannedCheck check, Settings settings)

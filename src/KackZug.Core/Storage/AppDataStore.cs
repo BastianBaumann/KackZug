@@ -77,6 +77,11 @@ public sealed class AppDataStore
             data.Settings = new Settings();
         }
 
+        if (data.Trips is null)
+        {
+            data.Trips = new List<OneOffTrip>();
+        }
+
         if (data.CheckStates is null)
         {
             data.CheckStates = new List<CheckState>();

@@ -2,7 +2,7 @@ using KackZug.Core.Models;
 
 namespace KackZug.Core.Planning;
 
-/// <summary>Berechnet alle Pruefzeitpunkte der naechsten 48 Stunden aus Wochenplan und Einstellungen</summary>
+/// <summary>Berechnet alle Pruefzeitpunkte der naechsten 48 Stunden aus Wochenplan, Einzelfahrten und Einstellungen</summary>
 public static class CheckPlanner
 {
     public static readonly TimeSpan Window = TimeSpan.FromHours(48);
@@ -79,7 +79,7 @@ public static class CheckPlanner
             Kind = kind,
             At = at,
             TravelDate = trip.TravelDate,
-            ShiftId = trip.Shift.Id,
+            ShiftId = trip.Id,
             Direction = trip.Direction,
             LeadMinutes = leadMinutes
         };

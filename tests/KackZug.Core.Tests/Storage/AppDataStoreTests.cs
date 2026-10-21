@@ -59,6 +59,39 @@ public sealed class AppDataStoreTests : IDisposable
     }
 
     [Fact]
+    public void OldFileWithoutTripsLoads()
+    {
+        var store = new AppDataStore(_directory);
+        File.WriteAllText(store.FilePath, "{ \"schemaVersion\": 1, \"shifts\": [], \"checkStates\": [] }");
+
+        var data = store.Load();
+
+        Assert.NotNull(data.Trips);
+        Assert.Empty(data.Trips);
+    }
+
+    [Fact]
+    public void SavedOneOffTripComesBackUnchanged()
+    {
+        var store = new AppDataStore(_directory);
+        var trip = SampleData.CreateTrip("Konzert", new DateOnly(2026, 10, 23));
+        var data = new AppData();
+        data.Trips.Add(trip);
+
+        store.Save(data);
+        var json = File.ReadAllText(store.FilePath);
+        var loaded = new AppDataStore(_directory).Load();
+
+        Assert.Contains("\"trips\"", json);
+        Assert.Contains("\"travelDate\": \"2026-10-23\"", json);
+        var loadedTrip = Assert.Single(loaded.Trips);
+        Assert.Equal(trip.Id, loadedTrip.Id);
+        Assert.Equal("Konzert", loadedTrip.Name);
+        Assert.Equal(new DateOnly(2026, 10, 23), loadedTrip.TravelDate);
+        Assert.Equal(3, loadedTrip.Connection.Legs.Count);
+    }
+
+    [Fact]
     public void FileUsesReadableEnumNames()
     {
         var store = new AppDataStore(_directory);

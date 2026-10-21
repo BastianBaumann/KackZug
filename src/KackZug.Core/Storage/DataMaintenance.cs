@@ -1,12 +1,14 @@
 using KackZug.Core.Models;
+using KackZug.Core.Planning;
 
 namespace KackZug.Core.Storage;
 
-/// <summary>Haelt die Daten aktuell: legt die neue Woche an und raeumt alte Pruefergebnisse weg</summary>
+/// <summary>Haelt die Daten aktuell: legt die neue Woche an, raeumt vorbei gefahrene Einzelfahrten und alte Pruefergebnisse weg</summary>
 public static class DataMaintenance
 {
-    public static bool Apply(AppData data, DateOnly today)
+    public static bool Apply(AppData data, DateTimeOffset now, TimeZoneInfo zone)
     {
+        var today = DateOnly.FromDateTime(BerlinTime.ToWallClock(now, zone));
         var changed = false;
 
         if (RollOverWeek(data, today))
@@ -19,12 +21,28 @@ public static class DataMaintenance
             changed = true;
         }
 
+        if (RemoveFinishedTrips(data, now, zone))
+        {
+            changed = true;
+        }
+
         if (RemoveOldCheckStates(data, today))
         {
             changed = true;
         }
 
         return changed;
+    }
+
+    private static bool RemoveFinishedTrips(AppData data, DateTimeOffset now, TimeZoneInfo zone)
+    {
+        var finished = data.Trips.Where(trip => OneOffTripDate.IsOver(trip.Connection, trip.TravelDate, now, zone)).ToList();
+        foreach (var trip in finished)
+        {
+            data.RemoveTrip(trip.Id);
+        }
+
+        return finished.Count > 0;
     }
 
     private static bool RollOverWeek(AppData data, DateOnly today)

@@ -192,6 +192,56 @@ public class TripCheckerTests
         Assert.Equal(0, source.Calls);
     }
 
+    [Fact]
+    public async Task OneOffTripAlertHasNameButNoDirection()
+    {
+        var data = new AppData();
+        var trip = SampleData.CreateTrip("Konzert", Day);
+        data.Trips.Add(trip);
+        var source = new FakeTripStatusSource();
+        source.CancelledNames.Add("RE7");
+        var checker = new TripChecker(source, new FixedClock(Now));
+
+        var outcome = await checker.CheckAsync(data, Day, trip.Id, TripDirection.Outbound, CheckContext.LeadTime, CancellationToken.None);
+
+        Assert.True(outcome!.ShouldNotify);
+        Assert.Equal("KONZERT: RE7 06:42 FÄLLT AUS", outcome.Alert.Title);
+        Assert.Equal("KONZERT · MI 21.10.", outcome.Alert.Kicker);
+        Assert.Equal(trip.Id, outcome.Alert.ShiftId);
+        Assert.DoesNotContain("HIN", outcome.Alert.Title);
+        var state = Assert.Single(data.CheckStates);
+        Assert.Equal(trip.Id, state.ShiftId);
+    }
+
+    [Fact]
+    public async Task OneOffTripOkAlertUsesTheName()
+    {
+        var data = new AppData();
+        var trip = SampleData.CreateTrip("Konzert", Day);
+        data.Trips.Add(trip);
+        var checker = new TripChecker(new FakeTripStatusSource(), new FixedClock(Now));
+
+        var outcome = await checker.CheckAsync(data, Day, trip.Id, TripDirection.Outbound, CheckContext.Evening, CancellationToken.None);
+
+        Assert.StartsWith("Konzert: ", outcome!.Alert.Title);
+        Assert.DoesNotContain("Hinfahrt", outcome.Alert.Title);
+    }
+
+    [Fact]
+    public async Task OneOffTripIsNotCheckedOnAnotherDay()
+    {
+        var data = new AppData();
+        var trip = SampleData.CreateTrip("Konzert", Day.AddDays(1));
+        data.Trips.Add(trip);
+        var source = new FakeTripStatusSource();
+        var checker = new TripChecker(source, new FixedClock(Now));
+
+        var outcome = await checker.CheckAsync(data, Day, trip.Id, TripDirection.Outbound, CheckContext.LeadTime, CancellationToken.None);
+
+        Assert.Null(outcome);
+        Assert.Equal(0, source.Calls);
+    }
+
     private static (AppData Data, Shift Shift) CreateData()
     {
         var data = new AppData();

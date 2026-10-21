@@ -15,6 +15,8 @@ public sealed class AppData
 
     public Settings Settings { get; set; } = new Settings();
 
+    public List<OneOffTrip> Trips { get; set; } = new List<OneOffTrip>();
+
     public List<CheckState> CheckStates { get; set; } = new List<CheckState>();
 
     public DateTimeOffset? LastUpdateCheck { get; set; }
@@ -27,6 +29,17 @@ public sealed class AppData
         }
 
         return Shifts.FirstOrDefault(shift => shift.Id == shiftId.Value);
+    }
+
+    public OneOffTrip? FindTrip(Guid tripId)
+    {
+        return Trips.FirstOrDefault(trip => trip.Id == tripId);
+    }
+
+    public void RemoveTrip(Guid tripId)
+    {
+        Trips.RemoveAll(trip => trip.Id == tripId);
+        CheckStates.RemoveAll(state => state.ShiftId == tripId);
     }
 
     public void RemoveShift(Guid shiftId)

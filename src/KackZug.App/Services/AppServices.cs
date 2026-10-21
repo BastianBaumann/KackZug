@@ -149,8 +149,7 @@ public sealed class AppServices
 
     public void RunMaintenance()
     {
-        var today = DateOnly.FromDateTime(BerlinTime.ToWallClock(Clock.Now, BerlinTime.Zone));
-        var changed = DataMaintenance.Apply(Data, today);
+        var changed = DataMaintenance.Apply(Data, Clock.Now, BerlinTime.Zone);
         if (changed)
         {
             Store.Save(Data);
