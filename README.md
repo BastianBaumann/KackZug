@@ -4,146 +4,153 @@
 
 # KackZug
 
-KackZug ist eine kleine Android-App für alle, die im Schichtdienst mit der Bahn zur Arbeit fahren. Du
-speicherst deine Schichten mit Hin- und Rückfahrt, legst fest, an welchem Tag du welche Schicht hast,
-und das Handy prüft vor der Abfahrt selbst, ob deine Verbindung noch so fährt. Fällt ein Zug aus, ist
-er verspätet, wechselt das Gleis oder wird der Anschluss knapp, meldet sich KackZug laut und deutlich.
+[Deutsch](README.de.md) · **English**
 
-## Was die App kann
+KackZug is a small Android app for anyone who commutes to shift work by train in Germany. You save
+your shifts with the trip there and back, set which shift you work on which day, and the phone checks
+on its own before departure whether your connection is still running as planned. If a train is
+cancelled, delayed, changes platform or a connection gets tight, KackZug lets you know, loud and clear.
 
-- **Verbindungen per Teilen übernehmen:** Im DB Navigator eine Verbindung suchen, auf „Teilen“ tippen
-  und KackZug auswählen. Die Verbindung landet mit allen Teilstrecken (auch Fußwege und Straßenbahn)
-  als Hin- oder Rückfahrt in einer Schicht. Klappt das Teilen nicht, lässt sich die Verbindung auch
-  von Hand eingeben: Bahnhöfe suchen, Zeiten und Linie eintragen.
-- **Woche planen:** Jeder Tag bekommt eine Schicht oder bleibt frei. Hin- und Rückfahrt lassen sich
-  pro Tag einzeln abschalten. Die nächste Woche kannst du schon vorher planen, und mit „Mehrere Tage
-  setzen“ (oder langem Druck auf einen Tag) bekommen gleich mehrere Tage dieselbe Schicht. Eine neue
-  Woche übernimmt auf Wunsch den Plan der Vorwoche.
-- **Details zu jeder Fahrt:** große Abfahrtszeit, aktueller Stand jeder Teilstrecke (Verspätung, neues
-  Gleis, Ausfall) und wie viel Puffer beim Umsteigen bleibt. Ein Knopf öffnet die Verbindung für genau diesen Tag im DB Navigator.
-- **Prüfen zu festen Zeiten:** am Abend vorher und kurz vor der Abfahrt, standardmäßig 90, 45 und
-  15 Minuten vorher. Die Zeiten sind einstellbar.
-- **Laute Meldungen bei Störungen:** Ausfall, Teilausfall, Verspätung ab einer einstellbaren Schwelle,
-  Gleiswechsel, gefährdeter Anschluss oder eine Fahrt, die es so nicht mehr gibt. Es öffnet sich ein
-  Vollbild-Alarm, auch auf dem Sperrbildschirm. Er klingelt und kommt alle fünf Minuten wieder, bis du
-  „Gesehen“ tippst. Dafür hat KackZug einen eigenen, schrillen Ton. Auf Wunsch klingelt er auch bei
-  „Bitte nicht stören“.
-- **Ehrliche Anzeige:** bahn.de hat den Fahrplan schon Tage vorher, Echtzeitdaten aber erst kurz vor der
-  Abfahrt. Solange es keine Echtzeit gibt, zeigt KackZug „Laut Fahrplan“ statt „Planmäßig“.
-- **„Jetzt prüfen“** für heute und morgen, ein **Test-Alarm** und eine kurze **Einführung** beim
-  ersten Start.
+## What the app does
 
-Gespeichert wird das Muster einer Verbindung, also Bahnhöfe, Uhrzeiten und Zug, nicht das Datum. Die
-Fahrt gilt dann an jedem Tag, an dem du die Schicht eingetragen hast.
+- **Import connections by sharing:** Look up a connection in DB Navigator, tap "Share" and pick
+  KackZug. The connection, with all its legs (including walks and trams), is added to a shift as the
+  outbound or return trip. If sharing does not work, you can also enter the connection by hand:
+  search for the stations, then enter the times and the line.
+- **Plan your week:** Each day gets a shift or stays free. The outbound and return trip can be turned
+  off separately for each day. You can plan next week in advance, and with "Set several days"
+  ("Mehrere Tage setzen", or a long press on a day) several days get the same shift at once. If you
+  like, a new week takes over the plan of the previous week.
+- **Details for every trip:** a large departure time, the current state of each leg (delay, new
+  platform, cancellation) and how much time you have left to change trains. The "Open in DB
+  Navigator" button ("Im DB Navigator öffnen") opens the connection for exactly that day in DB
+  Navigator. If DB Navigator is not installed, it opens the connection on bahn.de in the browser
+  instead and tells you so.
+- **Checks at fixed times:** the evening before and shortly before departure, by default 90, 45 and
+  15 minutes before. The times can be changed.
+- **Loud alerts on disruptions:** cancellation, partial cancellation, a delay above a threshold you
+  set, a platform change, a connection at risk, or a trip that no longer exists in this form. A
+  full-screen alarm opens, even on the lock screen. It rings and comes back every five minutes until
+  you tap "Seen". KackZug has its own shrill tone for this. If you want, it also rings in "Do not
+  disturb" mode.
+- **Colours you understand at a glance:** messages that everything is on time are green, problems
+  are red.
+- **Honest status:** bahn.de has the timetable days in advance, but real-time data only shortly
+  before departure. As long as there is no real-time data, KackZug shows "As scheduled" ("Laut
+  Fahrplan") instead of "On time" ("Planmäßig").
+- **"Check now"** for today and tomorrow, a **test alarm** and a short **introduction** on first
+  launch.
+- **German or English:** The language can be switched in the settings. The default is the phone's
+  language: on German devices KackZug is in German, on all others in English.
+
+What is saved is the pattern of a connection, meaning stations, times and train, not the date. The
+trip then applies on every day you have entered that shift.
 
 ## Installation
 
-KackZug gibt es nicht im Play Store. Die fertige APK liegt auf der
-[Release-Seite](https://github.com/BastianBaumann/KackZug/releases).
+KackZug is not on the Play Store. The ready-made APK is on the
+[releases page](https://github.com/BastianBaumann/KackZug/releases).
 
-1. Auf dem Handy die neueste `KackZug-x.y.z.apk` herunterladen.
-2. Die Datei öffnen. Android fragt beim ersten Mal, ob der Browser Apps installieren darf. Das einmal
-   erlauben.
-3. KackZug öffnen und der Einführung folgen.
+1. Download the latest `KackZug-x.y.z.apk` on your phone.
+2. Open the file. The first time, Android asks whether the browser may install apps. Allow this once.
+3. Open KackZug and follow the introduction.
 
 ### Updates
 
-KackZug aktualisiert sich selbst. Die App schaut einmal am Tag auf GitHub nach, ob es eine neue Version
-gibt, und zeigt dann oben einen Hinweis. Ein Tipp auf „Jetzt aktualisieren“ lädt die neue APK in der
-App herunter, prüft sie und installiert sie als Update über die alte Version. Deine Schichten und der
-Wochenplan bleiben erhalten.
+KackZug updates itself. Once a day the app checks GitHub for a new version and then shows a notice
+at the top. Tapping "Update now" downloads the new APK inside the app, verifies it and installs it as
+an update over the old version. Your shifts and weekly plan are kept.
 
-Beim ersten Update fragt Android einmal, ob KackZug Apps installieren darf. Das einmal erlauben, danach
-geht es von selbst weiter. Ab Android 12 laufen spätere Updates meist ohne weitere Rückfrage durch;
-sonst zeigt Android vor dem Installieren noch einmal kurz seinen Bestätigungsdialog.
+On the first update Android asks once whether KackZug may install apps. Allow it once, after that it
+carries on by itself. From Android 12 on, later updates usually go through without asking again;
+otherwise Android briefly shows its confirmation dialog before installing.
 
-Die tägliche Prüfung lässt sich in den Einstellungen abschalten. Mit „Nach Updates suchen“ schaut die
-App sofort nach. Vorabversionen (Tags mit Bindestrich, z. B. `v0.3.0-dev.1`) bietet sie nur an, wenn
-„Vorabversionen anbieten“ eingeschaltet ist. Das sind Testversionen aus `dev`, die Fehler haben können.
+The daily check can be turned off in the settings. "Check for updates" makes the app look right away.
+Pre-releases (tags with a hyphen, e.g. `v0.3.0-dev.1`) are only offered when "Offer pre-releases" is
+turned on. These are test builds from `dev` that may have bugs.
 
-Wer Updates lieber über [Obtainium](https://github.com/ImranR98/Obtainium) bezieht, trägt dort
-`https://github.com/BastianBaumann/KackZug` ein.
+If you prefer to get updates through [Obtainium](https://github.com/ImranR98/Obtainium), add
+`https://github.com/BastianBaumann/KackZug` there.
 
-## Damit die Alarme sicher ankommen
+## Making sure the alarms get through
 
-Android ist streng mit Apps, die im Hintergrund arbeiten. KackZug braucht deshalb:
+Android is strict with apps that work in the background. KackZug therefore needs:
 
-- **Benachrichtigungen:** Die App fragt beim ersten Start danach.
-- **Pünktliche Alarme:** Ist bei einer normal installierten APK schon erlaubt.
-- **Akku-Optimierung aus:** In den Einstellungen von KackZug steht, ob das noch fehlt. Ein Tipp auf
-  „Erlauben“ öffnet die passende Systemseite.
-- **Bitte nicht stören (freiwillig):** Nur wenn du „Auch bei Bitte nicht stören“ einschaltest, fragt
-  Android einmal nach dem Zugriff auf „Bitte nicht stören“.
+- **Notifications:** The app asks for this on first launch.
+- **Exact alarms:** Already allowed for a normally installed APK.
+- **Battery optimisation off:** The KackZug settings show whether this is still missing. Tapping
+  "Allow" opens the matching system page.
+- **Do not disturb (optional):** Only if you turn on "Also in Do not disturb" does Android ask once
+  for access to "Do not disturb".
 
-Manche Hersteller (zum Beispiel Xiaomi, Huawei, Samsung oder OnePlus) haben zusätzlich eigene
-Stromsparfunktionen, die Apps trotzdem schlafen legen. Welche Einstellung bei deinem Handy hilft,
-steht auf [dontkillmyapp.com](https://dontkillmyapp.com). Mit dem Test-Alarm in den Einstellungen
-kannst du prüfen, ob eine Meldung auch bei gesperrtem Bildschirm laut genug ankommt.
+Some manufacturers (for example Xiaomi, Huawei, Samsung or OnePlus) also have their own power-saving
+features that put apps to sleep anyway. Which setting helps on your phone is explained on
+[dontkillmyapp.com](https://dontkillmyapp.com). With the test alarm in the settings you can check
+whether an alert arrives loud enough even when the screen is locked.
 
-## Datenschutz
+## Privacy
 
-- Es gibt keine Konten, keine Werbung und keine Auswertung, was du in der App machst.
-- Schichten, Wochenplan und Einstellungen liegen nur auf deinem Handy.
-- Für die Prüfung fragt das Handy direkt bei bahn.de nach. Dabei sieht bahn.de die IP-Adresse des
-  Handys, aber nicht, wer du bist oder welche Schichten du hast.
-- Für den Update-Hinweis fragt das Handy einmal am Tag bei GitHub nach. Das lässt sich abschalten.
-  Die neue Version lädt die App erst, wenn du auf „Jetzt aktualisieren“ tippst.
+- There are no accounts, no ads and no tracking of what you do in the app.
+- Shifts, weekly plan and settings are stored only on your phone.
+- For the checks, the phone asks bahn.de directly. bahn.de sees the phone's IP address, but not who
+  you are or which shifts you have.
+- For the update notice, the phone asks GitHub once a day. This can be turned off. The app only
+  downloads the new version when you tap "Update now".
 
-## Grenzen
+## Limitations
 
-- KackZug nutzt die Schnittstelle, die auch die Website bahn.de verwendet. Sie ist nicht offiziell
-  dokumentiert und kann sich jederzeit ändern. Wenn bahn.de nicht antwortet, versucht die App es kurz
-  danach noch einmal und meldet bei der letzten Prüfung vor der Abfahrt, dass sie nicht prüfen konnte.
-- Schienenersatzverkehr taucht nicht als Zug auf. Die App meldet dann, dass die Fahrt so nicht fährt.
-  Im DB Navigator steht, wie es stattdessen weitergeht.
-- Nach dem Fahrplanwechsel im Dezember ändern sich oft Zeiten oder Zugnummern. Meldet KackZug dann
-  „fährt so nicht mehr“, die Verbindung einfach neu teilen.
-- Echtzeitdaten gibt es vor allem für Züge. Bei Straßenbahnen und Bussen erkennt die App meist nur
-  Ausfälle, keine Verspätungen.
-- Bei einer von Hand eingegebenen Verbindung kennt KackZug kein geplantes Gleis und meldet deshalb
-  keinen Gleiswechsel.
+- KackZug uses the interface that the bahn.de website itself uses. It is not officially documented
+  and can change at any time. If bahn.de does not respond, the app tries again shortly afterwards
+  and, at the last check before departure, tells you that it could not check.
+- Rail replacement buses do not show up as a train. The app then reports that the trip is not
+  running as planned. DB Navigator shows how to continue instead.
+- After the timetable change in December, times or train numbers often change. If KackZug then
+  reports "no longer runs like this", simply share the connection again.
+- Real-time data is mainly available for trains. For trams and buses the app can usually only detect
+  cancellations, not delays.
+- For a connection entered by hand, KackZug does not know the planned platform and therefore does not
+  report platform changes.
 
-## Hinweis
+## Disclaimer
 
-KackZug ist ein privates Open-Source-Projekt und hat nichts mit der Deutschen Bahn zu tun. „Deutsche
-Bahn“, „DB Navigator“ und „bahn.de“ sind Namen und Marken ihrer Inhaber und werden hier nur verwendet,
-um zu beschreiben, womit die App zusammenarbeitet.
+KackZug is a private open-source project and has nothing to do with Deutsche Bahn. "Deutsche Bahn",
+"DB Navigator" and "bahn.de" are names and trademarks of their owners and are used here only to
+describe what the app works with.
 
-## Selbst bauen
+## Building it yourself
 
-Voraussetzungen: .NET 10 SDK mit Android-Workload (`dotnet workload install android`), Android SDK
-mit Plattform 36 und ein JDK 17.
+Requirements: .NET 10 SDK with the Android workload (`dotnet workload install android`), Android SDK
+with platform 36 and a JDK 17.
 
 ```
 dotnet build KackZug.slnx
 dotnet test KackZug.slnx
 ```
 
-Für die Entwicklung der Oberfläche gibt es einen Desktop-Start:
-`dotnet run --project src/KackZug.Desktop`. Er zeigt dieselben Seiten in einem schmalen Fenster,
-Alarme und Benachrichtigungen landen dort nur im Log.
+For working on the user interface there is a desktop launcher:
+`dotnet run --project src/KackZug.Desktop`. It shows the same pages in a narrow window; alarms and
+notifications only end up in the log there.
 
-Der Störungston wird mit `python tools/sound/build_alarm.py` erzeugt, die App-Grafiken mit
+The disruption tone is generated with `python tools/sound/build_alarm.py`, the app graphics with
 `python tools/design/build_assets.py`.
 
-### Release erstellen
+### Creating a release
 
-Ein Tag der Form `v1.2.3` startet den Release-Workflow. Er baut die APK, signiert sie mit dem
-Release-Schlüssel aus der geschützten Umgebung `release` und veröffentlicht sie als GitHub-Release,
-zusammen mit der Prüfsumme `KackZug-x.y.z.apk.sha256`, die das Update in der App kontrolliert. Damit
-Updates über eine bestehende Installation gehen, muss es immer derselbe Schlüssel sein. Stabile
-Versionen baut er nur von Commits, die auf `main` liegen; Tags darf nur der Maintainer setzen (siehe
-`.github/rulesets/`).
+A tag of the form `v1.2.3` starts the release workflow. It builds the APK, signs it with the release
+key from the protected environment `release` and publishes it as a GitHub release, together with the
+checksum `KackZug-x.y.z.apk.sha256` that the in-app update verifies. For updates to install over an
+existing installation, it always has to be the same key. Stable versions are only built from commits
+that are on `main`; only the maintainer may set tags (see `.github/rulesets/`).
 
-## Mitmachen
+## Contributing
 
-Fehlerberichte, Ideen und Pull Requests sind willkommen. Wie das abläuft, steht in
-[CONTRIBUTING.md](CONTRIBUTING.md). Pull Requests gehen gegen den Branch `dev`. Sicherheitslücken bitte
-wie in [SECURITY.md](SECURITY.md) beschrieben privat melden. Es gelten die
-[Verhaltensregeln](CODE_OF_CONDUCT.md).
+Bug reports, ideas and pull requests are welcome. How it works is described in
+[CONTRIBUTING.md](CONTRIBUTING.md). Pull requests go against the `dev` branch. Please report security
+vulnerabilities privately as described in [SECURITY.md](SECURITY.md). The
+[Code of Conduct](CODE_OF_CONDUCT.md) applies.
 
-## Lizenz
+## License
 
-KackZug steht unter der GNU General Public License, Version 3 oder neuer (siehe [LICENSE](LICENSE)).
-Das gilt auch für Logo und Symbole, die aus dem eigenen Designsystem des Projekts stammen
-(`assets/`). Die Schrift ist [Inter](https://rsms.me/inter/) unter der SIL Open Font License.
+KackZug is licensed under the GNU General Public License, version 3 or later (see [LICENSE](LICENSE)).
+This also applies to the logo and icons, which come from the project's own design system
+(`assets/`). The font is [Inter](https://rsms.me/inter/) under the SIL Open Font License.

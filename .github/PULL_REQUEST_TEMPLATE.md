@@ -11,4 +11,5 @@
 - [ ] `dotnet test` läuft durch
 - [ ] Bei Oberflächenänderungen: Screenshot-Tour ohne FAIL, Bildschirmfoto hier angehängt
 - [ ] Auf einem Android-Handy ausprobiert (Gerät, Android-Version):
-- [ ] README angepasst, falls sich etwas für Nutzer ändert
+- [ ] README.md und README.de.md angepasst, falls sich etwas für Nutzer ändert
+- [ ] Neue Texte auf Englisch und Deutsch

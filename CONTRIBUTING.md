@@ -52,7 +52,10 @@ Ansichten bekommen einen Schritt in `src/KackZug.Desktop/TourSteps.cs`.
 
 ## Regeln für Code
 
-- Code, Bezeichner und Commit-Messages auf Englisch, Texte in der App und im README auf Deutsch.
+- Code, Bezeichner und Commit-Messages auf Englisch. Texte in der App gibt es auf Englisch und Deutsch:
+  neue Texte kommen in beide Tabellen (`Strings.resx` und `Strings.de.resx` in `src/KackZug.Core/Localization`,
+  `UiStrings.resx` und `UiStrings.de.resx` in `src/KackZug.App/Localization`). Das README gibt es auf Englisch
+  (`README.md`) und Deutsch (`README.de.md`), beide werden zusammen angepasst.
 - Ein Typ pro Datei, Logik ohne Oberfläche gehört nach `src/KackZug.Core` und bekommt Tests.
 - Commit-Messages nach [Conventional Commits](https://www.conventionalcommits.org/de/), zum Beispiel
   `fix: keep one page view per main view`.
