@@ -94,8 +94,8 @@
                                     <TextBlock Text="{Binding DateText}" Classes="caption" FontFeatures="+tnum" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2" Margin="8,12,12,12" Spacing="8" VerticalAlignment="Center">
-                                    <WrapPanel>
-                                        <ComboBox Classes="shift" Margin="0,0,8,6" ItemsSource="{Binding Options}" SelectedItem="{Binding SelectedOption}"
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <ComboBox Classes="shift" ItemsSource="{Binding Options}" SelectedItem="{Binding SelectedOption}"
                                                   IsEnabled="{Binding IsEditable}" Background="{Binding ShiftBrush}" Foreground="{Binding ShiftForeground}"
                                                   HorizontalAlignment="Left" MinWidth="130">
                                             <ComboBox.SelectionBoxItemTemplate>
@@ -110,37 +110,45 @@
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>
-                                    </WrapPanel>
-                                    <WrapPanel IsVisible="{Binding HasShift}">
-                                        <StackPanel Margin="0,0,8,4" Spacing="4" IsVisible="{Binding HasOutbound}">
-                                            <ToggleButton Classes="trip" IsChecked="{Binding OutboundEnabled}" IsEnabled="{Binding CanToggleOutbound}">
-                                                <TextBlock Text="{Binding OutboundLabel}" />
-                                            </ToggleButton>
-                                            <ContentControl HorizontalAlignment="Left"
+                                        <Button Grid.Column="1" Classes="ghost" Padding="8,0" MinHeight="40" VerticalAlignment="Center" IsVisible="{Binding HasShift}"
+                                                Command="{Binding $parent[UserControl].((vm:WeekViewModel)DataContext).OpenDetailCommand}"
+                                                CommandParameter="{Binding}">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <TextBlock Text="{x:Static l:UiStrings.Week_Details}" />
+                                                <c:OutlineIcon Data="{StaticResource IconArrow}" Width="16" Height="16" />
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                    <Grid Classes="trip-line" ColumnDefinitions="Auto,*" IsVisible="{Binding HasOutbound}">
+                                        <ToggleButton Classes="trip" VerticalAlignment="Center" IsChecked="{Binding OutboundEnabled}" IsEnabled="{Binding CanToggleOutbound}">
+                                            <TextBlock Text="{Binding OutboundLabel}" />
+                                        </ToggleButton>
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2" VerticalAlignment="Center">
+                                            <ContentControl HorizontalAlignment="Right"
                                                             Content="{Binding OutboundStatus}" ContentTemplate="{StaticResource BadgeTemplate}"
                                                             IsVisible="{Binding OutboundStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                            <TextBlock Classes="caption" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"
+                                                       Text="{Binding OutboundChecked}"
+                                                       IsVisible="{Binding OutboundChecked, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                            <TextBlock Classes="caption" HorizontalAlignment="Right" IsVisible="{Binding OutboundOff}"
+                                                       Text="{x:Static l:UiStrings.Day_TripOff}" />
                                         </StackPanel>
-                                        <StackPanel Margin="0,0,8,4" Spacing="4" IsVisible="{Binding HasReturn}">
-                                            <ToggleButton Classes="trip" IsChecked="{Binding ReturnEnabled}" IsEnabled="{Binding CanToggleReturn}">
-                                                <TextBlock Text="{Binding ReturnLabel}" />
-                                            </ToggleButton>
-                                            <ContentControl HorizontalAlignment="Left"
+                                    </Grid>
+                                    <Grid Classes="trip-line" ColumnDefinitions="Auto,*" IsVisible="{Binding HasReturn}">
+                                        <ToggleButton Classes="trip" VerticalAlignment="Center" IsChecked="{Binding ReturnEnabled}" IsEnabled="{Binding CanToggleReturn}">
+                                            <TextBlock Text="{Binding ReturnLabel}" />
+                                        </ToggleButton>
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2" VerticalAlignment="Center">
+                                            <ContentControl HorizontalAlignment="Right"
                                                             Content="{Binding ReturnStatus}" ContentTemplate="{StaticResource BadgeTemplate}"
                                                             IsVisible="{Binding ReturnStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                            <TextBlock Classes="caption" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"
+                                                       Text="{Binding ReturnChecked}"
+                                                       IsVisible="{Binding ReturnChecked, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                            <TextBlock Classes="caption" HorizontalAlignment="Right" IsVisible="{Binding ReturnOff}"
+                                                       Text="{x:Static l:UiStrings.Day_TripOff}" />
                                         </StackPanel>
-                                    </WrapPanel>
-                                    <TextBlock Text="{Binding OutboundCaption}" Classes="caption" TextWrapping="Wrap"
-                                               IsVisible="{Binding OutboundCaption, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                                    <TextBlock Text="{Binding ReturnCaption}" Classes="caption" TextWrapping="Wrap"
-                                               IsVisible="{Binding ReturnCaption, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                                    <Button Classes="ghost" Padding="0" MinHeight="36" HorizontalAlignment="Left" IsVisible="{Binding HasShift}"
-                                            Command="{Binding $parent[UserControl].((vm:WeekViewModel)DataContext).OpenDetailCommand}"
-                                            CommandParameter="{Binding}">
-                                        <StackPanel Orientation="Horizontal" Spacing="4">
-                                            <TextBlock Text="{x:Static l:UiStrings.Week_Details}" />
-                                            <c:OutlineIcon Data="{StaticResource IconArrow}" Width="16" Height="16" />
-                                        </StackPanel>
-                                    </Button>
+                                    </Grid>
                                 </StackPanel>
                             </Grid>
                         </Border>

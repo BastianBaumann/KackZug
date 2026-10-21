@@ -208,4 +208,6 @@
   <data name="Settings_ShowTutorial" xml:space="preserve"><value>Einführung noch einmal ansehen</value></data>
   <data name="Settings_Disclaimer" xml:space="preserve"><value>KackZug ist ein privates Open-Source-Projekt und hat nichts mit der Deutschen Bahn zu tun. Die Daten kommen von bahn.de.</value></data>
   <data name="Settings_Saved" xml:space="preserve"><value>Gespeichert</value></data>
+  <data name="Day_CheckedAt" xml:space="preserve"><value>geprüft {0}</value></data>
+  <data name="Day_TripOff" xml:space="preserve"><value>Aus</value></data>
 </root>

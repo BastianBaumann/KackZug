@@ -119,6 +119,17 @@ internal static class TourSteps
         var bothTrips = week.Days.FirstOrDefault(day => day.OutboundStatus is not null && day.ReturnStatus is not null);
         check(bothTrips is not null && refreshedToday.OutboundStatus.Text != "—", "Hin- und Rueckfahrt haben je ein eigenes Kennzeichen");
         await capture(window, Path.Combine(directory, "week-checked.png"));
+        var todayCard = window.GetVisualDescendants().OfType<Border>().First(border => border.Classes.Contains("day") && border.Classes.Contains("today"));
+        todayCard.BringIntoView();
+        await SettleAsync();
+        var cardHeight = todayCard.Bounds.Height;
+        refreshedToday.OutboundEnabled = false;
+        await SettleAsync();
+        check(Math.Abs(todayCard.Bounds.Height - cardHeight) < 0.5 && refreshedToday.OutboundOff, "Fahrt abschalten verschiebt den Tag nicht");
+        refreshedToday.OutboundEnabled = true;
+        await SettleAsync();
+        check(refreshedToday.OutboundChecked.StartsWith("geprüft "), "Fahrt zeigt, wann sie geprueft wurde: " + refreshedToday.OutboundChecked);
+        await capture(window, Path.Combine(directory, "week-today.png"));
         check(monday.DayName == "Montag", "Wochentage auf Deutsch");
 
         var weekRadios = window.GetVisualDescendants().OfType<RadioButton>().Where(radio => radio.GroupName == "week").ToList();

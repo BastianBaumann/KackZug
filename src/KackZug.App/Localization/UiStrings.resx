@@ -208,4 +208,6 @@
   <data name="Settings_ShowTutorial" xml:space="preserve"><value>Show the introduction again</value></data>
   <data name="Settings_Disclaimer" xml:space="preserve"><value>KackZug is a private open source project and has nothing to do with Deutsche Bahn. The data comes from bahn.de.</value></data>
   <data name="Settings_Saved" xml:space="preserve"><value>Saved</value></data>
+  <data name="Day_CheckedAt" xml:space="preserve"><value>checked {0}</value></data>
+  <data name="Day_TripOff" xml:space="preserve"><value>Off</value></data>
 </root>

@@ -31,10 +31,10 @@
 
     <DataTemplate x:Key="BadgeTemplate" x:DataType="vm:StatusBadge">
         <Border Classes="badge" Background="{Binding Background}" HorizontalAlignment="Left">
-            <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4" VerticalAlignment="Center">
                 <c:OutlineIcon Data="{Binding Icon}" Width="18" Height="18" Foreground="{Binding Foreground}" />
-                <TextBlock Text="{Binding Text}" Foreground="{Binding Foreground}" FontSize="14" FontWeight="SemiBold" FontFeatures="+tnum" VerticalAlignment="Center" />
-            </StackPanel>
+                <TextBlock Grid.Column="1" Text="{Binding Text}" Foreground="{Binding Foreground}" FontSize="14" FontWeight="SemiBold" FontFeatures="+tnum" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+            </Grid>
         </Border>
     </DataTemplate>
 </ResourceDictionary>

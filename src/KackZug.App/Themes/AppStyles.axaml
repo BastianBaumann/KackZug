@@ -260,7 +260,12 @@
         <Setter Property="Background" Value="{DynamicResource AppSurfaceAltBrush}" />
     </Style>
 
+    <Style Selector="Grid.trip-line">
+        <Setter Property="Height" Value="52" />
+    </Style>
     <Style Selector="ToggleButton.trip">
+        <Setter Property="MinWidth" Value="116" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="MinHeight" Value="40" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Padding" Value="12,0" />

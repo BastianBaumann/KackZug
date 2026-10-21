@@ -148,6 +148,27 @@ public partial class DayRowViewModel : ViewModelBase
         get { return ReturnStatus?.Caption; }
     }
 
+    /// <summary>Kurzer Stand neben einer Fahrt: wann zuletzt geprueft; vor der ersten Pruefung leer, das Badge zeigt dann "—"</summary>
+    public string OutboundChecked
+    {
+        get { return CheckedLine(TripDirection.Outbound, HasOutbound && OutboundEnabled); }
+    }
+
+    public string ReturnChecked
+    {
+        get { return CheckedLine(TripDirection.Return, HasReturn && ReturnEnabled); }
+    }
+
+    public bool OutboundOff
+    {
+        get { return HasOutbound && !OutboundEnabled; }
+    }
+
+    public bool ReturnOff
+    {
+        get { return HasReturn && !ReturnEnabled; }
+    }
+
     public string OutboundLabel
     {
         get { return TripLabel(TripDirection.Outbound); }
@@ -208,6 +229,10 @@ public partial class DayRowViewModel : ViewModelBase
         ReturnStatus = BadgeFor(TripDirection.Return, HasReturn && ReturnEnabled);
         OnPropertyChanged(nameof(OutboundCaption));
         OnPropertyChanged(nameof(ReturnCaption));
+        OnPropertyChanged(nameof(OutboundChecked));
+        OnPropertyChanged(nameof(ReturnChecked));
+        OnPropertyChanged(nameof(OutboundOff));
+        OnPropertyChanged(nameof(ReturnOff));
         OnPropertyChanged(nameof(OutboundLabel));
         OnPropertyChanged(nameof(ReturnLabel));
         OnPropertyChanged(nameof(StripeBrush));
@@ -317,6 +342,22 @@ public partial class DayRowViewModel : ViewModelBase
 
         var caption = UiLanguage.Format(UiStrings.Day_Caption, label, badgeText, CheckedText(state.LastCheckedAt));
         return new StatusBadge(state.LastStatus, badgeText, caption);
+    }
+
+    private string CheckedLine(TripDirection direction, bool active)
+    {
+        if (!active || Shift is null)
+        {
+            return "";
+        }
+
+        var state = StateFor(direction);
+        if (state is null)
+        {
+            return "";
+        }
+
+        return UiLanguage.Format(UiStrings.Day_CheckedAt, CheckedText(state.LastCheckedAt));
     }
 
     private string CheckedText(DateTimeOffset checkedAt)
