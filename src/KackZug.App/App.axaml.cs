@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using KackZug.Core.Localization;
 using KackZug.Services;
 using KackZug.ViewModels;
 using KackZug.Views;
@@ -41,6 +42,32 @@ public partial class App : Application
         Avalonia.Threading.Dispatcher.UIThread.Post(() => services.Reload());
     }
 
+    /// <summary>Baut die Oberflaeche nach einem Sprachwechsel neu auf und zeigt wieder die Einstellungen</summary>
+    public static void ReloadUi()
+    {
+        var services = Services;
+        if (services is null || Current is not App app)
+        {
+            return;
+        }
+
+        var main = new MainViewModel(services);
+        Main = main;
+        main.Navigate("settings");
+        if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow is not null)
+        {
+            desktop.MainWindow.Content = new MainView { DataContext = main };
+        }
+        else if (app.ApplicationLifetime is ISingleViewApplicationLifetime singleView)
+        {
+            singleView.MainView = new MainView { DataContext = main };
+        }
+        else
+        {
+            Platform.RecreateMainView();
+        }
+    }
+
     /// <summary>Beim Zurueckkehren in die App: wartet ein Update auf die Erlaubnis zum Installieren, geht es weiter</summary>
     public static void ContinueUpdateAfterResume()
     {
@@ -74,6 +101,7 @@ public partial class App : Application
     {
         var services = AppServices.Create(Platform);
         Services = services;
+        Language.Apply(services.Data.Settings.Language);
         services.Theme.Apply(services.Data.Settings);
         services.Reschedule();
 
@@ -88,7 +116,7 @@ public partial class App : Application
         }
         else if (ApplicationLifetime is IActivityApplicationLifetime activity)
         {
-            activity.MainViewFactory = () => new MainView { DataContext = main };
+            activity.MainViewFactory = () => new MainView { DataContext = Main };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
         {

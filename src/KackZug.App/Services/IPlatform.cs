@@ -22,6 +22,9 @@ public interface IPlatform
     /// <remarks>Ohne Link startet nur der DB Navigator selbst. Gibt false zurueck, wenn der Navigator fehlt und stattdessen der Browser oeffnet.</remarks>
     bool OpenInNavigator(string? connectionUrl);
 
+    /// <remarks>Nur dort noetig, wo die App die Hauptansicht nicht selbst austauschen kann (Android-Aktivitaet).</remarks>
+    void RecreateMainView();
+
     IReadOnlyList<PermissionInfo> GetPermissions();
 
     void OpenPermissionSettings(string key);

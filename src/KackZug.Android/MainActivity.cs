@@ -22,9 +22,12 @@ public class MainActivity : AvaloniaMainActivity
 {
     private const int NotificationPermissionRequestCode = 1;
 
+    public static MainActivity? Current { get; private set; }
+
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
+        Current = this;
         AskForNotifications();
         HandleIntent(Intent);
     }
@@ -34,6 +37,16 @@ public class MainActivity : AvaloniaMainActivity
         base.OnResume();
         App.ReloadFromBackground();
         App.ContinueUpdateAfterResume();
+    }
+
+    protected override void OnDestroy()
+    {
+        if (Current == this)
+        {
+            Current = null;
+        }
+
+        base.OnDestroy();
     }
 
     private void AskForNotifications()

@@ -1,3 +1,4 @@
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
 using KackZug.Core.Storage;
@@ -24,6 +25,7 @@ public sealed class BackgroundCheck
     {
         var result = new BackgroundCheckResult();
         var data = _store.Load();
+        Language.Apply(data.Settings.Language);
         var today = DateOnly.FromDateTime(BerlinTime.ToWallClock(_clock.Now, BerlinTime.Zone));
         DataMaintenance.Apply(data, today);
 

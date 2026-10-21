@@ -25,6 +25,8 @@ public sealed class Settings
 
     public ThemeMode ThemeMode { get; set; } = ThemeMode.System;
 
+    public AppLanguage Language { get; set; } = AppLanguage.System;
+
     public bool UpdateCheckEnabled { get; set; } = true;
 
     public bool IncludePrereleases { get; set; }

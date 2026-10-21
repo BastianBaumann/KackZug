@@ -119,6 +119,11 @@ public sealed class AndroidPlatform : IPlatform
         return inNavigator;
     }
 
+    public void RecreateMainView()
+    {
+        MainActivity.Current?.Recreate();
+    }
+
     public IReadOnlyList<PermissionInfo> GetPermissions()
     {
         var notificationsAllowed = NotificationManagerCompat.From(_context)!.AreNotificationsEnabled();

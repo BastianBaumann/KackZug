@@ -4,7 +4,8 @@
              xmlns:services="using:KackZug.Services"
              xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.SettingsView"
-             x:DataType="vm:SettingsViewModel">
+             x:DataType="vm:SettingsViewModel"
+             xmlns:loc="using:KackZug.Core.Localization">
     <ScrollViewer>
         <StackPanel Margin="16" Spacing="4">
             <TextBlock Text="{Binding Title}" Classes="title-lg" Margin="0,0,0,8" />
@@ -172,6 +173,24 @@
             <TextBlock Text="Aussehen" Classes="section" />
             <Border Classes="group">
                 <StackPanel>
+                    <Border Classes="setting">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{x:Static loc:Strings.Settings_Language}" />
+                            <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
+                                <UniformGrid Rows="1">
+                                    <RadioButton Classes="segment" GroupName="language" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding LanguageSystem}">
+                                        <TextBlock Text="{x:Static loc:Strings.Settings_LanguageSystem}" />
+                                    </RadioButton>
+                                    <RadioButton Classes="segment" GroupName="language" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding LanguageGerman}">
+                                        <TextBlock Text="Deutsch" />
+                                    </RadioButton>
+                                    <RadioButton Classes="segment" GroupName="language" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding LanguageEnglish}">
+                                        <TextBlock Text="English" />
+                                    </RadioButton>
+                                </UniformGrid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
                     <Border Classes="setting">
                         <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4" VerticalAlignment="Center">
                             <UniformGrid Rows="1">

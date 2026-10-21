@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core;
 using KackZug.Core.Checking;
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
 using KackZug.Services;
@@ -108,6 +109,15 @@ public partial class SettingsViewModel : PageViewModel
     public partial bool ThemeDark { get; set; }
 
     [ObservableProperty]
+    public partial bool LanguageSystem { get; set; }
+
+    [ObservableProperty]
+    public partial bool LanguageGerman { get; set; }
+
+    [ObservableProperty]
+    public partial bool LanguageEnglish { get; set; }
+
+    [ObservableProperty]
     public partial Color AccentColor { get; set; }
 
     [ObservableProperty]
@@ -206,6 +216,9 @@ public partial class SettingsViewModel : PageViewModel
         ThemeSystem = settings.ThemeMode == ThemeMode.System;
         ThemeLight = settings.ThemeMode == ThemeMode.Light;
         ThemeDark = settings.ThemeMode == ThemeMode.Dark;
+        LanguageSystem = settings.Language == AppLanguage.System;
+        LanguageGerman = settings.Language == AppLanguage.German;
+        LanguageEnglish = settings.Language == AppLanguage.English;
         AccentColor = ThemeService.Parse(settings.AccentColor, ThemeService.DefaultAccent);
         _isLoading = false;
         RefreshPermissions();
@@ -466,6 +479,48 @@ public partial class SettingsViewModel : PageViewModel
     {
         Settings.IncludePrereleases = value;
         Save();
+    }
+
+    partial void OnLanguageSystemChanged(bool value)
+    {
+        if (value)
+        {
+            SaveLanguage(AppLanguage.System);
+        }
+    }
+
+    partial void OnLanguageGermanChanged(bool value)
+    {
+        if (value)
+        {
+            SaveLanguage(AppLanguage.German);
+        }
+    }
+
+    partial void OnLanguageEnglishChanged(bool value)
+    {
+        if (value)
+        {
+            SaveLanguage(AppLanguage.English);
+        }
+    }
+
+    /// <remarks>Die Oberflaeche liest ihre Texte beim Aufbau, deshalb wird sie nach dem Wechsel neu gebaut.</remarks>
+    private void SaveLanguage(AppLanguage language)
+    {
+        if (_isLoading || Settings.Language == language)
+        {
+            return;
+        }
+
+        var before = Language.Culture;
+        Settings.Language = language;
+        Main.Services.SaveAndReschedule();
+        Language.Apply(language);
+        if (Language.Culture.Name != before.Name)
+        {
+            App.ReloadUi();
+        }
     }
 
     partial void OnThemeSystemChanged(bool value)

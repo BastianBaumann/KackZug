@@ -76,6 +76,10 @@ public sealed class DefaultPlatform : IPlatform
         return HasNavigator;
     }
 
+    public void RecreateMainView()
+    {
+    }
+
     public IReadOnlyList<PermissionInfo> GetPermissions()
     {
         return new List<PermissionInfo>();
