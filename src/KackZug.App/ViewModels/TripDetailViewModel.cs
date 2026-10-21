@@ -1,18 +1,17 @@
 using System.Collections.ObjectModel;
-using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core.Checking;
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
 /// <summary>Detailansicht eines Tages: alle Fahrten mit Live-Stand, auf Wunsch neu geprueft</summary>
 public partial class TripDetailViewModel : ViewModelBase
 {
-    private static readonly CultureInfo German = new CultureInfo("de-DE");
-
     private readonly MainViewModel _main;
     private readonly Action _close;
 
@@ -21,7 +20,7 @@ public partial class TripDetailViewModel : ViewModelBase
         _main = main;
         _close = close;
         Date = date;
-        Heading = German.DateTimeFormat.GetDayName(date.DayOfWeek) + ", " + date.ToString("dd.MM.", German);
+        Heading = Language.Culture.DateTimeFormat.GetDayName(date.DayOfWeek) + ", " + date.ToString(UiStrings.Format_DayMonth, Language.Culture);
         ShiftName = shift.Name;
 
         foreach (var direction in new[] { TripDirection.Outbound, TripDirection.Return })

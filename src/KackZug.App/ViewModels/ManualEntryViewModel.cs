@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core.Import;
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -68,7 +69,7 @@ public partial class ManualEntryViewModel : ViewModelBase
     {
         for (var index = 0; index < Legs.Count; index++)
         {
-            Legs[index].Title = "Teilstrecke " + (index + 1);
+            Legs[index].Title = UiLanguage.Format(UiStrings.Manual_Leg, index + 1);
             Legs[index].CanRemove = Legs.Count > 1;
         }
     }

@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Media;
 using KackZug.Core.Checking;
+using KackZug.Localization;
 using KackZug.Services;
 
 namespace KackZug.ViewModels;
@@ -32,29 +33,29 @@ public sealed class StatusBadge
     {
         if (status is null)
         {
-            return "Noch nicht geprüft";
+            return UiStrings.Status_NotChecked;
         }
 
         switch (status.Value)
         {
             case LegStatus.OnTime:
-                return "Planmäßig";
+                return UiStrings.Status_OnTime;
             case LegStatus.PlannedOnly:
-                return "Laut Fahrplan, Echtzeit folgt";
+                return UiStrings.Status_PlannedOnly;
             case LegStatus.Unknown:
-                return "Nicht geprüft";
+                return UiStrings.Status_Unknown;
             case LegStatus.PlatformChanged:
-                return "Gleiswechsel";
+                return UiStrings.Status_PlatformChanged;
             case LegStatus.Delayed:
-                return "Verspätet";
+                return UiStrings.Status_Delayed;
             case LegStatus.TransferAtRisk:
-                return "Anschluss knapp";
+                return UiStrings.Status_TransferAtRisk;
             case LegStatus.NotFound:
-                return "Nicht gefunden";
+                return UiStrings.Status_NotFound;
             case LegStatus.PartlyCancelled:
-                return "Teilausfall";
+                return UiStrings.Status_PartlyCancelled;
             default:
-                return "Fällt aus";
+                return UiStrings.Status_Cancelled;
         }
     }
 

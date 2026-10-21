@@ -8,6 +8,15 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Localization\UiStrings.resx">
+      <StronglyTypedFileName>$(IntermediateOutputPath)UiStrings.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedNamespace>KackZug.Localization</StronglyTypedNamespace>
+      <StronglyTypedClassName>UiStrings</StronglyTypedClassName>
+      <PublicClass>true</PublicClass>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Avalonia.Controls.ColorPicker" />

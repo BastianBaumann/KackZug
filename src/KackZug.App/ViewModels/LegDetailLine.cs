@@ -1,5 +1,6 @@
 using KackZug.Core.Checking;
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -33,22 +34,22 @@ public sealed class LegDetailLine
         var parts = new List<string>();
         if (observation.LiveDeparture is not null && result.DelayMinutes > 0)
         {
-            parts.Add("ab " + observation.LiveDeparture.Value.ToString("HH:mm"));
+            parts.Add(UiLanguage.Format(UiStrings.Leg_LiveDeparture, observation.LiveDeparture.Value.ToString("HH:mm")));
         }
 
         if (observation.LiveArrival is not null && observation.LiveArrival.Value > observation.PlannedArrival)
         {
-            parts.Add("an " + observation.LiveArrival.Value.ToString("HH:mm"));
+            parts.Add(UiLanguage.Format(UiStrings.Leg_LiveArrival, observation.LiveArrival.Value.ToString("HH:mm")));
         }
 
         if (result.NewPlatform is not null)
         {
-            parts.Add("jetzt Gleis " + result.NewPlatform);
+            parts.Add(UiLanguage.Format(UiStrings.Leg_NewPlatform, result.NewPlatform));
         }
 
         if (observation.Result == ObservationResult.Found && !observation.HasLiveData)
         {
-            parts.Add("noch keine Echtzeit");
+            parts.Add(UiStrings.Leg_NoLiveData);
         }
 
         LiveText = string.Join(" · ", parts);
@@ -79,9 +80,9 @@ public sealed class LegDetailLine
         switch (result.Status)
         {
             case LegStatus.Delayed:
-                return "+" + result.DelayMinutes + " min";
+                return UiLanguage.Format(UiStrings.Leg_DelayMinutes, result.DelayMinutes);
             case LegStatus.PlatformChanged:
-                return "Gleis " + result.NewPlatform;
+                return UiLanguage.Format(UiStrings.Leg_Platform, result.NewPlatform);
             default:
                 return StatusBadge.ShortText(result.Status);
         }

@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using KackZug.Localization;
 using KackZug.ViewModels;
 using KackZug.Views;
 
@@ -43,7 +44,7 @@ public class ViewLocator : IDataTemplate
             case TutorialViewModel:
                 return new TutorialView();
             default:
-                return new TextBlock { Text = "Keine Ansicht fuer " + param?.GetType().Name };
+                return new TextBlock { Text = UiLanguage.Format(UiStrings.View_Missing, param?.GetType().Name) };
         }
     }
 

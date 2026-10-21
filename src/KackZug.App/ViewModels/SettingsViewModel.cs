@@ -8,6 +8,7 @@ using KackZug.Core.Checking;
 using KackZug.Core.Localization;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
+using KackZug.Localization;
 using KackZug.Services;
 
 namespace KackZug.ViewModels;
@@ -36,7 +37,7 @@ public partial class SettingsViewModel : PageViewModel
 
     public override string Title
     {
-        get { return "Einstellungen"; }
+        get { return UiStrings.Nav_Settings; }
     }
 
     public ObservableCollection<LeadTimeOption> LeadTimes { get; } = new ObservableCollection<LeadTimeOption>();
@@ -161,7 +162,7 @@ public partial class SettingsViewModel : PageViewModel
     {
         TestAlarmPending = true;
         Main.Services.Platform.ScheduleTestAlarm(TimeSpan.FromSeconds(5));
-        Main.ShowToast("Der Test-Alarm kommt in 5 Sekunden, auch wenn du die App schließt. Er geht nur mit „Gesehen“ weg.", false);
+        Main.ShowToast(UiStrings.Settings_TestAlarmToast, false);
         try
         {
             await Task.Delay(TimeSpan.FromSeconds(5));
@@ -416,7 +417,7 @@ public partial class SettingsViewModel : PageViewModel
     public async Task CheckUpdatesNowAsync()
     {
         IsCheckingUpdates = true;
-        UpdateStatusText = "Schaue auf GitHub nach …";
+        UpdateStatusText = UiStrings.Settings_UpdateChecking;
         try
         {
             var updates = Main.Services.Updates;
@@ -516,7 +517,7 @@ public partial class SettingsViewModel : PageViewModel
         var before = Language.Culture;
         Settings.Language = language;
         Main.Services.SaveAndReschedule();
-        Language.Apply(language);
+        UiLanguage.Apply(language);
         if (Language.Culture.Name != before.Name)
         {
             App.ReloadUi();

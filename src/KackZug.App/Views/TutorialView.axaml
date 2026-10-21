@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:KackZug.Localization"
              xmlns:vm="using:KackZug.ViewModels"
              xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.TutorialView"
@@ -36,20 +37,20 @@
 
         <StackPanel Spacing="8">
             <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding NextCommand}" IsVisible="{Binding IsNotLast}">
-                <TextBlock Text="Weiter" />
+                <TextBlock Text="{x:Static l:UiStrings.Common_Next}" />
             </Button>
             <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding FinishCommand}" IsVisible="{Binding IsLast}">
-                <TextBlock Text="Los geht's" />
+                <TextBlock Text="{x:Static l:UiStrings.Tutorial_Start}" />
             </Button>
             <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding OpenSettingsCommand}" IsVisible="{Binding IsLast}">
-                <TextBlock Text="Zu den Einstellungen" />
+                <TextBlock Text="{x:Static l:UiStrings.Tutorial_ToSettings}" />
             </Button>
             <Grid ColumnDefinitions="*,*">
                 <Button Classes="ghost" Command="{Binding BackCommand}" IsVisible="{Binding !IsFirst}" HorizontalAlignment="Left">
-                    <TextBlock Text="Zurück" />
+                    <TextBlock Text="{x:Static l:UiStrings.Common_Back}" />
                 </Button>
                 <Button Grid.Column="1" Classes="ghost" Command="{Binding FinishCommand}" IsVisible="{Binding IsNotLast}" HorizontalAlignment="Right">
-                    <TextBlock Text="Überspringen" />
+                    <TextBlock Text="{x:Static l:UiStrings.Tutorial_Skip}" />
                 </Button>
             </Grid>
         </StackPanel>

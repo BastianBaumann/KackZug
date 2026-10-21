@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:KackZug.Localization"
              xmlns:vm="using:KackZug.ViewModels"
              xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.WeekView"
@@ -41,10 +42,10 @@
             <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
                 <UniformGrid Rows="1">
                     <RadioButton Classes="segment" GroupName="week" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsThisWeek}">
-                        <TextBlock Text="Diese Woche" />
+                        <TextBlock Text="{x:Static l:UiStrings.Week_ThisWeek}" />
                     </RadioButton>
                     <RadioButton Classes="segment" GroupName="week" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsNextWeek}">
-                        <TextBlock Text="Nächste Woche" />
+                        <TextBlock Text="{x:Static l:UiStrings.Week_NextWeek}" />
                     </RadioButton>
                 </UniformGrid>
             </Border>
@@ -57,9 +58,9 @@
             <Border Classes="card" IsVisible="{Binding HasNoShifts}">
                 <StackPanel Spacing="12" HorizontalAlignment="Center" Margin="8,16">
                     <c:OutlineIcon Data="{StaticResource IconShare}" Width="48" Height="48" StrokeThickness="1.5" Foreground="{DynamicResource AppMutedBrush}" HorizontalAlignment="Center" />
-                    <TextBlock Text="Noch keine Schicht" Classes="title" HorizontalAlignment="Center" />
+                    <TextBlock Text="{x:Static l:UiStrings.Week_NoShiftTitle}" Classes="title" HorizontalAlignment="Center" />
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center" MaxWidth="300" Classes="muted"
-                               Text="Tipp im DB Navigator bei deiner Verbindung auf „Teilen“ und wähl KackZug. Dann gibst du hier jedem Tag eine Schicht." />
+                               Text="{x:Static l:UiStrings.Week_NoShiftText}" />
                 </StackPanel>
             </Border>
 
@@ -67,7 +68,7 @@
                     Command="{Binding CheckNowCommand}" IsVisible="{Binding !HasNoShifts}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <c:OutlineIcon Data="{StaticResource IconRefresh}" Width="20" Height="20" />
-                    <TextBlock Text="Jetzt prüfen (heute und morgen)" />
+                    <TextBlock Text="{x:Static l:UiStrings.Week_CheckNow}" />
                 </StackPanel>
             </Button>
             <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsChecking}" />
@@ -88,7 +89,7 @@
                                 <Border Grid.Column="0" Background="{Binding StripeBrush}" />
                                 <StackPanel Grid.Column="1" Margin="12,12,0,12" VerticalAlignment="Center">
                                     <CheckBox IsChecked="{Binding IsMarked}" IsVisible="{Binding CanMark}" Margin="0,0,0,4" />
-                                    <TextBlock Text="HEUTE" Classes="kicker" IsVisible="{Binding IsToday}" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Week_Today}" Classes="kicker" IsVisible="{Binding IsToday}" />
                                     <TextBlock Text="{Binding WeekdayShort}" Classes="title" FontWeight="Bold" />
                                     <TextBlock Text="{Binding DateText}" Classes="caption" FontFeatures="+tnum" />
                                 </StackPanel>
@@ -131,7 +132,7 @@
                                             Command="{Binding $parent[UserControl].((vm:WeekViewModel)DataContext).OpenDetailCommand}"
                                             CommandParameter="{Binding}">
                                         <StackPanel Orientation="Horizontal" Spacing="4">
-                                            <TextBlock Text="Details" />
+                                            <TextBlock Text="{x:Static l:UiStrings.Week_Details}" />
                                             <c:OutlineIcon Data="{StaticResource IconArrow}" Width="16" Height="16" />
                                         </StackPanel>
                                     </Button>
@@ -146,7 +147,7 @@
                     IsVisible="{Binding !IsSelecting}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <c:OutlineIcon Data="{StaticResource IconWeek}" Width="20" Height="20" />
-                    <TextBlock Text="Mehrere Tage setzen" />
+                    <TextBlock Text="{x:Static l:UiStrings.Week_SetSeveralDays}" />
                 </StackPanel>
             </Button>
         </StackPanel>
@@ -158,13 +159,13 @@
                 <DataTemplate x:DataType="vm:TripDetailViewModel">
                     <StackPanel Spacing="12">
                         <Button Classes="ghost" Padding="0" HorizontalAlignment="Left" Command="{Binding CloseCommand}">
-                            <TextBlock Text="‹ Zurück zur Woche" />
+                            <TextBlock Text="{x:Static l:UiStrings.Detail_Back}" />
                         </Button>
                         <StackPanel Spacing="2">
                             <TextBlock Text="{Binding Heading}" Classes="title-lg" />
                             <TextBlock Text="{Binding ShiftName}" Classes="caption" />
                         </StackPanel>
-                        <TextBlock Text="An diesem Tag ist keine Fahrt eingeschaltet." Classes="muted" IsVisible="{Binding HasNoTrips}" />
+                        <TextBlock Text="{x:Static l:UiStrings.Detail_NoTrips}" Classes="muted" IsVisible="{Binding HasNoTrips}" />
                         <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsChecking}" />
                         <ItemsControl ItemsSource="{Binding Trips}">
                             <ItemsControl.ItemsPanel>
@@ -197,8 +198,8 @@
                                             <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding OpenInNavigatorCommand}">
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                                     <c:OutlineIcon Data="{StaticResource IconTrain}" Width="20" Height="20" />
-                                                    <TextBlock Text="Im DB Navigator öffnen" IsVisible="{Binding !IsPreparingNavigator}" />
-                                                    <TextBlock Text="Verbindung wird vorbereitet …" IsVisible="{Binding IsPreparingNavigator}" />
+                                                    <TextBlock Text="{x:Static l:UiStrings.Detail_OpenNavigator}" IsVisible="{Binding !IsPreparingNavigator}" />
+                                                    <TextBlock Text="{x:Static l:UiStrings.Detail_PreparingNavigator}" IsVisible="{Binding IsPreparingNavigator}" />
                                                 </StackPanel>
                                             </Button>
                                         </StackPanel>
@@ -210,7 +211,7 @@
                                 IsVisible="{Binding !HasNoTrips}">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <c:OutlineIcon Data="{StaticResource IconRefresh}" Width="20" Height="20" />
-                                <TextBlock Text="Live prüfen" />
+                                <TextBlock Text="{x:Static l:UiStrings.Detail_CheckLive}" />
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -222,7 +223,7 @@
     <Border Grid.Row="1" IsVisible="{Binding IsSelecting}" Background="{DynamicResource AppSurfaceBrush}"
             BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,1,0,0" Padding="16,12" BoxShadow="{DynamicResource AppSheetShadow}">
         <StackPanel Spacing="10">
-            <TextBlock Text="Markierte Tage bekommen diese Schicht:" Classes="caption" />
+            <TextBlock Text="{x:Static l:UiStrings.Week_BulkPrompt}" Classes="caption" />
             <ComboBox ItemsSource="{Binding BulkOptions}" SelectedItem="{Binding BulkOption}" HorizontalAlignment="Stretch">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="vm:ShiftOption">
@@ -232,10 +233,10 @@
             </ComboBox>
             <UniformGrid Rows="1">
                 <Button Classes="secondary" Margin="0,0,4,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CancelSelectingCommand}">
-                    <TextBlock Text="Abbrechen" />
+                    <TextBlock Text="{x:Static l:UiStrings.Common_Cancel}" />
                 </Button>
                 <Button Classes="primary" Margin="4,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding ApplySelectionCommand}">
-                    <TextBlock Text="Übernehmen" />
+                    <TextBlock Text="{x:Static l:UiStrings.Common_Apply}" />
                 </Button>
             </UniformGrid>
         </StackPanel>

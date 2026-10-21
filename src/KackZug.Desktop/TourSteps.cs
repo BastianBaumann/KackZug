@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using KackZug.Core.Localization;
 using KackZug.ViewModels;
 
 namespace KackZug.Desktop;
@@ -241,6 +242,63 @@ internal static class TourSteps
         await RunManualEntryAsync(main, window, directory, check, capture);
         await RunUpdateCheckAsync(main, window, directory, check, capture);
         await RunSecondViewAsync(main, window, directory, check, capture);
+        await RunLanguageAsync(main, window, directory, check, capture);
+    }
+
+    /// <remarks>Der Sprachwechsel baut Hauptansicht und ViewModel neu, deshalb werden alle Bezuege danach neu geholt.</remarks>
+    private static async Task RunLanguageAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)
+    {
+        main.Navigate("settings");
+        await SettleAsync();
+        var languageRadios = LanguageRadios(window);
+        check(languageRadios.Count == 3, "Drei Sprach-Knoepfe");
+        languageRadios[2].IsChecked = true;
+        await SettleAsync();
+        var english = App.Main!;
+        check(!ReferenceEquals(english, main) && !Language.IsGerman && main.Services.Store.Load().Settings.Language == Core.Models.AppLanguage.English, "Englisch gewaehlt und gespeichert");
+        check(english.NavItems.Select(item => item.Title).SequenceEqual(new[] { "Week", "Shifts", "Settings" }), "Tabs auf Englisch");
+        check(english.CurrentPage is SettingsViewModel && HasText(window, "Language") && HasText(window, "Check for updates"), "Neu aufgebaute Einstellungen auf Englisch");
+        await capture(window, Path.Combine(directory, "settings-en.png"));
+
+        english.Navigate("week");
+        await SettleAsync();
+        var week = (WeekViewModel)english.CurrentPage!;
+        check(week.WeekTitle == "This week" && week.Days[0].DayName == "Monday" && HasText(window, "Set several days"), "Woche auf Englisch");
+        var today = week.Days.First(day => day.IsToday);
+        check(today.OutboundCaption is not null && today.OutboundCaption.StartsWith("Out "), "Fahrt-Hinweis auf Englisch: " + today.OutboundCaption);
+        week.StartSelectingCommand.Execute(null);
+        week.ApplySelectionCommand.Execute(null);
+        check(english.Toast == "Mark a few days first.", "Hinweis auf Englisch");
+        week.CancelSelectingCommand.Execute(null);
+        english.Toast = null;
+        await capture(window, Path.Combine(directory, "week-en.png"));
+
+        english.Navigate("settings");
+        await SettleAsync();
+        LanguageRadios(window)[1].IsChecked = true;
+        await SettleAsync();
+        var german = App.Main!;
+        check(!ReferenceEquals(german, english) && Language.IsGerman && german.Services.Store.Load().Settings.Language == Core.Models.AppLanguage.German, "Zurueck auf Deutsch");
+        check(german.NavItems.Select(item => item.Title).SequenceEqual(new[] { "Woche", "Schichten", "Einstellungen" }) && HasText(window, "Sprache") && HasText(window, "Nach Updates suchen"), "Oberflaeche wieder auf Deutsch");
+        await capture(window, Path.Combine(directory, "settings-de.png"));
+        german.Navigate("week");
+        check(((WeekViewModel)german.CurrentPage!).Days[0].DayName == "Montag", "Wochentage wieder auf Deutsch");
+    }
+
+    private static async Task SettleAsync()
+    {
+        await Task.Delay(300);
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+    }
+
+    private static List<RadioButton> LanguageRadios(Window window)
+    {
+        return window.GetVisualDescendants().OfType<RadioButton>().Where(radio => radio.GroupName == "language").ToList();
+    }
+
+    private static bool HasText(Window window, string text)
+    {
+        return window.GetVisualDescendants().OfType<TextBlock>().Any(block => block.Text == text && block.IsEffectivelyVisible);
     }
 
     private static async Task RunSecondViewAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)
@@ -379,17 +437,6 @@ internal static class TourSteps
         {
             await Task.Delay(50);
         }
-    }
-
-    private static async Task SettleAsync()
-    {
-        await Task.Delay(300);
-        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
-    }
-
-    private static bool HasText(Window window, string text)
-    {
-        return window.GetVisualDescendants().OfType<TextBlock>().Any(block => block.Text == text && block.IsEffectivelyVisible);
     }
 
     private static async Task RunManualEntryAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)

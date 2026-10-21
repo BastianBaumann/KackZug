@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core.Import;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -12,8 +13,8 @@ public partial class ManualLegViewModel : ViewModelBase
     public ManualLegViewModel(Func<IStationSearch> search, Action<ManualLegViewModel> remove)
     {
         _remove = remove;
-        From = new StationPickerViewModel("Von", search);
-        To = new StationPickerViewModel("Nach", search);
+        From = new StationPickerViewModel(UiStrings.Manual_From, search);
+        To = new StationPickerViewModel(UiStrings.Manual_To, search);
     }
 
     public StationPickerViewModel From { get; }

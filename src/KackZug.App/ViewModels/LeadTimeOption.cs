@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -10,10 +11,10 @@ public partial class LeadTimeOption : ObservableObject
     public LeadTimeOption(int minutes, bool isChecked, Action changed)
     {
         Minutes = minutes;
-        Text = minutes + " Min. vorher";
+        Text = UiLanguage.Format(UiStrings.Settings_LeadMinutes, minutes);
         if (minutes >= 60 && minutes % 60 == 0)
         {
-            Text = (minutes / 60) + " Std. vorher";
+            Text = UiLanguage.Format(UiStrings.Settings_LeadHours, minutes / 60);
         }
 
         IsChecked = isChecked;

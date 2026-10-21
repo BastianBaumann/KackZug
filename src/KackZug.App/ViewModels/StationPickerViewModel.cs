@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using KackZug.Core.Bahn;
 using KackZug.Core.Import;
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -73,12 +74,12 @@ public partial class StationPickerViewModel : ViewModelBase
 
             if (Results.Count == 0)
             {
-                Message = "Nichts gefunden. Anders schreiben?";
+                Message = UiStrings.Manual_NothingFound;
             }
         }
         catch (BahnApiException exception) when (exception.Kind == BahnApiErrorKind.NotFound)
         {
-            Message = "Nichts gefunden. Anders schreiben?";
+            Message = UiStrings.Manual_NothingFound;
         }
         catch (BahnApiException exception)
         {
@@ -86,7 +87,7 @@ public partial class StationPickerViewModel : ViewModelBase
         }
         catch (Exception exception) when (exception is not OutOfMemoryException)
         {
-            Message = "Suche ging gerade nicht: " + exception.Message;
+            Message = UiLanguage.Format(UiStrings.Manual_SearchFailed, exception.Message);
         }
         finally
         {

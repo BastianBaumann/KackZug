@@ -1,9 +1,10 @@
 using System.Collections.ObjectModel;
-using System.Globalization;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using KackZug.Core.Checking;
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
+using KackZug.Localization;
 using KackZug.Services;
 
 namespace KackZug.ViewModels;
@@ -11,8 +12,6 @@ namespace KackZug.ViewModels;
 /// <summary>Ein Tag im Wochenplan mit Schicht, Fahrten und letztem Stand</summary>
 public partial class DayRowViewModel : ViewModelBase
 {
-    private static readonly CultureInfo German = new CultureInfo("de-DE");
-
     private readonly WeekViewModel _week;
     private readonly DayPlan _plan;
     private bool _isLoading;
@@ -24,9 +23,10 @@ public partial class DayRowViewModel : ViewModelBase
         _plan = plan;
         Date = date;
         Options = options;
-        DayName = German.DateTimeFormat.GetDayName(date.DayOfWeek);
-        WeekdayShort = German.DateTimeFormat.GetAbbreviatedDayName(date.DayOfWeek);
-        DateText = date.ToString("dd.MM.", German);
+        var culture = Language.Culture;
+        DayName = culture.DateTimeFormat.GetDayName(date.DayOfWeek);
+        WeekdayShort = culture.DateTimeFormat.GetAbbreviatedDayName(date.DayOfWeek);
+        DateText = date.ToString(UiStrings.Format_DayMonth, culture);
         IsPast = date < today;
         IsToday = date == today;
 
@@ -277,10 +277,10 @@ public partial class DayRowViewModel : ViewModelBase
 
     private string TripLabel(TripDirection direction)
     {
-        var prefix = "Hin";
+        var prefix = UiStrings.Day_Outbound;
         if (direction == TripDirection.Return)
         {
-            prefix = "Rück";
+            prefix = UiStrings.Day_Return;
         }
 
         var connection = Shift?.GetConnection(direction);
@@ -323,7 +323,7 @@ public partial class DayRowViewModel : ViewModelBase
             badgeText = StatusBadge.ShortText(state.LastStatus);
         }
 
-        var caption = label + " · " + badgeText + " · geprüft " + CheckedText(state.LastCheckedAt);
+        var caption = UiLanguage.Format(UiStrings.Day_Caption, label, badgeText, CheckedText(state.LastCheckedAt));
         return new StatusBadge(state.LastStatus, badgeText, caption);
     }
 
@@ -370,6 +370,6 @@ public partial class DayRowViewModel : ViewModelBase
             return wallClock.ToString("HH:mm");
         }
 
-        return German.DateTimeFormat.GetAbbreviatedDayName(wallClock.DayOfWeek) + " " + wallClock.ToString("HH:mm");
+        return Language.Culture.DateTimeFormat.GetAbbreviatedDayName(wallClock.DayOfWeek) + " " + wallClock.ToString("HH:mm");
     }
 }

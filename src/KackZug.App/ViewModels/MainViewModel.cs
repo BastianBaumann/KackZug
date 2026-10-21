@@ -3,6 +3,7 @@ using AppUpdater;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core;
+using KackZug.Localization;
 using KackZug.Services;
 
 namespace KackZug.ViewModels;
@@ -18,9 +19,9 @@ public partial class MainViewModel : ViewModelBase
         Services = services;
         NavItems = new ObservableCollection<NavItem>
         {
-            new NavItem("week", "Woche", "IconWeek", () => new WeekViewModel(this)),
-            new NavItem("shifts", "Schichten", "IconShifts", () => new ShiftsViewModel(this)),
-            new NavItem("settings", "Einstellungen", "IconSettings", () => new SettingsViewModel(this))
+            new NavItem("week", UiStrings.Nav_Week, "IconWeek", () => new WeekViewModel(this)),
+            new NavItem("shifts", UiStrings.Nav_Shifts, "IconShifts", () => new ShiftsViewModel(this)),
+            new NavItem("settings", UiStrings.Nav_Settings, "IconSettings", () => new SettingsViewModel(this))
         };
         Navigate("week");
     }

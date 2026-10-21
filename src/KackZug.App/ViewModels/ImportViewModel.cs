@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core.Import;
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -102,7 +103,7 @@ public partial class ImportViewModel : ViewModelBase
             NewSummary = ConnectionText.Summary(resolved.Connection);
             if (!resolved.HasPlatforms)
             {
-                Hint = "Gleise konnten gerade nicht geladen werden. Gleiswechsel werden für diese Fahrt nicht gemeldet.";
+                Hint = UiStrings.Import_NoPlatforms;
             }
 
             FillTargets();
@@ -113,7 +114,7 @@ public partial class ImportViewModel : ViewModelBase
         }
         catch (Exception exception) when (exception is not OutOfMemoryException)
         {
-            ErrorMessage = "Die Verbindung konnte nicht übernommen werden: " + exception.Message;
+            ErrorMessage = UiLanguage.Format(UiStrings.Import_Failed, exception.Message);
         }
         finally
         {
@@ -150,7 +151,7 @@ public partial class ImportViewModel : ViewModelBase
         }
 
         NewSummary = ConnectionText.Summary(connection);
-        Hint = "Von Hand eingegeben: Gleiswechsel kann KackZug dafür nicht melden, Verspätung und Ausfall schon.";
+        Hint = UiStrings.Import_ManualHint;
         CameFromManual = true;
         IsManualStep = false;
         FillTargets();
@@ -222,7 +223,7 @@ public partial class ImportViewModel : ViewModelBase
         shift.SetConnection(Direction, _connection);
         _main.Services.SaveAndReschedule();
         _main.CloseImport();
-        _main.ShowToast(Core.Checking.AlertComposer.DirectionName(Direction) + " für \"" + shift.Name + "\" gespeichert.", false);
+        _main.ShowToast(UiLanguage.Format(UiStrings.Import_Saved, Core.Checking.AlertComposer.DirectionName(Direction), shift.Name), false);
         _main.Navigate("shifts");
     }
 

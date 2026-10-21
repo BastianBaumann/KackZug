@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using KackZug.Core.Localization;
+using KackZug.Localization;
 using KackZug.Services;
 using KackZug.ViewModels;
 using KackZug.Views;
@@ -101,7 +101,7 @@ public partial class App : Application
     {
         var services = AppServices.Create(Platform);
         Services = services;
-        Language.Apply(services.Data.Settings.Language);
+        UiLanguage.Apply(services.Data.Settings.Language);
         services.Theme.Apply(services.Data.Settings);
         services.Reschedule();
 

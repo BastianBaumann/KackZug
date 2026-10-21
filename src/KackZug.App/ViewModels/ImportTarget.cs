@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -11,7 +12,7 @@ public partial class ImportTarget : ObservableObject
         Shift = shift;
         if (shift is null)
         {
-            Title = "Neue Schicht";
+            Title = UiStrings.Shifts_New;
         }
         else
         {

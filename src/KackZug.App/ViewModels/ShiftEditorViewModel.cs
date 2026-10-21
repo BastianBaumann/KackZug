@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -44,10 +45,10 @@ public partial class ShiftEditorViewModel : ViewModelBase
         {
             if (_isNew)
             {
-                return "Neue Schicht";
+                return UiStrings.Shifts_New;
             }
 
-            return "Schicht bearbeiten";
+            return UiStrings.Shifts_Edit;
         }
     }
 
@@ -91,7 +92,7 @@ public partial class ShiftEditorViewModel : ViewModelBase
         }
 
         _main.Services.SaveAndReschedule();
-        _main.ShowToast("Gespeichert. Ich pass auf.", false);
+        _main.ShowToast(UiStrings.Shifts_Saved, false);
         _closed();
     }
 
@@ -110,9 +111,9 @@ public partial class ShiftEditorViewModel : ViewModelBase
     private async Task DeleteAsync()
     {
         var confirmed = await _main.ConfirmAsync(
-            "Schicht löschen?",
-            "\"" + _shift.Name + "\" wird gelöscht. Tage mit dieser Schicht sind danach frei.",
-            "Löschen");
+            UiStrings.Shifts_DeleteTitle,
+            UiLanguage.Format(UiStrings.Shifts_DeleteMessage, _shift.Name),
+            UiStrings.Shifts_DeleteConfirm);
         if (!confirmed)
         {
             return;
@@ -120,7 +121,7 @@ public partial class ShiftEditorViewModel : ViewModelBase
 
         _main.Services.Data.RemoveShift(_shift.Id);
         _main.Services.SaveAndReschedule();
-        _main.ShowToast("Schicht gelöscht.", false);
+        _main.ShowToast(UiStrings.Shifts_Deleted, false);
         _closed();
     }
 

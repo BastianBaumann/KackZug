@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:KackZug.Localization"
              xmlns:vm="using:KackZug.ViewModels"
              xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.ManualEntryView"
@@ -11,14 +12,14 @@
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding HasSelection}">
                     <TextBlock Text="{Binding Selected.Name, FallbackValue=''}" Classes="body-lg" TextWrapping="Wrap" VerticalAlignment="Center" />
                     <Button Grid.Column="1" Classes="ghost" Command="{Binding ChangeCommand}">
-                        <TextBlock Text="Ändern" />
+                        <TextBlock Text="{x:Static l:UiStrings.Manual_Change}" />
                     </Button>
                 </Grid>
                 <StackPanel Spacing="6" IsVisible="{Binding IsSearchVisible}">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                        <TextBox Text="{Binding Query}" PlaceholderText="Bahnhof oder Haltestelle" />
+                        <TextBox Text="{Binding Query}" PlaceholderText="{x:Static l:UiStrings.Manual_StationPlaceholder}" />
                         <Button Grid.Column="1" Classes="secondary" Command="{Binding SearchCommand}">
-                            <TextBlock Text="Suchen" />
+                            <TextBlock Text="{x:Static l:UiStrings.Manual_Search}" />
                         </Button>
                     </Grid>
                     <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsSearching}" />
@@ -42,8 +43,8 @@
 
     <StackPanel Spacing="16">
         <StackPanel Spacing="2">
-            <TextBlock Text="Verbindung von Hand" Classes="title" />
-            <TextBlock Text="Pro Zug, Bus oder Bahn eine Teilstrecke. Fußwege beim Umsteigen ergänzt KackZug selbst." Classes="muted" TextWrapping="Wrap" />
+            <TextBlock Text="{x:Static l:UiStrings.Manual_Title}" Classes="title" />
+            <TextBlock Text="{x:Static l:UiStrings.Manual_Intro}" Classes="muted" TextWrapping="Wrap" />
         </StackPanel>
 
         <ItemsControl ItemsSource="{Binding Legs}">
@@ -61,7 +62,7 @@
                                 <Button Grid.Column="1" Classes="ghost" Command="{Binding RemoveCommand}" IsVisible="{Binding CanRemove}">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <c:OutlineIcon Data="{StaticResource IconDelete}" Width="18" Height="18" />
-                                        <TextBlock Text="Entfernen" />
+                                        <TextBlock Text="{x:Static l:UiStrings.Common_Remove}" />
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -69,23 +70,23 @@
                             <ContentControl Content="{Binding To}" ContentTemplate="{StaticResource StationPickerTemplate}" />
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                                 <StackPanel Spacing="6">
-                                    <TextBlock Text="Abfahrt" Classes="caption" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Manual_Departure}" Classes="caption" />
                                     <TextBox Classes="time" HorizontalAlignment="Left" Text="{Binding DepartureText}" PlaceholderText="06:42" MaxLength="8"
                                              TextInputOptions.ContentType="Number" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Spacing="6">
-                                    <TextBlock Text="Ankunft" Classes="caption" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Manual_Arrival}" Classes="caption" />
                                     <TextBox Classes="time" HorizontalAlignment="Left" Text="{Binding ArrivalText}" PlaceholderText="07:10" MaxLength="8"
                                              TextInputOptions.ContentType="Number" />
                                 </StackPanel>
                             </Grid>
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                                 <StackPanel Spacing="6">
-                                    <TextBlock Text="Linie" Classes="caption" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Manual_Line}" Classes="caption" />
                                     <TextBox Text="{Binding LineText}" PlaceholderText="RE 1, Bus 11" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Spacing="6">
-                                    <TextBlock Text="Zugnummer (wenn bekannt)" Classes="caption" TextWrapping="Wrap" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Manual_TrainNumber}" Classes="caption" TextWrapping="Wrap" />
                                     <TextBox Text="{Binding TrainNumberText}" PlaceholderText="4711" TextInputOptions.ContentType="Digits" />
                                 </StackPanel>
                             </Grid>
@@ -98,7 +99,7 @@
         <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding AddLegCommand}">
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <c:OutlineIcon Data="{StaticResource IconPlus}" Width="20" Height="20" />
-                <TextBlock Text="Umstieg: weitere Teilstrecke" />
+                <TextBlock Text="{x:Static l:UiStrings.Manual_AddLeg}" />
             </StackPanel>
         </Button>
 
@@ -106,7 +107,7 @@
                    IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
         <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding ContinueCommand}">
-            <TextBlock Text="Weiter" />
+            <TextBlock Text="{x:Static l:UiStrings.Common_Next}" />
         </Button>
     </StackPanel>
 </UserControl>

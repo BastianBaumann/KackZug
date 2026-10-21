@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Styling;
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.Services;
 
@@ -11,14 +12,21 @@ public sealed class ThemeService
     public const string DefaultAccent = "#C84B0C";
     public const string LegacyAccent = "#1E9E8B";
 
-    public static readonly (string Name, string Accent)[] Presets =
+    /// <remarks>Die Namen kommen bei jedem Abruf neu aus der Texttabelle, damit sie der eingestellten Sprache folgen.</remarks>
+    public static (string Name, string Accent)[] Presets
     {
-        ("Orange (Standard)", DefaultAccent),
-        ("Petrol", "#00788A"),
-        ("Blau", "#1455C0"),
-        ("Violett", "#6A3FB5"),
-        ("Schiefer", "#46505E")
-    };
+        get
+        {
+            return new[]
+            {
+                (UiStrings.Settings_PresetOrange, DefaultAccent),
+                (UiStrings.Settings_PresetPetrol, "#00788A"),
+                (UiStrings.Settings_PresetBlue, "#1455C0"),
+                (UiStrings.Settings_PresetViolet, "#6A3FB5"),
+                (UiStrings.Settings_PresetSlate, "#46505E")
+            };
+        }
+    }
 
     private static readonly string[] AccentKeys = { "AppAccentBrush", "AppAccentPressedBrush", "AppAccentSoftBrush", "AppAccentInkBrush" };
 

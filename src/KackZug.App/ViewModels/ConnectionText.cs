@@ -1,4 +1,5 @@
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -9,7 +10,7 @@ public static class ConnectionText
     {
         if (connection is null || connection.FirstRide is null)
         {
-            return "noch keine Verbindung";
+            return UiStrings.Connection_None;
         }
 
         var first = connection.Legs[0];
@@ -35,17 +36,17 @@ public static class ConnectionText
         var parts = new List<string>();
         if (!string.IsNullOrEmpty(leg.PlannedPlatform))
         {
-            parts.Add("Gleis " + leg.PlannedPlatform);
+            parts.Add(UiLanguage.Format(UiStrings.Leg_Platform, leg.PlannedPlatform));
         }
 
         if (!string.IsNullOrEmpty(leg.TrainNumber) && leg.TrainNumber != leg.Line && !leg.Name.Contains(leg.TrainNumber))
         {
-            parts.Add("Zug " + leg.TrainNumber);
+            parts.Add(UiLanguage.Format(UiStrings.Leg_Train, leg.TrainNumber));
         }
 
         if (!string.IsNullOrEmpty(leg.Direction))
         {
-            parts.Add("Richtung " + leg.Direction);
+            parts.Add(UiLanguage.Format(UiStrings.Leg_Direction, leg.Direction));
         }
 
         return string.Join(" · ", parts);
@@ -56,7 +57,7 @@ public static class ConnectionText
         if (leg.IsWalk)
         {
             var minutes = (int)(leg.PlannedArrival - leg.PlannedDeparture).TotalMinutes;
-            return minutes + " Min. Fußweg";
+            return UiLanguage.Format(UiStrings.Leg_Walk, minutes);
         }
 
         var text = leg.Name;
@@ -67,7 +68,7 @@ public static class ConnectionText
 
         if (!string.IsNullOrEmpty(leg.PlannedPlatform))
         {
-            text += " · Gleis " + leg.PlannedPlatform;
+            text += " · " + UiLanguage.Format(UiStrings.Leg_Platform, leg.PlannedPlatform);
         }
 
         return text;

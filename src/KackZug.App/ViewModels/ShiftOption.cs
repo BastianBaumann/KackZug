@@ -1,4 +1,5 @@
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -10,7 +11,7 @@ public sealed class ShiftOption
         Shift = shift;
         if (shift is null)
         {
-            Name = "frei";
+            Name = UiStrings.Day_Free;
         }
         else
         {

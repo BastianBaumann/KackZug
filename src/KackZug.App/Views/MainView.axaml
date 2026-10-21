@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:KackZug.Localization"
              xmlns:vm="using:KackZug.ViewModels"
              xmlns:c="using:KackZug.Controls"
              xmlns:local="using:KackZug"
@@ -28,7 +29,7 @@
                             <TextBlock Text="{Binding Updates.NotesText}" Classes="caption" TextWrapping="Wrap" MaxLines="3" TextTrimming="CharacterEllipsis"
                                        IsVisible="{Binding Updates.HasNotes}" />
                         </StackPanel>
-                        <Button Grid.Column="1" Classes="icon" VerticalAlignment="Top" Command="{Binding DismissUpdateCommand}" ToolTip.Tip="Ausblenden">
+                        <Button Grid.Column="1" Classes="icon" VerticalAlignment="Top" Command="{Binding DismissUpdateCommand}" ToolTip.Tip="{x:Static l:UiStrings.Update_Dismiss}">
                             <c:OutlineIcon Data="{StaticResource IconCancelled}" Width="18" Height="18" Foreground="{DynamicResource AppMutedBrush}" />
                         </Button>
                         <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="0,8,8,0" Minimum="0" Maximum="100"
@@ -100,7 +101,7 @@
                     <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
                     <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
                         <Button Classes="secondary" Command="{Binding CancelCommand}">
-                            <TextBlock Text="Abbrechen" />
+                            <TextBlock Text="{x:Static l:UiStrings.Common_Cancel}" />
                         </Button>
                         <Button Classes="secondary destructive" Command="{Binding ConfirmCommand}">
                             <TextBlock Text="{Binding ConfirmText}" />

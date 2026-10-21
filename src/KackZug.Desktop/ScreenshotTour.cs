@@ -5,6 +5,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using KackZug.Core.Localization;
+using KackZug.Core.Models;
+using KackZug.Localization;
+using KackZug.ViewModels;
 
 namespace KackZug.Desktop;
 
@@ -27,7 +31,8 @@ internal static class ScreenshotTour
             var window = lifetime.MainWindow!;
             window.Width = 400;
             window.Height = 820;
-            var main = App.Main!;
+            var main = StartInGerman(App.Main!);
+            Check(Language.IsGerman && main.NavItems[0].Title == "Woche", "Tour startet auf Deutsch");
 
             foreach (var variant in new[] { ThemeVariant.Light, ThemeVariant.Dark })
             {
@@ -50,6 +55,24 @@ internal static class ScreenshotTour
 
         File.WriteAllLines(Path.Combine(directory, "checks.txt"), Results);
         lifetime.Shutdown();
+    }
+
+    /// <summary>Die Pruefungen vergleichen deutsche Texte, deshalb beginnt die Tour immer auf Deutsch</summary>
+    private static MainViewModel StartInGerman(MainViewModel main)
+    {
+        var data = main.Services.Data;
+        if (data.Settings.Language == AppLanguage.German && Language.IsGerman)
+        {
+            return main;
+        }
+
+        data.Settings.Language = AppLanguage.German;
+        main.Services.Store.Save(data);
+        UiLanguage.Apply(AppLanguage.German);
+        App.ReloadUi();
+        var reloaded = App.Main!;
+        reloaded.Navigate("week");
+        return reloaded;
     }
 
     private static void Check(bool condition, string description)

@@ -1,43 +1,44 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:KackZug.Localization"
              xmlns:vm="using:KackZug.ViewModels"
              xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.ImportView"
              x:DataType="vm:ImportViewModel">
     <StackPanel Spacing="16">
         <StackPanel IsVisible="{Binding IsLoading}" Spacing="12">
-            <TextBlock Text="Verbindung wird geladen …" Classes="title" />
+            <TextBlock Text="{x:Static l:UiStrings.Import_Loading}" Classes="title" />
             <ProgressBar IsIndeterminate="True" />
-            <TextBlock Text="Ich frag kurz bei bahn.de nach." Classes="muted" />
+            <TextBlock Text="{x:Static l:UiStrings.Import_LoadingHint}" Classes="muted" />
         </StackPanel>
 
         <StackPanel IsVisible="{Binding HasError}" Spacing="12">
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <c:OutlineIcon Data="{StaticResource IconWarning}" Width="24" Height="24" Foreground="{DynamicResource AppCancelInkBrush}" />
-                <TextBlock Text="Hm, den Link konnte ich nicht lesen." Classes="title" VerticalAlignment="Center" TextWrapping="Wrap" />
+                <TextBlock Text="{x:Static l:UiStrings.Import_ErrorTitle}" Classes="title" VerticalAlignment="Center" TextWrapping="Wrap" />
             </StackPanel>
             <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" />
             <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding StartManualCommand}">
-                <TextBlock Text="Von Hand eingeben" />
+                <TextBlock Text="{x:Static l:UiStrings.Import_EnterManually}" />
             </Button>
             <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CloseCommand}">
-                <TextBlock Text="Schließen" />
+                <TextBlock Text="{x:Static l:UiStrings.Common_Close}" />
             </Button>
         </StackPanel>
 
         <StackPanel IsVisible="{Binding IsManualStep}" Spacing="16">
             <ContentControl Content="{Binding Manual}" />
             <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CloseCommand}">
-                <TextBlock Text="Abbrechen" />
+                <TextBlock Text="{x:Static l:UiStrings.Common_Cancel}" />
             </Button>
         </StackPanel>
 
         <StackPanel IsVisible="{Binding IsReady}" Spacing="16">
             <StackPanel Spacing="2">
                 <Grid ColumnDefinitions="*,Auto">
-                    <TextBlock Text="Verbindung erkannt" Classes="title" VerticalAlignment="Center" />
+                    <TextBlock Text="{x:Static l:UiStrings.Import_Recognized}" Classes="title" VerticalAlignment="Center" />
                     <Button Grid.Column="1" Classes="ghost" Command="{Binding EditManualCommand}" IsVisible="{Binding CameFromManual}">
-                        <TextBlock Text="Eingabe ändern" />
+                        <TextBlock Text="{x:Static l:UiStrings.Import_EditManual}" />
                     </Button>
                 </Grid>
                 <TextBlock Text="{Binding NewSummary}" Classes="muted" TextWrapping="Wrap" FontFeatures="+tnum" />
@@ -49,7 +50,7 @@
                        Classes="caption" TextWrapping="Wrap" Foreground="{DynamicResource AppLateInkBrush}" />
 
             <StackPanel Spacing="8">
-                <TextBlock Text="Für welche Schicht?" Classes="caption" />
+                <TextBlock Text="{x:Static l:UiStrings.Import_WhichShift}" Classes="caption" />
                 <ItemsControl ItemsSource="{Binding Targets}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -72,39 +73,39 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <TextBox Text="{Binding NewShiftName}" PlaceholderText="Name der neuen Schicht, z. B. Frühdienst"
+                <TextBox Text="{Binding NewShiftName}" PlaceholderText="{x:Static l:UiStrings.Import_NewShiftPlaceholder}"
                          IsVisible="{Binding IsNewTarget}" />
             </StackPanel>
 
             <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
                 <UniformGrid Rows="1">
                     <RadioButton Classes="segment" GroupName="direction" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsOutbound, Mode=OneWay}" Command="{Binding ChooseOutboundCommand}">
-                        <TextBlock Text="Hinfahrt" />
+                        <TextBlock Text="{x:Static l:UiStrings.Common_Outbound}" />
                     </RadioButton>
                     <RadioButton Classes="segment" GroupName="direction" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsReturn, Mode=OneWay}" Command="{Binding ChooseReturnCommand}">
-                        <TextBlock Text="Rückfahrt" />
+                        <TextBlock Text="{x:Static l:UiStrings.Common_Return}" />
                     </RadioButton>
                 </UniformGrid>
             </Border>
 
             <Border Classes="soft" IsVisible="{Binding HasReplacement}">
                 <StackPanel Spacing="6">
-                    <TextBlock Text="Die vorhandene Fahrt wird ersetzt" Classes="label" />
-                    <TextBlock Text="Vorher" Classes="caption" />
+                    <TextBlock Text="{x:Static l:UiStrings.Import_Replaced}" Classes="label" />
+                    <TextBlock Text="{x:Static l:UiStrings.Import_Before}" Classes="caption" />
                     <TextBlock Text="{Binding ReplacedSummary}" TextWrapping="Wrap" Classes="muted" FontFeatures="+tnum" />
-                    <TextBlock Text="Nachher" Classes="caption" />
+                    <TextBlock Text="{x:Static l:UiStrings.Import_After}" Classes="caption" />
                     <TextBlock Text="{Binding NewSummary}" TextWrapping="Wrap" FontFeatures="+tnum" />
                 </StackPanel>
             </Border>
 
             <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding SaveCommand}">
-                <TextBlock Text="Speichern" />
+                <TextBlock Text="{x:Static l:UiStrings.Common_Save}" />
             </Button>
             <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CloseCommand}">
-                <TextBlock Text="Abbrechen" />
+                <TextBlock Text="{x:Static l:UiStrings.Common_Cancel}" />
             </Button>
             <TextBlock Classes="caption" TextWrapping="Wrap"
-                       Text="Gespeichert wird das Muster (Bahnhöfe, Uhrzeiten, Linie), nicht das Datum. Die Fahrt gilt an jedem Tag mit dieser Schicht." />
+                       Text="{x:Static l:UiStrings.Import_PatternHint}" />
         </StackPanel>
     </StackPanel>
 </UserControl>

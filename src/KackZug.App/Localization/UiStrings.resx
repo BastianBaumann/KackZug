@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav_Week" xml:space="preserve"><value>Week</value></data>
+  <data name="Nav_Shifts" xml:space="preserve"><value>Shifts</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="View_Missing" xml:space="preserve"><value>No view for {0}</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Common_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Common_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Common_Next" xml:space="preserve"><value>Next</value></data>
+  <data name="Common_Back" xml:space="preserve"><value>Back</value></data>
+  <data name="Common_Apply" xml:space="preserve"><value>Apply</value></data>
+  <data name="Common_Remove" xml:space="preserve"><value>Remove</value></data>
+  <data name="Common_Outbound" xml:space="preserve"><value>Outbound</value></data>
+  <data name="Common_Return" xml:space="preserve"><value>Return</value></data>
+  <data name="Format_DayMonth" xml:space="preserve"><value>dd/MM</value></data>
+  <data name="Update_Available" xml:space="preserve"><value>Version {0} is out.</value></data>
+  <data name="Update_Download" xml:space="preserve"><value>Download</value></data>
+  <data name="Update_Dismiss" xml:space="preserve"><value>Dismiss</value></data>
+  <data name="Week_ThisWeek" xml:space="preserve"><value>This week</value></data>
+  <data name="Week_NextWeek" xml:space="preserve"><value>Next week</value></data>
+  <data name="Week_Range" xml:space="preserve"><value>Week of {0:dd/MM} to {1:dd/MM/yy}</value></data>
+  <data name="Week_NoShiftTitle" xml:space="preserve"><value>No shift yet</value></data>
+  <data name="Week_NoShiftText" xml:space="preserve"><value>In DB Navigator, tap “Share” on your connection and pick KackZug. Then give each day a shift here.</value></data>
+  <data name="Week_CheckNow" xml:space="preserve"><value>Check now (today and tomorrow)</value></data>
+  <data name="Week_Today" xml:space="preserve"><value>TODAY</value></data>
+  <data name="Week_Details" xml:space="preserve"><value>Details</value></data>
+  <data name="Week_SetSeveralDays" xml:space="preserve"><value>Set several days</value></data>
+  <data name="Week_BulkPrompt" xml:space="preserve"><value>Marked days get this shift:</value></data>
+  <data name="Week_MarkDaysFirst" xml:space="preserve"><value>Mark a few days first.</value></data>
+  <data name="Week_OneDay" xml:space="preserve"><value>1 day</value></data>
+  <data name="Week_ManyDays" xml:space="preserve"><value>{0} days</value></data>
+  <data name="Week_DaysSet" xml:space="preserve"><value>{0} set to “{1}”.</value></data>
+  <data name="Week_NoTrips" xml:space="preserve"><value>No trips today or tomorrow.</value></data>
+  <data name="Day_Outbound" xml:space="preserve"><value>Out</value></data>
+  <data name="Day_Return" xml:space="preserve"><value>Back</value></data>
+  <data name="Day_Caption" xml:space="preserve"><value>{0} · {1} · checked {2}</value></data>
+  <data name="Day_Free" xml:space="preserve"><value>off</value></data>
+  <data name="Detail_Back" xml:space="preserve"><value>‹ Back to the week</value></data>
+  <data name="Detail_NoTrips" xml:space="preserve"><value>No trip is switched on for this day.</value></data>
+  <data name="Detail_OpenNavigator" xml:space="preserve"><value>Open in DB Navigator</value></data>
+  <data name="Detail_PreparingNavigator" xml:space="preserve"><value>Preparing connection …</value></data>
+  <data name="Detail_CheckLive" xml:space="preserve"><value>Check live</value></data>
+  <data name="Trip_Now" xml:space="preserve"><value>now {0}</value></data>
+  <data name="Trip_Transfer" xml:space="preserve"><value>Change at {0}: {1} min to spare</value></data>
+  <data name="Trip_TransferAtRisk" xml:space="preserve"><value>Change at {0}: {1} min to spare – connection at risk</value></data>
+  <data name="Trip_PlannedOnlyNote" xml:space="preserve"><value>Live data only shows up shortly before departure.</value></data>
+  <data name="Trip_UnknownNote" xml:space="preserve"><value>bahn.de couldn't be reached or had no data yet.</value></data>
+  <data name="Trip_JustChecked" xml:space="preserve"><value>Just checked</value></data>
+  <data name="Trip_NotChecked" xml:space="preserve"><value>Not checked yet</value></data>
+  <data name="Trip_LastChecked" xml:space="preserve"><value>Last checked {0:dd/MM HH:mm}</value></data>
+  <data name="Trip_NavigatorMissingNoLink" xml:space="preserve"><value>DB Navigator isn't installed and I couldn't find the connection on bahn.de. Opening bahn.de in the browser.</value></data>
+  <data name="Trip_NavigatorMissing" xml:space="preserve"><value>DB Navigator isn't installed. The connection opens in the browser.</value></data>
+  <data name="Trip_NoLink" xml:space="preserve"><value>I couldn't find the connection for this day on bahn.de. The Navigator opens without it.</value></data>
+  <data name="Leg_Platform" xml:space="preserve"><value>Platform {0}</value></data>
+  <data name="Leg_Train" xml:space="preserve"><value>Train {0}</value></data>
+  <data name="Leg_Direction" xml:space="preserve"><value>towards {0}</value></data>
+  <data name="Leg_Walk" xml:space="preserve"><value>{0} min walk</value></data>
+  <data name="Leg_LiveDeparture" xml:space="preserve"><value>dep {0}</value></data>
+  <data name="Leg_LiveArrival" xml:space="preserve"><value>arr {0}</value></data>
+  <data name="Leg_NewPlatform" xml:space="preserve"><value>now platform {0}</value></data>
+  <data name="Leg_NoLiveData" xml:space="preserve"><value>no live data yet</value></data>
+  <data name="Leg_DelayMinutes" xml:space="preserve"><value>+{0} min</value></data>
+  <data name="Connection_None" xml:space="preserve"><value>no connection yet</value></data>
+  <data name="Status_NotChecked" xml:space="preserve"><value>Not checked yet</value></data>
+  <data name="Status_OnTime" xml:space="preserve"><value>On time</value></data>
+  <data name="Status_PlannedOnly" xml:space="preserve"><value>As scheduled, live data to follow</value></data>
+  <data name="Status_Unknown" xml:space="preserve"><value>Not checked</value></data>
+  <data name="Status_PlatformChanged" xml:space="preserve"><value>Platform change</value></data>
+  <data name="Status_Delayed" xml:space="preserve"><value>Delayed</value></data>
+  <data name="Status_TransferAtRisk" xml:space="preserve"><value>Tight connection</value></data>
+  <data name="Status_NotFound" xml:space="preserve"><value>Not found</value></data>
+  <data name="Status_PartlyCancelled" xml:space="preserve"><value>Partly cancelled</value></data>
+  <data name="Status_Cancelled" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="Shifts_New" xml:space="preserve"><value>New shift</value></data>
+  <data name="Shifts_Edit" xml:space="preserve"><value>Edit shift</value></data>
+  <data name="Shifts_EmptyTitle" xml:space="preserve"><value>No shift yet</value></data>
+  <data name="Shifts_EmptyText" xml:space="preserve"><value>In DB Navigator, tap “Share” on your connection and pick KackZug. It then lands in a shift as the outbound or return trip.</value></data>
+  <data name="Shifts_NoConnection" xml:space="preserve"><value>No connection yet. Tap “Share” in DB Navigator and pick KackZug.</value></data>
+  <data name="Shifts_EnterManually" xml:space="preserve"><value>Enter a connection by hand</value></data>
+  <data name="Shifts_EnterManuallyHint" xml:space="preserve"><value>Only if sharing from DB Navigator doesn't work.</value></data>
+  <data name="Shifts_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Shifts_NamePlaceholder" xml:space="preserve"><value>e.g. Early shift</value></data>
+  <data name="Shifts_Color" xml:space="preserve"><value>Colour</value></data>
+  <data name="Shifts_Delete" xml:space="preserve"><value>Delete shift</value></data>
+  <data name="Shifts_DeleteTitle" xml:space="preserve"><value>Delete shift?</value></data>
+  <data name="Shifts_DeleteMessage" xml:space="preserve"><value>“{0}” will be deleted. Days with this shift will be free afterwards.</value></data>
+  <data name="Shifts_DeleteConfirm" xml:space="preserve"><value>Delete</value></data>
+  <data name="Shifts_Saved" xml:space="preserve"><value>Saved. I'm watching it.</value></data>
+  <data name="Shifts_Deleted" xml:space="preserve"><value>Shift deleted.</value></data>
+  <data name="Import_Loading" xml:space="preserve"><value>Loading connection …</value></data>
+  <data name="Import_LoadingHint" xml:space="preserve"><value>Just asking bahn.de.</value></data>
+  <data name="Import_ErrorTitle" xml:space="preserve"><value>Hm, I couldn't read that link.</value></data>
+  <data name="Import_Failed" xml:space="preserve"><value>The connection couldn't be taken over: {0}</value></data>
+  <data name="Import_EnterManually" xml:space="preserve"><value>Enter by hand</value></data>
+  <data name="Import_Recognized" xml:space="preserve"><value>Connection found</value></data>
+  <data name="Import_EditManual" xml:space="preserve"><value>Edit entry</value></data>
+  <data name="Import_WhichShift" xml:space="preserve"><value>For which shift?</value></data>
+  <data name="Import_NewShiftPlaceholder" xml:space="preserve"><value>Name of the new shift, e.g. Early shift</value></data>
+  <data name="Import_Replaced" xml:space="preserve"><value>The existing trip will be replaced</value></data>
+  <data name="Import_Before" xml:space="preserve"><value>Before</value></data>
+  <data name="Import_After" xml:space="preserve"><value>After</value></data>
+  <data name="Import_PatternHint" xml:space="preserve"><value>What gets saved is the pattern (stations, times, line), not the date. The trip applies on every day with this shift.</value></data>
+  <data name="Import_NoPlatforms" xml:space="preserve"><value>Couldn't load platforms just now. Platform changes won't be reported for this trip.</value></data>
+  <data name="Import_ManualHint" xml:space="preserve"><value>Entered by hand: KackZug can't report platform changes for it, but delays and cancellations it can.</value></data>
+  <data name="Import_Saved" xml:space="preserve"><value>{0} for “{1}” saved.</value></data>
+  <data name="Manual_Title" xml:space="preserve"><value>Connection by hand</value></data>
+  <data name="Manual_Intro" xml:space="preserve"><value>One leg per train, bus or tram. KackZug adds the walks between changes itself.</value></data>
+  <data name="Manual_Leg" xml:space="preserve"><value>Leg {0}</value></data>
+  <data name="Manual_From" xml:space="preserve"><value>From</value></data>
+  <data name="Manual_To" xml:space="preserve"><value>To</value></data>
+  <data name="Manual_Change" xml:space="preserve"><value>Change</value></data>
+  <data name="Manual_StationPlaceholder" xml:space="preserve"><value>Station or stop</value></data>
+  <data name="Manual_Search" xml:space="preserve"><value>Search</value></data>
+  <data name="Manual_NothingFound" xml:space="preserve"><value>Nothing found. Try another spelling?</value></data>
+  <data name="Manual_SearchFailed" xml:space="preserve"><value>Search didn't work just now: {0}</value></data>
+  <data name="Manual_Departure" xml:space="preserve"><value>Departure</value></data>
+  <data name="Manual_Arrival" xml:space="preserve"><value>Arrival</value></data>
+  <data name="Manual_Line" xml:space="preserve"><value>Line</value></data>
+  <data name="Manual_TrainNumber" xml:space="preserve"><value>Train number (if known)</value></data>
+  <data name="Manual_AddLeg" xml:space="preserve"><value>Change: add another leg</value></data>
+  <data name="Tutorial_WelcomeTitle" xml:space="preserve"><value>Welcome to KackZug</value></data>
+  <data name="Tutorial_WelcomeText" xml:space="preserve"><value>KackZug checks your train connections to work and speaks up loudly when something's off.</value></data>
+  <data name="Tutorial_UpdatedText" xml:space="preserve"><value>KackZug was updated to version {0}. Here's a quick recap of what matters.</value></data>
+  <data name="Tutorial_ShareTitle" xml:space="preserve"><value>Share a connection</value></data>
+  <data name="Tutorial_ShareText" xml:space="preserve"><value>Look up your connection to work in DB Navigator, tap “Share” and pick KackZug. Then save it as the outbound or return trip of a shift, for example “Early shift”.</value></data>
+  <data name="Tutorial_WeekTitle" xml:space="preserve"><value>Plan your week</value></data>
+  <data name="Tutorial_WeekText" xml:space="preserve"><value>Under “Week” you give each day a shift or leave it free. You can switch off the outbound and return trip per day. A new week can copy last week's plan if you like.</value></data>
+  <data name="Tutorial_CheckTitle" xml:space="preserve"><value>Check and alert</value></data>
+  <data name="Tutorial_CheckText" xml:space="preserve"><value>KackZug checks the evening before and shortly before departure. If a train is cancelled or late, changes platform or a connection gets tight, a loud alarm goes off.</value></data>
+  <data name="Tutorial_AlarmsTitle" xml:space="preserve"><value>Make sure alarms get through</value></data>
+  <data name="Tutorial_AlarmsText" xml:space="preserve"><value>Allow notifications and take KackZug out of battery optimisation. Under “Settings” you can see what's still missing and trigger a test alarm.</value></data>
+  <data name="Tutorial_Start" xml:space="preserve"><value>Let's go</value></data>
+  <data name="Tutorial_ToSettings" xml:space="preserve"><value>Go to settings</value></data>
+  <data name="Tutorial_Skip" xml:space="preserve"><value>Skip</value></data>
+  <data name="Settings_SectionPermissions" xml:space="preserve"><value>So alarms reliably get through</value></data>
+  <data name="Settings_Granted" xml:space="preserve"><value>Allowed</value></data>
+  <data name="Settings_Missing" xml:space="preserve"><value>Missing</value></data>
+  <data name="Settings_Allow" xml:space="preserve"><value>Allow</value></data>
+  <data name="Settings_NoPermissions" xml:space="preserve"><value>Nothing to allow here on desktop.</value></data>
+  <data name="Settings_SectionWhen" xml:space="preserve"><value>When to check</value></data>
+  <data name="Settings_LeadTime" xml:space="preserve"><value>Before the first departure</value></data>
+  <data name="Settings_LeadTimeHint" xml:space="preserve"><value>Live data usually only shows up shortly before.</value></data>
+  <data name="Settings_LeadMinutes" xml:space="preserve"><value>{0} min before</value></data>
+  <data name="Settings_LeadHours" xml:space="preserve"><value>{0} h before</value></data>
+  <data name="Settings_EveningCheck" xml:space="preserve"><value>Check the evening before</value></data>
+  <data name="Settings_EveningCheckHint" xml:space="preserve"><value>Usually timetable only, live data comes later.</value></data>
+  <data name="Settings_Time" xml:space="preserve"><value>Time</value></data>
+  <data name="Settings_TimeInvalid" xml:space="preserve"><value>Please enter as HH:mm, e.g. 20:00.</value></data>
+  <data name="Settings_EveningOk" xml:space="preserve"><value>Also notify when all is on time</value></data>
+  <data name="Settings_EveningOkHint" xml:space="preserve"><value>Short note at the evening check.</value></data>
+  <data name="Settings_SectionWhat" xml:space="preserve"><value>What gets reported</value></data>
+  <data name="Settings_DelayFrom" xml:space="preserve"><value>Delays from</value></data>
+  <data name="Settings_Minutes" xml:space="preserve"><value>Minutes</value></data>
+  <data name="Settings_DelayInvalid" xml:space="preserve"><value>Please 1 to 60 minutes.</value></data>
+  <data name="Settings_Transfer" xml:space="preserve"><value>Time to change</value></data>
+  <data name="Settings_TransferHint" xml:space="preserve"><value>Minutes on top of the walk</value></data>
+  <data name="Settings_TransferInvalid" xml:space="preserve"><value>Please 0 to 30 minutes.</value></data>
+  <data name="Settings_Insistent" xml:space="preserve"><value>Repeat alarm</value></data>
+  <data name="Settings_InsistentHint" xml:space="preserve"><value>Rings until you tap “Seen”.</value></data>
+  <data name="Settings_Dnd" xml:space="preserve"><value>Also during “Do not disturb”</value></data>
+  <data name="Settings_DndHint" xml:space="preserve"><value>Disruptions ring even in silent mode. Android asks for permission once.</value></data>
+  <data name="Settings_TestAlarm" xml:space="preserve"><value>Test alarm in 5 seconds</value></data>
+  <data name="Settings_TestAlarmToast" xml:space="preserve"><value>The test alarm comes in 5 seconds, even if you close the app. Only “Seen” makes it go away.</value></data>
+  <data name="Settings_SectionNewWeek" xml:space="preserve"><value>New week</value></data>
+  <data name="Settings_CopyWeek" xml:space="preserve"><value>Copy last week's plan</value></data>
+  <data name="Settings_EmptyWeek" xml:space="preserve"><value>Start empty</value></data>
+  <data name="Settings_SectionLook" xml:space="preserve"><value>Appearance</value></data>
+  <data name="Settings_ThemeSystem" xml:space="preserve"><value>System</value></data>
+  <data name="Settings_ThemeLight" xml:space="preserve"><value>Light</value></data>
+  <data name="Settings_ThemeDark" xml:space="preserve"><value>Dark</value></data>
+  <data name="Settings_Accent" xml:space="preserve"><value>Accent colour</value></data>
+  <data name="Settings_AccentHint" xml:space="preserve"><value>Default is the orange from the logo.</value></data>
+  <data name="Settings_PresetOrange" xml:space="preserve"><value>Orange (default)</value></data>
+  <data name="Settings_PresetPetrol" xml:space="preserve"><value>Petrol</value></data>
+  <data name="Settings_PresetBlue" xml:space="preserve"><value>Blue</value></data>
+  <data name="Settings_PresetViolet" xml:space="preserve"><value>Violet</value></data>
+  <data name="Settings_PresetSlate" xml:space="preserve"><value>Slate</value></data>
+  <data name="Settings_SectionUpdates" xml:space="preserve"><value>Updates</value></data>
+  <data name="Settings_UpdateCheck" xml:space="preserve"><value>Look for new versions</value></data>
+  <data name="Settings_UpdateCheckHint" xml:space="preserve"><value>Once a day on GitHub.</value></data>
+  <data name="Settings_CheckUpdatesNow" xml:space="preserve"><value>Check for updates</value></data>
+  <data name="Settings_UpdateChecking" xml:space="preserve"><value>Checking GitHub …</value></data>
+  <data name="Settings_UpdateNew" xml:space="preserve"><value>Version {0} is out. Tap “Download” at the top.</value></data>
+  <data name="Settings_UpdateCurrent" xml:space="preserve"><value>You have the latest version ({0}).</value></data>
+  <data name="Settings_UpdateFailed" xml:space="preserve"><value>Couldn't check GitHub. Are you online? Is the project public?</value></data>
+  <data name="Settings_ShowTutorial" xml:space="preserve"><value>Show the introduction again</value></data>
+  <data name="Settings_Disclaimer" xml:space="preserve"><value>KackZug is a private open source project and has nothing to do with Deutsche Bahn. The data comes from bahn.de.</value></data>
+</root>

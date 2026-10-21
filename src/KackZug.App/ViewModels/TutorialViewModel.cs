@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -13,25 +14,17 @@ public partial class TutorialViewModel : ViewModelBase
     public TutorialViewModel(MainViewModel main, bool afterUpdate)
     {
         _main = main;
-        var welcome = "KackZug prüft deine Zugverbindungen zur Arbeit und meldet sich laut, wenn etwas nicht stimmt.";
+        var welcome = UiStrings.Tutorial_WelcomeText;
         if (afterUpdate)
         {
-            welcome = "KackZug wurde auf Version " + AppInfo.Version + " aktualisiert. Hier noch einmal kurz das Wichtigste.";
+            welcome = UiLanguage.Format(UiStrings.Tutorial_UpdatedText, AppInfo.Version);
         }
 
-        Steps.Add(new TutorialStep("Willkommen bei KackZug", welcome, null));
-        Steps.Add(new TutorialStep("Verbindung teilen",
-            "Such im DB Navigator deine Verbindung zur Arbeit, tippe auf „Teilen“ und wähle KackZug. Dann speicherst du sie als Hin- oder Rückfahrt einer Schicht, zum Beispiel „Frühdienst“.",
-            "IconShare"));
-        Steps.Add(new TutorialStep("Woche planen",
-            "Unter „Woche“ gibst du jedem Tag eine Schicht oder lässt ihn frei. Hin- und Rückfahrt kannst du pro Tag einzeln abschalten. Eine neue Woche übernimmt auf Wunsch den Plan der Vorwoche.",
-            "IconWeek"));
-        Steps.Add(new TutorialStep("Prüfen und melden",
-            "KackZug prüft am Abend vorher und kurz vor der Abfahrt. Fällt ein Zug aus, ist er verspätet, wechselt das Gleis oder wird der Anschluss knapp, kommt ein lauter Alarm.",
-            "IconBell"));
-        Steps.Add(new TutorialStep("Damit Alarme ankommen",
-            "Erlaube Benachrichtigungen und nimm KackZug aus der Akku-Optimierung. Unter „Einstellungen“ siehst du, was noch fehlt, und kannst einen Test-Alarm auslösen.",
-            "IconSettings"));
+        Steps.Add(new TutorialStep(UiStrings.Tutorial_WelcomeTitle, welcome, null));
+        Steps.Add(new TutorialStep(UiStrings.Tutorial_ShareTitle, UiStrings.Tutorial_ShareText, "IconShare"));
+        Steps.Add(new TutorialStep(UiStrings.Tutorial_WeekTitle, UiStrings.Tutorial_WeekText, "IconWeek"));
+        Steps.Add(new TutorialStep(UiStrings.Tutorial_CheckTitle, UiStrings.Tutorial_CheckText, "IconBell"));
+        Steps.Add(new TutorialStep(UiStrings.Tutorial_AlarmsTitle, UiStrings.Tutorial_AlarmsText, "IconSettings"));
         Steps[0].IsCurrent = true;
     }
 

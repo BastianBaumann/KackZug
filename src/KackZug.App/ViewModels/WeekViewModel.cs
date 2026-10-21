@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using KackZug.Core.Checking;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -25,7 +26,7 @@ public partial class WeekViewModel : PageViewModel
 
     public override string Title
     {
-        get { return "Woche"; }
+        get { return UiStrings.Nav_Week; }
     }
 
     public ObservableCollection<DayRowViewModel> Days { get; } = new ObservableCollection<DayRowViewModel>();
@@ -34,7 +35,7 @@ public partial class WeekViewModel : PageViewModel
     public partial string WeekText { get; set; } = "";
 
     [ObservableProperty]
-    public partial string WeekTitle { get; set; } = "Diese Woche";
+    public partial string WeekTitle { get; set; } = UiStrings.Week_ThisWeek;
 
     [ObservableProperty]
     public partial bool IsThisWeek { get; set; } = true;
@@ -179,7 +180,7 @@ public partial class WeekViewModel : PageViewModel
         var marked = Days.Where(day => day.IsMarked && day.IsEditable).ToList();
         if (marked.Count == 0 || BulkOption is null)
         {
-            Main.ShowToast("Markier erst ein paar Tage.", false);
+            Main.ShowToast(UiStrings.Week_MarkDaysFirst, false);
             return;
         }
 
@@ -191,13 +192,13 @@ public partial class WeekViewModel : PageViewModel
         IsSelecting = false;
         Main.Services.SaveAndReschedule();
         Refresh();
-        var dayText = marked.Count + " Tage";
+        var dayText = UiLanguage.Format(UiStrings.Week_ManyDays, marked.Count);
         if (marked.Count == 1)
         {
-            dayText = "1 Tag";
+            dayText = UiStrings.Week_OneDay;
         }
 
-        Main.ShowToast(dayText + " auf „" + BulkOption.Name + "“ gesetzt.", false);
+        Main.ShowToast(UiLanguage.Format(UiStrings.Week_DaysSet, dayText, BulkOption.Name), false);
     }
 
     partial void OnIsNextWeekChanged(bool value)
@@ -246,7 +247,7 @@ public partial class WeekViewModel : PageViewModel
             services.Store.Save(services.Data);
             if (results.Count == 0)
             {
-                CheckResult = "Heute und morgen stehen keine Fahrten an.";
+                CheckResult = UiStrings.Week_NoTrips;
             }
             else
             {
@@ -280,11 +281,11 @@ public partial class WeekViewModel : PageViewModel
             var today = Today();
             Main.Services.RunMaintenance();
             var week = data.CurrentWeek!;
-            WeekTitle = "Diese Woche";
+            WeekTitle = UiStrings.Week_ThisWeek;
             if (IsNextWeek)
             {
                 week = data.EnsureNextWeek();
-                WeekTitle = "Nächste Woche";
+                WeekTitle = UiStrings.Week_NextWeek;
             }
 
             foreach (var oldRow in Days)
@@ -307,7 +308,7 @@ public partial class WeekViewModel : PageViewModel
                 Days.Add(row);
             }
 
-            WeekText = "Woche vom " + week.WeekStart.ToString("dd.MM.") + " bis " + week.WeekStart.AddDays(6).ToString("dd.MM.yy");
+            WeekText = UiLanguage.Format(UiStrings.Week_Range, week.WeekStart, week.WeekStart.AddDays(6));
             HasNoShifts = data.Shifts.Count == 0;
             _builtForDay = today;
         }

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core.Checking;
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -78,15 +79,15 @@ public partial class TripCardViewModel : ViewModelBase
         var openedInNavigator = _main.Services.Platform.OpenInNavigator(_shareLink);
         if (!openedInNavigator && _shareLink is null)
         {
-            _main.ShowToast("Der DB Navigator ist nicht installiert und die Verbindung fand ich bei bahn.de nicht. Ich öffne bahn.de im Browser.", true);
+            _main.ShowToast(UiStrings.Trip_NavigatorMissingNoLink, true);
         }
         else if (!openedInNavigator)
         {
-            _main.ShowToast("Der DB Navigator ist nicht installiert. Die Verbindung öffnet im Browser.", false);
+            _main.ShowToast(UiStrings.Trip_NavigatorMissing, false);
         }
         else if (_shareLink is null)
         {
-            _main.ShowToast("Die Verbindung an diesem Tag fand ich bei bahn.de nicht. Der Navigator öffnet ohne sie.", true);
+            _main.ShowToast(UiStrings.Trip_NoLink, true);
         }
     }
 
@@ -120,40 +121,42 @@ public partial class TripCardViewModel : ViewModelBase
             var observation = firstRide?.Observation;
             if (observation?.LiveDeparture is not null && firstRide!.DelayMinutes > 0)
             {
-                NowText = "jetzt " + observation.LiveDeparture.Value.ToString("HH:mm");
+                NowText = UiLanguage.Format(UiStrings.Trip_Now, observation.LiveDeparture.Value.ToString("HH:mm"));
             }
 
             foreach (var transfer in status.Transfers)
             {
                 var station = status.Legs[transfer.ArrivingLegIndex].Leg.To.Name;
                 var spare = Math.Max(0, transfer.SpareMinutes);
-                var text = "Umstieg in " + station + ": " + spare + " Min. Puffer";
+                var format = UiStrings.Trip_Transfer;
                 if (transfer.AtRisk)
                 {
-                    text += " – Anschluss gefährdet";
+                    format = UiStrings.Trip_TransferAtRisk;
                 }
+
+                var text = UiLanguage.Format(format, station, spare);
 
                 Notes.Add(text);
             }
 
             if (status.Overall == LegStatus.PlannedOnly)
             {
-                Notes.Add("Echtzeitdaten gibt es erst kurz vor der Abfahrt.");
+                Notes.Add(UiStrings.Trip_PlannedOnlyNote);
             }
 
             if (status.Overall == LegStatus.Unknown)
             {
-                Notes.Add("bahn.de war gerade nicht erreichbar oder hatte noch keine Daten.");
+                Notes.Add(UiStrings.Trip_UnknownNote);
             }
 
-            CheckedText = "Gerade geprüft";
+            CheckedText = UiStrings.Trip_JustChecked;
             return;
         }
 
         if (state is null)
         {
             Badge = new StatusBadge(null, "—", "");
-            CheckedText = "Noch nicht geprüft";
+            CheckedText = UiStrings.Trip_NotChecked;
             return;
         }
 
@@ -165,6 +168,6 @@ public partial class TripCardViewModel : ViewModelBase
 
         Badge = new StatusBadge(state.LastStatus, badgeText, "");
         IsCancelled = state.LastStatus == LegStatus.Cancelled;
-        CheckedText = "Zuletzt geprüft " + Core.Planning.BerlinTime.ToWallClock(state.LastCheckedAt, Core.Planning.BerlinTime.Zone).ToString("dd.MM. HH:mm");
+        CheckedText = UiLanguage.Format(UiStrings.Trip_LastChecked, Core.Planning.BerlinTime.ToWallClock(state.LastCheckedAt, Core.Planning.BerlinTime.Zone));
     }
 }

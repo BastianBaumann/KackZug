@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core.Models;
+using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
@@ -19,7 +20,7 @@ public partial class ShiftsViewModel : PageViewModel
 
     public override string Title
     {
-        get { return "Schichten"; }
+        get { return UiStrings.Nav_Shifts; }
     }
 
     public ObservableCollection<ShiftCardViewModel> Shifts { get; } = new ObservableCollection<ShiftCardViewModel>();
