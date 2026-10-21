@@ -72,9 +72,6 @@
                 </StackPanel>
             </Button>
             <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsChecking}" />
-            <Border Classes="soft" IsVisible="{Binding CheckResult, Converter={x:Static ObjectConverters.IsNotNull}}">
-                <TextBlock Text="{Binding CheckResult}" TextWrapping="Wrap" />
-            </Border>
 
             <ItemsControl ItemsSource="{Binding Days}">
                 <ItemsControl.ItemsPanel>

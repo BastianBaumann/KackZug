@@ -73,9 +73,6 @@ public partial class WeekViewModel : PageViewModel
     [NotifyCanExecuteChangedFor(nameof(CheckNowCommand))]
     public partial bool IsChecking { get; set; }
 
-    [ObservableProperty]
-    public partial string? CheckResult { get; set; }
-
     public override void OnShown()
     {
         if (Today() != _builtForDay)
@@ -225,13 +222,12 @@ public partial class WeekViewModel : PageViewModel
     private async Task CheckNowAsync()
     {
         IsChecking = true;
-        CheckResult = null;
         try
         {
             var services = Main.Services;
             var today = Today();
             var checker = new TripChecker(services.CreateStatusSource(), services.Clock);
-            var results = new List<string>();
+            var checkedTrips = 0;
             foreach (var date in new[] { today, today.AddDays(1) })
             {
                 foreach (var trip in TripCalendar.TripsOn(services.Data, date))
@@ -239,22 +235,17 @@ public partial class WeekViewModel : PageViewModel
                     var outcome = await checker.CheckAsync(services.Data, date, trip.Shift.Id, trip.Direction, CheckContext.Manual, CancellationToken.None);
                     if (outcome is not null)
                     {
-                        results.Add(outcome.Alert.Title);
+                        checkedTrips++;
                     }
                 }
             }
 
             services.Store.Save(services.Data);
-            if (results.Count == 0)
-            {
-                CheckResult = UiStrings.Week_NoTrips;
-            }
-            else
-            {
-                CheckResult = string.Join("\n", results);
-            }
-
             Refresh();
+            if (checkedTrips == 0)
+            {
+                Main.ShowToast(UiStrings.Week_NoTrips, false);
+            }
         }
         finally
         {
