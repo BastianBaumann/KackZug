@@ -16,6 +16,7 @@ public sealed class AndroidPlatform : IPlatform
     public const string PermissionExactAlarms = "exact";
     public const string PermissionBattery = "battery";
     public const string PermissionFullScreen = "fullscreen";
+    public const string PermissionDoNotDisturb = "dnd";
 
     private readonly Context _context;
 
@@ -78,14 +79,13 @@ public sealed class AndroidPlatform : IPlatform
         _context.StartActivity(intent);
     }
 
+    /// <remarks>Der DB Navigator nimmt den Suchlink nicht an, deshalb startet die App selbst; nur ohne Navigator geht es in den Browser.</remarks>
     public void OpenInNavigator(string url)
     {
-        var uri = global::Android.Net.Uri.Parse(url);
-        var intent = new Intent(Intent.ActionView, uri);
-        intent.SetPackage(AlertNotifier.DbNavigatorPackage);
-        if (_context.PackageManager?.ResolveActivity(intent, 0) is null)
+        var intent = _context.PackageManager?.GetLaunchIntentForPackage(AlertNotifier.DbNavigatorPackage);
+        if (intent is null)
         {
-            intent = new Intent(Intent.ActionView, uri);
+            intent = new Intent(Intent.ActionView, global::Android.Net.Uri.Parse(url));
         }
 
         intent.AddFlags(ActivityFlags.NewTask);
@@ -105,13 +105,20 @@ public sealed class AndroidPlatform : IPlatform
             fullScreenAllowed = manager is not null && manager.CanUseFullScreenIntent();
         }
 
-        return new List<PermissionInfo>
+        var permissions = new List<PermissionInfo>
         {
             new PermissionInfo(PermissionNotifications, "Benachrichtigungen", "Ohne sie kann KackZug keine Störung melden.", notificationsAllowed),
             new PermissionInfo(PermissionExactAlarms, "Pünktliche Alarme", "Damit die Prüfung genau zur eingestellten Zeit läuft.", exactAllowed),
             new PermissionInfo(PermissionBattery, "Akku-Optimierung aus", "Sonst kann Android die Prüfung verzögern oder ganz auslassen.", batteryFree),
             new PermissionInfo(PermissionFullScreen, "Vollbild-Alarm", "Damit eine Störung auch auf dem Sperrbildschirm groß erscheint.", fullScreenAllowed)
         };
+
+        if (App.Services is not null && App.Services.Data.Settings.BreakThroughDoNotDisturb)
+        {
+            permissions.Add(new PermissionInfo(PermissionDoNotDisturb, "Bitte nicht stören", "Damit eine Störung auch im Ruhemodus klingelt.", AlertNotifier.HasDoNotDisturbAccess(_context)));
+        }
+
+        return permissions;
     }
 
     public void OpenPermissionSettings(string key)
@@ -130,6 +137,10 @@ public sealed class AndroidPlatform : IPlatform
         else if (key == PermissionFullScreen && OperatingSystem.IsAndroidVersionAtLeast(34))
         {
             intent = new Intent(global::Android.Provider.Settings.ActionManageAppUseFullScreenIntent, packageUri);
+        }
+        else if (key == PermissionDoNotDisturb)
+        {
+            intent = new Intent(global::Android.Provider.Settings.ActionNotificationPolicyAccessSettings);
         }
         else if (key == PermissionBattery)
         {

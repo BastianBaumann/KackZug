@@ -26,7 +26,7 @@ public static class BoardMatcher
 
         if (!string.IsNullOrEmpty(leg.Name))
         {
-            var sameName = candidates.Where(candidate => candidate.Name == leg.Name).ToList();
+            var sameName = candidates.Where(candidate => SameText(candidate.Name, leg.Name)).ToList();
             if (sameName.Count == 1)
             {
                 return sameName[0];
@@ -35,7 +35,7 @@ public static class BoardMatcher
 
         if (!string.IsNullOrEmpty(leg.Line))
         {
-            var sameLine = candidates.Where(candidate => candidate.LineNumber == leg.Line && CategoryFits(candidate, leg)).ToList();
+            var sameLine = candidates.Where(candidate => SameText(candidate.LineNumber, leg.Line) && CategoryFits(candidate, leg)).ToList();
             if (sameLine.Count == 1)
             {
                 return sameLine[0];
@@ -43,6 +43,22 @@ public static class BoardMatcher
         }
 
         return null;
+    }
+
+    /// <remarks>Von Hand eingegeben steht oft "RE 1", auf der Tafel "RE1".</remarks>
+    private static bool SameText(string? boardText, string? savedText)
+    {
+        if (string.IsNullOrEmpty(boardText) || string.IsNullOrEmpty(savedText))
+        {
+            return false;
+        }
+
+        return string.Equals(Compact(boardText), Compact(savedText), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string Compact(string text)
+    {
+        return string.Concat(text.Where(character => !char.IsWhiteSpace(character)));
     }
 
     private static bool CategoryFits(BoardEntry candidate, Leg leg)

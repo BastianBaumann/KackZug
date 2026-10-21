@@ -84,7 +84,7 @@
                                            TextWrapping="Wrap" IsVisible="{Binding EveningCheckTimeInvalid}" />
                             </StackPanel>
                             <TextBox Grid.Column="1" Classes="time" Text="{Binding EveningCheckTimeText}" PlaceholderText="20:00" MaxLength="8"
-                                     TextInputOptions.ContentType="Number" LostFocus="OnEveningTimeLostFocus" />
+                                     TextInputOptions.ContentType="Number" LostFocus="OnTextFieldLostFocus" />
                         </Grid>
                     </Border>
                     <Border Classes="setting" BorderThickness="0">
@@ -107,8 +107,10 @@
                             <StackPanel Spacing="2" VerticalAlignment="Center">
                                 <TextBlock Text="Verspätung ab" Classes="body-lg" />
                                 <TextBlock Text="Minuten" Classes="caption" />
+                                <TextBlock Text="Bitte 1 bis 60 Minuten." Classes="caption" Foreground="{DynamicResource AppLateInkBrush}" IsVisible="{Binding DelayThresholdInvalid}" />
                             </StackPanel>
-                            <NumericUpDown Grid.Column="1" Value="{Binding DelayThreshold}" Minimum="1" Maximum="60" Increment="1" FormatString="0" Width="130" />
+                            <TextBox Grid.Column="1" Classes="number" Text="{Binding DelayThresholdText}" PlaceholderText="5" MaxLength="3"
+                                     TextInputOptions.ContentType="Digits" LostFocus="OnTextFieldLostFocus" />
                         </Grid>
                     </Border>
                     <Border Classes="setting">
@@ -116,8 +118,10 @@
                             <StackPanel Spacing="2" VerticalAlignment="Center">
                                 <TextBlock Text="Zeit zum Umsteigen" Classes="body-lg" />
                                 <TextBlock Text="Minuten zusätzlich zum Fußweg" Classes="caption" TextWrapping="Wrap" />
+                                <TextBlock Text="Bitte 0 bis 30 Minuten." Classes="caption" Foreground="{DynamicResource AppLateInkBrush}" IsVisible="{Binding MinTransferInvalid}" />
                             </StackPanel>
-                            <NumericUpDown Grid.Column="1" Value="{Binding MinTransfer}" Minimum="0" Maximum="30" Increment="1" FormatString="0" Width="130" />
+                            <TextBox Grid.Column="1" Classes="number" Text="{Binding MinTransferText}" PlaceholderText="4" MaxLength="3"
+                                     TextInputOptions.ContentType="Digits" LostFocus="OnTextFieldLostFocus" />
                         </Grid>
                     </Border>
                     <Border Classes="setting">
@@ -127,6 +131,15 @@
                                 <TextBlock Text="Klingelt, bis du „Gesehen“ tippst." Classes="caption" TextWrapping="Wrap" />
                             </StackPanel>
                             <ToggleSwitch Grid.Column="1" IsChecked="{Binding InsistentAlerts}" OnContent="" OffContent="" />
+                        </Grid>
+                    </Border>
+                    <Border Classes="setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="Auch bei „Bitte nicht stören“" Classes="body-lg" TextWrapping="Wrap" />
+                                <TextBlock Text="Störungen klingeln auch im Ruhemodus. Android fragt einmal nach der Erlaubnis." Classes="caption" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding BreakThroughDoNotDisturb}" OnContent="" OffContent="" />
                         </Grid>
                     </Border>
                     <Border Classes="setting" BorderThickness="0">

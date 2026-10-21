@@ -220,6 +220,13 @@ public partial class MainViewModel : ViewModelBase
         return import.LoadAsync(sharedText);
     }
 
+    public void StartManualEntry()
+    {
+        var import = new ImportViewModel(this);
+        import.StartManual();
+        Import = import;
+    }
+
     public void CloseImport()
     {
         Import = null;

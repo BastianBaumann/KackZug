@@ -13,20 +13,20 @@ er verspätet, wechselt das Gleis oder wird der Anschluss knapp, meldet sich Kac
 
 - **Verbindungen per Teilen übernehmen:** Im DB Navigator eine Verbindung suchen, auf „Teilen“ tippen
   und KackZug auswählen. Die Verbindung landet mit allen Teilstrecken (auch Fußwege und Straßenbahn)
-  als Hin- oder Rückfahrt in einer Schicht.
+  als Hin- oder Rückfahrt in einer Schicht. Klappt das Teilen nicht, lässt sich die Verbindung auch
+  von Hand eingeben: Bahnhöfe suchen, Zeiten und Linie eintragen.
 - **Woche planen:** Jeder Tag bekommt eine Schicht oder bleibt frei. Hin- und Rückfahrt lassen sich
   pro Tag einzeln abschalten. Die nächste Woche kannst du schon vorher planen, und mit „Mehrere Tage
   setzen“ (oder langem Druck auf einen Tag) bekommen gleich mehrere Tage dieselbe Schicht. Eine neue
   Woche übernimmt auf Wunsch den Plan der Vorwoche.
 - **Details zu jeder Fahrt:** große Abfahrtszeit, aktueller Stand jeder Teilstrecke (Verspätung, neues
-  Gleis, Ausfall) und wie viel Puffer beim Umsteigen bleibt. Von dort lässt sich die Verbindung für
-  genau diesen Tag im DB Navigator öffnen.
+  Gleis, Ausfall) und wie viel Puffer beim Umsteigen bleibt. Ein Knopf öffnet von dort den DB Navigator.
 - **Prüfen zu festen Zeiten:** am Abend vorher und kurz vor der Abfahrt, standardmäßig 90, 45 und
   15 Minuten vorher. Die Zeiten sind einstellbar.
 - **Laute Meldungen bei Störungen:** Ausfall, Teilausfall, Verspätung ab einer einstellbaren Schwelle,
   Gleiswechsel, gefährdeter Anschluss oder eine Fahrt, die es so nicht mehr gibt. Es öffnet sich ein
   Vollbild-Alarm, auch auf dem Sperrbildschirm. Er klingelt und kommt alle fünf Minuten wieder, bis du
-  „Gesehen“ tippst.
+  „Gesehen“ tippst. Auf Wunsch klingelt er auch bei „Bitte nicht stören“.
 - **Ehrliche Anzeige:** bahn.de hat den Fahrplan schon Tage vorher, Echtzeitdaten aber erst kurz vor der
   Abfahrt. Solange es keine Echtzeit gibt, zeigt KackZug „Laut Fahrplan“ statt „Planmäßig“.
 - **„Jetzt prüfen“** für heute und morgen, ein **Test-Alarm** und eine kurze **Einführung** beim
@@ -63,6 +63,8 @@ Android ist streng mit Apps, die im Hintergrund arbeiten. KackZug braucht deshal
 - **Pünktliche Alarme:** Ist bei einer normal installierten APK schon erlaubt.
 - **Akku-Optimierung aus:** In den Einstellungen von KackZug steht, ob das noch fehlt. Ein Tipp auf
   „Erlauben“ öffnet die passende Systemseite.
+- **Bitte nicht stören (freiwillig):** Nur wenn du „Auch bei Bitte nicht stören“ einschaltest, fragt
+  Android einmal nach dem Zugriff auf „Bitte nicht stören“.
 
 Manche Hersteller (zum Beispiel Xiaomi, Huawei, Samsung oder OnePlus) haben zusätzlich eigene
 Stromsparfunktionen, die Apps trotzdem schlafen legen. Welche Einstellung bei deinem Handy hilft,
@@ -88,6 +90,8 @@ kannst du prüfen, ob eine Meldung auch bei gesperrtem Bildschirm laut genug ank
   „fährt so nicht mehr“, die Verbindung einfach neu teilen.
 - Echtzeitdaten gibt es vor allem für Züge. Bei Straßenbahnen und Bussen erkennt die App meist nur
   Ausfälle, keine Verspätungen.
+- Bei einer von Hand eingegebenen Verbindung kennt KackZug kein geplantes Gleis und meldet deshalb
+  keinen Gleiswechsel.
 
 ## Hinweis
 

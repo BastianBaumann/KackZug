@@ -12,11 +12,11 @@ public partial class SettingsView : UserControl
         InitializeComponent();
     }
 
-    private void OnEveningTimeLostFocus(object? sender, RoutedEventArgs e)
+    private void OnTextFieldLostFocus(object? sender, RoutedEventArgs e)
     {
         if (DataContext is SettingsViewModel settings)
         {
-            settings.TidyEveningCheckTime();
+            settings.TidyTextFields();
         }
     }
 }

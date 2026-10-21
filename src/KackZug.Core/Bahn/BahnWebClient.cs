@@ -65,6 +65,12 @@ public sealed class BahnWebClient
         return SendAsync(HttpMethod.Get, path, null, cancellationToken);
     }
 
+    public Task<JsonDocument> FindLocationsAsync(string term, CancellationToken cancellationToken)
+    {
+        var path = "reiseloesung/orte?suchbegriff=" + Uri.EscapeDataString(term) + "&typ=ALL&limit=10";
+        return SendAsync(HttpMethod.Get, path, null, cancellationToken);
+    }
+
     public Task<JsonDocument> GetTripAsync(string journeyId, CancellationToken cancellationToken)
     {
         var path = "reiseloesung/fahrt?journeyId=" + Uri.EscapeDataString(journeyId);

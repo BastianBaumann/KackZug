@@ -38,6 +38,8 @@ public class ViewLocator : IDataTemplate
                 return new SettingsView();
             case ImportViewModel:
                 return new ImportView();
+            case ManualEntryViewModel:
+                return new ManualEntryView();
             case TutorialViewModel:
                 return new TutorialView();
             default:

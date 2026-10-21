@@ -79,6 +79,15 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding EnterManuallyCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <c:OutlineIcon Data="{StaticResource IconTrain}" Width="20" Height="20" />
+                        <TextBlock Text="Verbindung von Hand eingeben" />
+                    </StackPanel>
+                </Button>
+                <TextBlock Classes="caption" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"
+                           Text="Nur falls Teilen aus dem DB Navigator nicht klappt." />
             </StackPanel>
         </ScrollViewer>
 

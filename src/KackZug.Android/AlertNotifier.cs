@@ -12,6 +12,7 @@ namespace KackZug.Android;
 public static class AlertNotifier
 {
     public const string ProblemChannelId = "stoerung_v1";
+    public const string ProblemDoNotDisturbChannelId = "stoerung_dnd_v1";
     public const string InfoChannelId = "info_v1";
     public const string DbNavigatorPackage = "de.hafas.android.db";
 
@@ -32,20 +33,7 @@ public static class AlertNotifier
 
         if (manager.GetNotificationChannel(ProblemChannelId) is null)
         {
-            var problem = new NotificationChannel(ProblemChannelId, "Störung", NotificationImportance.High)
-            {
-                Description = "Ausfall, Verspätung, Gleiswechsel oder gefährdeter Anschluss",
-                LockscreenVisibility = NotificationVisibility.Public
-            };
-            problem.EnableVibration(true);
-            problem.SetVibrationPattern(VibrationPattern);
-            problem.EnableLights(true);
-            var sound = RingtoneManager.GetDefaultUri(RingtoneType.Alarm) ?? RingtoneManager.GetDefaultUri(RingtoneType.Notification);
-            var audio = new AudioAttributes.Builder()!
-                .SetUsage(AudioUsageKind.Alarm)!
-                .SetContentType(AudioContentType.Sonification)!
-                .Build();
-            problem.SetSound(sound, audio);
+            var problem = CreateProblemChannel(ProblemChannelId, "Störung");
             manager.CreateNotificationChannel(problem);
         }
 
@@ -57,6 +45,56 @@ public static class AlertNotifier
             };
             manager.CreateNotificationChannel(info);
         }
+    }
+
+    public static bool HasDoNotDisturbAccess(Context context)
+    {
+        var manager = (NotificationManager?)context.GetSystemService(Context.NotificationService);
+        return manager is not null && manager.IsNotificationPolicyAccessGranted;
+    }
+
+    /// <remarks>Android uebernimmt "Bitte nicht stoeren durchbrechen" nur, wenn der Zugriff beim Anlegen des Kanals schon erlaubt ist.</remarks>
+    public static string ProblemChannelFor(Context context, bool breakThroughDoNotDisturb)
+    {
+        EnsureChannels(context);
+        if (!breakThroughDoNotDisturb || Build.VERSION.SdkInt < BuildVersionCodes.O || !HasDoNotDisturbAccess(context))
+        {
+            return ProblemChannelId;
+        }
+
+        var manager = (NotificationManager?)context.GetSystemService(Context.NotificationService);
+        if (manager is null)
+        {
+            return ProblemChannelId;
+        }
+
+        if (manager.GetNotificationChannel(ProblemDoNotDisturbChannelId) is null)
+        {
+            var channel = CreateProblemChannel(ProblemDoNotDisturbChannelId, "Störung (auch bei Bitte nicht stören)");
+            channel.SetBypassDnd(true);
+            manager.CreateNotificationChannel(channel);
+        }
+
+        return ProblemDoNotDisturbChannelId;
+    }
+
+    private static NotificationChannel CreateProblemChannel(string id, string name)
+    {
+        var channel = new NotificationChannel(id, name, NotificationImportance.High)
+        {
+            Description = "Ausfall, Verspätung, Gleiswechsel oder gefährdeter Anschluss",
+            LockscreenVisibility = NotificationVisibility.Public
+        };
+        channel.EnableVibration(true);
+        channel.SetVibrationPattern(VibrationPattern);
+        channel.EnableLights(true);
+        var sound = RingtoneManager.GetDefaultUri(RingtoneType.Alarm) ?? RingtoneManager.GetDefaultUri(RingtoneType.Notification);
+        var audio = new AudioAttributes.Builder()!
+            .SetUsage(AudioUsageKind.Alarm)!
+            .SetContentType(AudioContentType.Sonification)!
+            .Build();
+        channel.SetSound(sound, audio);
+        return channel;
     }
 
     public static void Show(Context context, TripAlert alert, bool insistent)

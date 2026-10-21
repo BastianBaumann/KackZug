@@ -183,18 +183,30 @@ internal static class TourSteps
         check(themeRadios.Count(radio => radio.IsChecked == true) == 1 && main.Services.Data.Settings.ThemeMode == Core.Models.ThemeMode.Dark, "Dunkel per Knopf, nur einer aktiv");
         themeRadios[0].IsChecked = true;
         check(themeRadios.Count(radio => radio.IsChecked == true) == 1 && main.Services.Data.Settings.ThemeMode == Core.Models.ThemeMode.System, "Zurueck auf System per Knopf, nur einer aktiv");
-        var numberField = window.GetVisualDescendants().OfType<NumericUpDown>().First();
-        check(Math.Abs(numberField.Bounds.Height - 48) < 1, "Zahlenfeld 48 hoch: " + numberField.Bounds.Height);
+        check(!window.GetVisualDescendants().OfType<NumericUpDown>().Any(), "Keine Auf-ab-Zahlenfelder mehr");
+        var numberFields = window.GetVisualDescendants().OfType<TextBox>().Where(box => box.Classes.Contains("number")).ToList();
+        check(numberFields.Count == 2 && numberFields.All(box => Math.Abs(box.Bounds.Height - 48) < 1), "Zwei einfache Zahlenfelder, 48 hoch");
+        numberFields[0].Text = "8";
+        check(main.Services.Store.Load().Settings.DelayThresholdMinutes == 8, "Verspaetung 8 gespeichert");
+        numberFields[0].Text = "0";
+        check(settings.DelayThresholdInvalid && main.Services.Store.Load().Settings.DelayThresholdMinutes == 8, "Verspaetung 0 zeigt Hinweis, 8 bleibt");
+        settings.TidyTextFields();
+        check(numberFields[0].Text == "8" && !settings.DelayThresholdInvalid, "Nach Verlassen wieder 8");
+        numberFields[1].Text = "6";
+        check(main.Services.Store.Load().Settings.MinTransferMinutes == 6, "Umstiegszeit 6 gespeichert");
+        await capture(window, Path.Combine(directory, "settings-numbers.png"));
+        numberFields[0].Text = "5";
+        numberFields[1].Text = "4";
         var timeField = window.GetVisualDescendants().OfType<TextBox>().First(box => box.Classes.Contains("time"));
         check(timeField.Text == "20:00" && Math.Abs(timeField.Bounds.Height - 48) < 1, "Uhrzeit als Textfeld 20:00, 48 hoch");
         timeField.Text = "1930";
         check(main.Services.Store.Load().Settings.EveningCheckTime == new TimeOnly(19, 30) && !settings.EveningCheckTimeInvalid, "Uhrzeit 1930 gespeichert");
-        settings.TidyEveningCheckTime();
+        settings.TidyTextFields();
         check(timeField.Text == "19:30", "Uhrzeit aufgeraeumt zu 19:30");
         timeField.Text = "25:00";
         check(settings.EveningCheckTimeInvalid && main.Services.Store.Load().Settings.EveningCheckTime == new TimeOnly(19, 30), "Falsche Uhrzeit zeigt Hinweis, alte bleibt");
         await capture(window, Path.Combine(directory, "settings-time-invalid.png"));
-        settings.TidyEveningCheckTime();
+        settings.TidyTextFields();
         check(!settings.EveningCheckTimeInvalid && timeField.Text == "19:30", "Nach Verlassen wieder 19:30");
 
         main.Navigate("week");
@@ -209,6 +221,80 @@ internal static class TourSteps
         settings.ThemeSystem = true;
         settings.EveningCheckEnabled = false;
         check(main.Services.Data.Settings.EveningCheckTime is null, "Abend-Check abgeschaltet");
+
+        settings.BreakThroughDoNotDisturb = true;
+        check(main.Services.Store.Load().Settings.BreakThroughDoNotDisturb, "Bitte-nicht-stoeren-Schalter gespeichert");
+        check(window.GetVisualDescendants().OfType<TextBlock>().Any(text => text.Text == "Auch bei „Bitte nicht stören“"), "Bitte-nicht-stoeren-Schalter sichtbar");
+        settings.BreakThroughDoNotDisturb = false;
+        check(!main.Services.Store.Load().Settings.BreakThroughDoNotDisturb, "Bitte-nicht-stoeren-Schalter wieder aus");
+
+        await RunManualEntryAsync(main, window, directory, check, capture);
+    }
+
+    private static async Task RunManualEntryAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)
+    {
+        main.Services.StationSearch = new DemoStationSearch();
+        main.Navigate("shifts");
+        var shifts = (ShiftsViewModel)main.CurrentPage!;
+        shifts.EnterManuallyCommand.Execute(null);
+        var import = main.Import!;
+        check(import.IsManualStep && !import.IsReady && import.Manual!.Legs.Count == 1, "Eingabe von Hand geoeffnet");
+        var manual = import.Manual;
+        manual.ContinueCommand.Execute(null);
+        check(manual.ErrorMessage is not null && manual.ErrorMessage.Contains("Start"), "Leere Eingabe nennt den fehlenden Start");
+        await capture(window, Path.Combine(directory, "manual-empty.png"));
+        check(window.GetVisualDescendants().OfType<TextBlock>().Any(text => text.Text == "Verbindung von Hand" && text.IsEffectivelyVisible), "Formular sichtbar");
+
+        var first = manual.Legs[0];
+        first.From.Query = "musterstadt";
+        await first.From.SearchCommand.ExecuteAsync(null);
+        check(first.From.Results.Count == 2, "Suche findet zwei Bahnhoefe");
+        first.From.Results[0].ChooseCommand.Execute(null);
+        check(first.From.HasSelection && first.From.Selected!.EvaNumber == "8000001", "Start gewaehlt");
+        first.To.Query = "Beispielhausen";
+        await first.To.SearchCommand.ExecuteAsync(null);
+        first.To.Results.First(result => result.Name == "Beispielhausen").ChooseCommand.Execute(null);
+        first.DepartureText = "2140";
+        first.ArrivalText = "22:05";
+        first.LineText = "RE 7";
+
+        manual.AddLegCommand.Execute(null);
+        var second = manual.Legs[1];
+        check(second.From.Selected is not null && second.From.Selected.Name == "Beispielhausen" && second.Title == "Teilstrecke 2", "Zweite Teilstrecke startet am letzten Ziel");
+        second.From.ChangeCommand.Execute(null);
+        second.From.Query = "Markt";
+        await second.From.SearchCommand.ExecuteAsync(null);
+        second.From.Results[0].ChooseCommand.Execute(null);
+        second.To.Query = "Werkstor";
+        await second.To.SearchCommand.ExecuteAsync(null);
+        second.To.Results[0].ChooseCommand.Execute(null);
+        second.DepartureText = "22.15";
+        second.ArrivalText = "2230";
+        second.LineText = "Bus 11";
+        await capture(window, Path.Combine(directory, "manual-filled.png"));
+
+        manual.ContinueCommand.Execute(null);
+        check(import.IsReady && !import.IsManualStep && import.Legs.Count == 3 && import.Legs[1].IsWalk, "Weiter zeigt die Verbindung mit Fussweg");
+        check(import.Hint is not null && import.CameFromManual, "Hinweis fuer die Eingabe von Hand");
+        await capture(window, Path.Combine(directory, "manual-assign.png"));
+
+        import.EditManualCommand.Execute(null);
+        check(import.IsManualStep && manual.Legs.Count == 2 && manual.Legs[1].LineText == "Bus 11", "Eingabe aendern behaelt die Werte");
+        manual.ContinueCommand.Execute(null);
+
+        var newTarget = import.Targets.First(target => target.IsNew);
+        import.SelectTargetCommand.Execute(newTarget);
+        import.NewShiftName = "Nachtdienst";
+        import.SaveCommand.Execute(null);
+        var night = main.Services.Store.Load().Shifts.FirstOrDefault(shift => shift.Name == "Nachtdienst");
+        check(night is not null && night.Outbound is not null && night.Outbound.Legs.Count == 3 && night.Outbound.Legs[0].Name == "RE 7"
+              && night.Outbound.Legs[0].PlannedDeparture == new TimeOnly(21, 40), "Verbindung von Hand gespeichert");
+        await capture(window, Path.Combine(directory, "shifts-after-manual.png"));
+
+        await main.StartImportAsync("nur kaputt");
+        main.Import!.StartManualCommand.Execute(null);
+        check(main.Import.IsManualStep && !main.Import.HasError, "Fehler beim Teilen fuehrt zur Eingabe von Hand");
+        main.Import.CloseCommand.Execute(null);
     }
 }
 #endif

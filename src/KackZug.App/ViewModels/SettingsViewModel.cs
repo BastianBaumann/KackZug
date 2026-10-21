@@ -61,13 +61,22 @@ public partial class SettingsViewModel : PageViewModel
     public partial bool EveningOkNotification { get; set; }
 
     [ObservableProperty]
-    public partial decimal? DelayThreshold { get; set; }
+    public partial string DelayThresholdText { get; set; } = "";
 
     [ObservableProperty]
-    public partial decimal? MinTransfer { get; set; }
+    public partial bool DelayThresholdInvalid { get; set; }
+
+    [ObservableProperty]
+    public partial string MinTransferText { get; set; } = "";
+
+    [ObservableProperty]
+    public partial bool MinTransferInvalid { get; set; }
 
     [ObservableProperty]
     public partial bool InsistentAlerts { get; set; }
+
+    [ObservableProperty]
+    public partial bool BreakThroughDoNotDisturb { get; set; }
 
     [ObservableProperty]
     public partial bool CopyPreviousWeek { get; set; }
@@ -173,9 +182,12 @@ public partial class SettingsViewModel : PageViewModel
         EveningCheckTimeText = ClockText.Format(_eveningTime);
         EveningCheckTimeInvalid = false;
         EveningOkNotification = settings.EveningOkNotification;
-        DelayThreshold = settings.DelayThresholdMinutes;
-        MinTransfer = settings.MinTransferMinutes;
+        DelayThresholdText = settings.DelayThresholdMinutes.ToString();
+        DelayThresholdInvalid = false;
+        MinTransferText = settings.MinTransferMinutes.ToString();
+        MinTransferInvalid = false;
         InsistentAlerts = settings.InsistentAlerts;
+        BreakThroughDoNotDisturb = settings.BreakThroughDoNotDisturb;
         CopyPreviousWeek = settings.NewWeekMode == NewWeekMode.CopyPrevious;
         StartWeekEmpty = !CopyPreviousWeek;
         UpdateCheckEnabled = settings.UpdateCheckEnabled;
@@ -262,9 +274,11 @@ public partial class SettingsViewModel : PageViewModel
         SaveEveningCheck();
     }
 
-    public void TidyEveningCheckTime()
+    public void TidyTextFields()
     {
         EveningCheckTimeText = ClockText.Format(_eveningTime);
+        DelayThresholdText = Settings.DelayThresholdMinutes.ToString();
+        MinTransferText = Settings.MinTransferMinutes.ToString();
     }
 
     private void SaveEveningCheck()
@@ -289,32 +303,70 @@ public partial class SettingsViewModel : PageViewModel
         Save();
     }
 
-    partial void OnDelayThresholdChanged(decimal? value)
+    partial void OnDelayThresholdTextChanged(string value)
     {
-        if (value is null)
+        var minutes = ParseMinutes(value, 1, 60);
+        DelayThresholdInvalid = minutes is null;
+        if (minutes is null || minutes.Value == Settings.DelayThresholdMinutes)
         {
             return;
         }
 
-        Settings.DelayThresholdMinutes = (int)value.Value;
+        Settings.DelayThresholdMinutes = minutes.Value;
         Save();
     }
 
-    partial void OnMinTransferChanged(decimal? value)
+    partial void OnMinTransferTextChanged(string value)
     {
-        if (value is null)
+        var minutes = ParseMinutes(value, 0, 30);
+        MinTransferInvalid = minutes is null;
+        if (minutes is null || minutes.Value == Settings.MinTransferMinutes)
         {
             return;
         }
 
-        Settings.MinTransferMinutes = (int)value.Value;
+        Settings.MinTransferMinutes = minutes.Value;
         Save();
+    }
+
+    private static int? ParseMinutes(string text, int minimum, int maximum)
+    {
+        var trimmed = text.Trim();
+        if (trimmed.Length == 0 || trimmed.Length > 3 || !trimmed.All(char.IsAsciiDigit))
+        {
+            return null;
+        }
+
+        var minutes = int.Parse(trimmed);
+        if (minutes < minimum || minutes > maximum)
+        {
+            return null;
+        }
+
+        return minutes;
     }
 
     partial void OnInsistentAlertsChanged(bool value)
     {
         Settings.InsistentAlerts = value;
         Save();
+    }
+
+    partial void OnBreakThroughDoNotDisturbChanged(bool value)
+    {
+        Settings.BreakThroughDoNotDisturb = value;
+        if (_isLoading)
+        {
+            return;
+        }
+
+        Main.Services.Store.Save(Main.Services.Data);
+        RefreshPermissions();
+        var missing = Permissions.FirstOrDefault(permission => permission.Key == "dnd" && permission.Missing);
+        if (value && missing is not null)
+        {
+            Main.Services.Platform.OpenPermissionSettings(missing.Key);
+        }
     }
 
     partial void OnCopyPreviousWeekChanged(bool value)

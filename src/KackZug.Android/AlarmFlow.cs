@@ -25,9 +25,9 @@ public static class AlarmFlow
 
     public static void Post(Context context, PendingAlarm alarm, bool insistent)
     {
-        AlertNotifier.EnsureChannels(context);
         var id = alarm.NotificationId;
-        var builder = new NotificationCompat.Builder(context, AlertNotifier.ProblemChannelId);
+        var channel = AlertNotifier.ProblemChannelFor(context, BreakThroughDoNotDisturb(context));
+        var builder = new NotificationCompat.Builder(context, channel);
         builder.SetSmallIcon(Resource.Drawable.ic_notification);
         builder.SetContentTitle(alarm.Title);
         builder.SetContentText(alarm.Text);
@@ -140,8 +140,22 @@ public static class AlarmFlow
 
     private static bool Insistent(Context context)
     {
-        var data = new Core.Storage.AppDataStore(AndroidPaths.DataDirectory(context)).Load();
-        return data.Settings.InsistentAlerts;
+        return LoadSettings(context).InsistentAlerts;
+    }
+
+    private static bool BreakThroughDoNotDisturb(Context context)
+    {
+        return LoadSettings(context).BreakThroughDoNotDisturb;
+    }
+
+    private static Core.Models.Settings LoadSettings(Context context)
+    {
+        if (App.Services is not null)
+        {
+            return App.Services.Data.Settings;
+        }
+
+        return new Core.Storage.AppDataStore(AndroidPaths.DataDirectory(context)).Load().Settings;
     }
 
     private static int RepeatCode(int notificationId)

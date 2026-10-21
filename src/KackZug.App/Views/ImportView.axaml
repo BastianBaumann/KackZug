@@ -17,14 +17,29 @@
                 <TextBlock Text="Hm, den Link konnte ich nicht lesen." Classes="title" VerticalAlignment="Center" TextWrapping="Wrap" />
             </StackPanel>
             <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" />
+            <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding StartManualCommand}">
+                <TextBlock Text="Von Hand eingeben" />
+            </Button>
             <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CloseCommand}">
                 <TextBlock Text="Schließen" />
             </Button>
         </StackPanel>
 
+        <StackPanel IsVisible="{Binding IsManualStep}" Spacing="16">
+            <ContentControl Content="{Binding Manual}" />
+            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CloseCommand}">
+                <TextBlock Text="Abbrechen" />
+            </Button>
+        </StackPanel>
+
         <StackPanel IsVisible="{Binding IsReady}" Spacing="16">
             <StackPanel Spacing="2">
-                <TextBlock Text="Verbindung erkannt" Classes="title" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="Verbindung erkannt" Classes="title" VerticalAlignment="Center" />
+                    <Button Grid.Column="1" Classes="ghost" Command="{Binding EditManualCommand}" IsVisible="{Binding CameFromManual}">
+                        <TextBlock Text="Eingabe ändern" />
+                    </Button>
+                </Grid>
                 <TextBlock Text="{Binding NewSummary}" Classes="muted" TextWrapping="Wrap" FontFeatures="+tnum" />
             </StackPanel>
             <Border Classes="soft" Padding="12,12,12,0">

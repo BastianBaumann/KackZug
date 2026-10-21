@@ -15,6 +15,8 @@ public sealed class Settings
 
     public bool InsistentAlerts { get; set; } = true;
 
+    public bool BreakThroughDoNotDisturb { get; set; }
+
     public NewWeekMode NewWeekMode { get; set; } = NewWeekMode.CopyPrevious;
 
     public string AccentColor { get; set; } = "#C84B0C";

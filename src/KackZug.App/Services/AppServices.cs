@@ -12,6 +12,7 @@ namespace KackZug.Services;
 public sealed class AppServices
 {
     private IConnectionResolver? _resolver;
+    private IStationSearch? _stationSearch;
     private BahnWebClient? _bahnClient;
 
     private AppServices(IPlatform platform, AppDataStore store, AppData data, IClock clock)
@@ -47,6 +48,20 @@ public sealed class AppServices
             return _resolver;
         }
         set { _resolver = value; }
+    }
+
+    public IStationSearch StationSearch
+    {
+        get
+        {
+            if (_stationSearch is null)
+            {
+                _stationSearch = new BahnWebStationSearch(BahnClient);
+            }
+
+            return _stationSearch;
+        }
+        set { _stationSearch = value; }
     }
 
     public Func<ITripStatusSource>? StatusSourceFactory { get; set; }

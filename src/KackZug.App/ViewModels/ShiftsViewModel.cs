@@ -69,6 +69,12 @@ public partial class ShiftsViewModel : PageViewModel
     }
 
     [RelayCommand]
+    private void EnterManually()
+    {
+        Main.StartManualEntry();
+    }
+
+    [RelayCommand]
     private void Add()
     {
         var shift = new Shift { Name = "" };

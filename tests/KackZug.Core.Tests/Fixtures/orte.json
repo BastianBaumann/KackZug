@@ -1,0 +1,7 @@
+[
+  {"extId":"8000001","id":"A=1@O=Musterstadt Hbf@X=11000000@Y=50000000@U=80@L=8000001@","lat":50.0,"lon":11.0,"name":"Musterstadt Hbf","products":["ICE","REGIONAL","BUS"],"type":"ST"},
+  {"extId":"8000003","id":"A=1@O=Musterstadt Nord@X=11010000@Y=50010000@U=80@L=8000003@","lat":50.01,"lon":11.01,"name":"Musterstadt Nord","products":["REGIONAL","BUS"],"type":"ST"},
+  {"extId":"8000001","id":"A=1@O=Musterstadt Hbf@X=11000000@Y=50000000@U=80@L=8000001@","lat":50.0,"lon":11.0,"name":"Musterstadt Hbf","products":["BUS"],"type":"ST"},
+  {"id":"A=2@O=Musterstadt, Bahnhofstraße 1@X=11000100@Y=50000100@","lat":50.0001,"lon":11.0001,"name":"Musterstadt, Bahnhofstraße 1","type":"ADR"},
+  {"extId":"990000001","id":"A=4@O=Musterstadt Zoo@X=11020000@Y=50020000@","lat":50.02,"lon":11.02,"name":"Musterstadt Zoo","type":"POI"}
+]

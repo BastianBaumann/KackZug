@@ -27,6 +27,16 @@ public partial class ImportViewModel : ViewModelBase
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
+    public partial ManualEntryViewModel? Manual { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsReady))]
+    public partial bool IsManualStep { get; set; }
+
+    [ObservableProperty]
+    public partial bool CameFromManual { get; set; }
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsReady))]
     [NotifyPropertyChangedFor(nameof(HasError))]
     public partial string? ErrorMessage { get; set; }
@@ -65,7 +75,7 @@ public partial class ImportViewModel : ViewModelBase
 
     public bool IsReady
     {
-        get { return !IsLoading && ErrorMessage is null; }
+        get { return !IsLoading && ErrorMessage is null && !IsManualStep; }
     }
 
     public bool IsNewTarget
@@ -109,6 +119,41 @@ public partial class ImportViewModel : ViewModelBase
         {
             IsLoading = false;
         }
+    }
+
+    [RelayCommand]
+    public void StartManual()
+    {
+        if (Manual is null)
+        {
+            Manual = new ManualEntryViewModel(_main, UseManualConnection);
+        }
+
+        IsLoading = false;
+        ErrorMessage = null;
+        IsManualStep = true;
+    }
+
+    [RelayCommand]
+    private void EditManual()
+    {
+        StartManual();
+    }
+
+    private void UseManualConnection(SavedConnection connection)
+    {
+        _connection = connection;
+        Legs.Clear();
+        foreach (var leg in connection.Legs)
+        {
+            Legs.Add(new LegLine(leg));
+        }
+
+        NewSummary = ConnectionText.Summary(connection);
+        Hint = "Von Hand eingegeben: Gleiswechsel kann KackZug dafür nicht melden, Verspätung und Ausfall schon.";
+        CameFromManual = true;
+        IsManualStep = false;
+        FillTargets();
     }
 
     [RelayCommand]
@@ -217,6 +262,13 @@ public partial class ImportViewModel : ViewModelBase
 
     private void FillTargets()
     {
+        if (Targets.Count > 0)
+        {
+            UpdateReplacement();
+            SaveCommand.NotifyCanExecuteChanged();
+            return;
+        }
+
         Targets.Clear();
         foreach (var shift in _main.Services.Data.Shifts)
         {
