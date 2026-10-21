@@ -2,16 +2,19 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core.Import;
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
+using KackZug.Core.Planning;
 using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
-/// <summary>Dialog nach dem Teilen: Verbindung laden und einer Schicht als Hin- oder Rueckfahrt zuordnen</summary>
+/// <summary>Dialog nach dem Teilen: Verbindung laden und einer Schicht als Hin- oder Rueckfahrt zuordnen oder als Einzelfahrt speichern</summary>
 public partial class ImportViewModel : ViewModelBase
 {
     private readonly MainViewModel _main;
     private SavedConnection? _connection;
+    private DateOnly? _sharedDate;
 
     public ImportViewModel(MainViewModel main)
     {
@@ -47,8 +50,30 @@ public partial class ImportViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNewTarget))]
+    [NotifyPropertyChangedFor(nameof(IsOneOffTarget))]
+    [NotifyPropertyChangedFor(nameof(SaveHint))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public partial ImportTarget? SelectedTarget { get; set; }
+
+    /// <summary>Aus dem Tab Fahrten gestartet: die Einzelfahrt ist gleich gewaehlt</summary>
+    public bool PrefersOneOffTrip { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial string TripDateText { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string TripWeekday { get; set; } = "";
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasTripDateError))]
+    public partial string? TripDateError { get; set; }
+
+    [ObservableProperty]
+    public partial string TripName { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string TripNamePlaceholder { get; set; } = "";
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
@@ -84,6 +109,29 @@ public partial class ImportViewModel : ViewModelBase
         get { return SelectedTarget is not null && SelectedTarget.IsNew; }
     }
 
+    public bool IsOneOffTarget
+    {
+        get { return SelectedTarget is not null && SelectedTarget.IsOneOffTrip; }
+    }
+
+    public bool HasTripDateError
+    {
+        get { return TripDateError is not null; }
+    }
+
+    public string SaveHint
+    {
+        get
+        {
+            if (IsOneOffTarget)
+            {
+                return UiStrings.Import_OneOffHint;
+            }
+
+            return UiStrings.Import_PatternHint;
+        }
+    }
+
     public bool HasReplacement
     {
         get { return ReplacedSummary is not null; }
@@ -95,6 +143,7 @@ public partial class ImportViewModel : ViewModelBase
         {
             var resolved = await _main.Services.Resolver.ResolveAsync(sharedText, CancellationToken.None);
             _connection = resolved.Connection;
+            _sharedDate = resolved.TravelDate;
             foreach (var leg in resolved.Connection.Legs)
             {
                 Legs.Add(new LegLine(leg));
@@ -106,6 +155,7 @@ public partial class ImportViewModel : ViewModelBase
                 Hint = UiStrings.Import_NoPlatforms;
             }
 
+            PrepareTripFields();
             FillTargets();
         }
         catch (ImportException exception)
@@ -154,6 +204,7 @@ public partial class ImportViewModel : ViewModelBase
         Hint = UiStrings.Import_ManualHint;
         CameFromManual = true;
         IsManualStep = false;
+        PrepareTripFields();
         FillTargets();
     }
 
@@ -205,6 +256,12 @@ public partial class ImportViewModel : ViewModelBase
             return;
         }
 
+        if (SelectedTarget.IsOneOffTrip)
+        {
+            SaveOneOffTrip(_connection);
+            return;
+        }
+
         var data = _main.Services.Data;
         var shift = SelectedTarget.Shift;
         if (shift is null)
@@ -227,10 +284,108 @@ public partial class ImportViewModel : ViewModelBase
         _main.Navigate("shifts");
     }
 
+    private void SaveOneOffTrip(SavedConnection connection)
+    {
+        var date = DateText.Parse(TripDateText);
+        if (date is null)
+        {
+            return;
+        }
+
+        var name = TripName.Trim();
+        if (name.Length == 0)
+        {
+            name = OneOffTrip.DefaultName(connection);
+        }
+
+        var trip = new OneOffTrip
+        {
+            Name = name,
+            TravelDate = date.Value,
+            Connection = connection,
+            CreatedAt = _main.Services.Clock.Now
+        };
+        _main.Services.Data.Trips.Add(trip);
+        _main.Services.SaveAndReschedule();
+        _main.CloseImport();
+        var dayText = Language.Culture.DateTimeFormat.GetAbbreviatedDayName(date.Value.DayOfWeek) + " " + date.Value.ToString(UiStrings.Format_DayMonth, Language.Culture);
+        _main.ShowToast(UiLanguage.Format(UiStrings.Import_SavedOneOff, dayText), false);
+        _main.Navigate("trips");
+    }
+
     [RelayCommand]
     private void Close()
     {
         _main.CloseImport();
+    }
+
+    partial void OnTripDateTextChanged(string value)
+    {
+        UpdateTripDate();
+    }
+
+    private void PrepareTripFields()
+    {
+        if (_connection is null)
+        {
+            return;
+        }
+
+        TripNamePlaceholder = OneOffTrip.DefaultName(_connection);
+        if (TripDateText.Length == 0)
+        {
+            var date = _sharedDate ?? Today();
+            TripDateText = DateText.Format(date);
+        }
+
+        UpdateTripDate();
+    }
+
+    /// <summary>Wochentag neben dem Datum und Hinweis, wenn das Datum nicht passt; halb getippt gibt es noch keinen Hinweis</summary>
+    private void UpdateTripDate()
+    {
+        var date = DateText.Parse(TripDateText);
+        TripWeekday = "";
+        if (date is not null)
+        {
+            TripWeekday = Language.Culture.DateTimeFormat.GetDayName(date.Value.DayOfWeek);
+        }
+
+        string? error = null;
+        switch (TripDateProblemNow(date))
+        {
+            case TripDateProblem.Invalid:
+                if (TripDateText.Length >= 10)
+                {
+                    error = UiStrings.Import_DateInvalid;
+                }
+
+                break;
+            case TripDateProblem.Past:
+                error = UiStrings.Import_DatePast;
+                break;
+            case TripDateProblem.AlreadyOver:
+                error = UiStrings.Import_DateOver;
+                break;
+        }
+
+        TripDateError = error;
+        SaveCommand.NotifyCanExecuteChanged();
+    }
+
+    private TripDateProblem TripDateProblemNow(DateOnly? date)
+    {
+        if (_connection is null)
+        {
+            return TripDateProblem.Invalid;
+        }
+
+        return OneOffTripDate.Check(date, _connection, _main.Services.Clock.Now, BerlinTime.Zone);
+    }
+
+    private DateOnly Today()
+    {
+        return DateOnly.FromDateTime(BerlinTime.ToWallClock(_main.Services.Clock.Now, BerlinTime.Zone));
     }
 
     private TripDirection Direction
@@ -258,6 +413,11 @@ public partial class ImportViewModel : ViewModelBase
             return !string.IsNullOrWhiteSpace(NewShiftName);
         }
 
+        if (SelectedTarget.IsOneOffTrip)
+        {
+            return TripDateProblemNow(DateText.Parse(TripDateText)) == TripDateProblem.None;
+        }
+
         return true;
     }
 
@@ -278,7 +438,16 @@ public partial class ImportViewModel : ViewModelBase
 
         var newTarget = new ImportTarget(null);
         Targets.Add(newTarget);
-        SelectTarget(newTarget);
+        var oneOffTarget = ImportTarget.ForOneOffTrip();
+        Targets.Add(oneOffTarget);
+        if (PrefersOneOffTrip)
+        {
+            SelectTarget(oneOffTarget);
+        }
+        else
+        {
+            SelectTarget(newTarget);
+        }
     }
 
     private void UpdateReplacement()

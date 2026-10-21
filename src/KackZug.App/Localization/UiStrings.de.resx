@@ -111,7 +111,7 @@
   <data name="Import_EnterManually" xml:space="preserve"><value>Von Hand eingeben</value></data>
   <data name="Import_Recognized" xml:space="preserve"><value>Verbindung erkannt</value></data>
   <data name="Import_EditManual" xml:space="preserve"><value>Eingabe ändern</value></data>
-  <data name="Import_WhichShift" xml:space="preserve"><value>Für welche Schicht?</value></data>
+  <data name="Import_WhichShift" xml:space="preserve"><value>Wofür ist die Verbindung?</value></data>
   <data name="Import_NewShiftPlaceholder" xml:space="preserve"><value>Name der neuen Schicht, z. B. Frühdienst</value></data>
   <data name="Import_Replaced" xml:space="preserve"><value>Die vorhandene Fahrt wird ersetzt</value></data>
   <data name="Import_Before" xml:space="preserve"><value>Vorher</value></data>
@@ -139,7 +139,7 @@
   <data name="Tutorial_WelcomeText" xml:space="preserve"><value>KackZug prüft deine Zugverbindungen zur Arbeit und meldet sich laut, wenn etwas nicht stimmt.</value></data>
   <data name="Tutorial_UpdatedText" xml:space="preserve"><value>KackZug wurde auf Version {0} aktualisiert. Hier noch einmal kurz das Wichtigste.</value></data>
   <data name="Tutorial_ShareTitle" xml:space="preserve"><value>Verbindung teilen</value></data>
-  <data name="Tutorial_ShareText" xml:space="preserve"><value>Such im DB Navigator deine Verbindung zur Arbeit, tippe auf „Teilen“ und wähle KackZug. Dann speicherst du sie als Hin- oder Rückfahrt einer Schicht, zum Beispiel „Frühdienst“.</value></data>
+  <data name="Tutorial_ShareText" xml:space="preserve"><value>Such im DB Navigator deine Verbindung zur Arbeit, tippe auf „Teilen“ und wähle KackZug. Dann speicherst du sie als Hin- oder Rückfahrt einer Schicht, zum Beispiel „Frühdienst“, oder als Einzelfahrt für einen bestimmten Tag.</value></data>
   <data name="Tutorial_WeekTitle" xml:space="preserve"><value>Woche planen</value></data>
   <data name="Tutorial_WeekText" xml:space="preserve"><value>Unter „Woche“ gibst du jedem Tag eine Schicht oder lässt ihn frei. Hin- und Rückfahrt kannst du pro Tag einzeln abschalten. Eine neue Woche übernimmt auf Wunsch den Plan der Vorwoche.</value></data>
   <data name="Tutorial_CheckTitle" xml:space="preserve"><value>Prüfen und melden</value></data>
@@ -210,4 +210,26 @@
   <data name="Settings_Saved" xml:space="preserve"><value>Gespeichert</value></data>
   <data name="Day_CheckedAt" xml:space="preserve"><value>geprüft {0}</value></data>
   <data name="Day_TripOff" xml:space="preserve"><value>Aus</value></data>
+  <data name="Nav_Trips" xml:space="preserve"><value>Fahrten</value></data>
+  <data name="Format_Date" xml:space="preserve"><value>dd.MM.yyyy</value></data>
+  <data name="Import_TargetOneOff" xml:space="preserve"><value>Einzelfahrt</value></data>
+  <data name="Import_TargetOneOffHint" xml:space="preserve"><value>Nur an einem Tag, danach ist sie weg</value></data>
+  <data name="Import_TripDate" xml:space="preserve"><value>Datum</value></data>
+  <data name="Import_TripDatePlaceholder" xml:space="preserve"><value>TT.MM.JJJJ</value></data>
+  <data name="Import_TripName" xml:space="preserve"><value>Name (freiwillig)</value></data>
+  <data name="Import_DateInvalid" xml:space="preserve"><value>Das Datum bitte als TT.MM.JJJJ, z. B. 24.12.2026.</value></data>
+  <data name="Import_DatePast" xml:space="preserve"><value>Der Tag ist schon vorbei. Nimm heute oder später.</value></data>
+  <data name="Import_DateOver" xml:space="preserve"><value>Die Fahrt ist heute schon vorbei.</value></data>
+  <data name="Import_OneOffHint" xml:space="preserve"><value>KackZug prüft die Fahrt nur an diesem Tag und löscht sie eine Stunde nach der Ankunft von selbst.</value></data>
+  <data name="Import_SavedOneOff" xml:space="preserve"><value>Einzelfahrt am {0} gespeichert.</value></data>
+  <data name="Trips_Heading" xml:space="preserve"><value>Einzelfahrten</value></data>
+  <data name="Trips_OneOff" xml:space="preserve"><value>Einzelfahrt</value></data>
+  <data name="Trips_EmptyTitle" xml:space="preserve"><value>Noch keine Einzelfahrt</value></data>
+  <data name="Trips_EmptyText" xml:space="preserve"><value>Teil eine Verbindung aus dem DB Navigator mit KackZug und wähl „Einzelfahrt“. Sie wird nur an diesem Tag geprüft und verschwindet danach von selbst.</value></data>
+  <data name="Trips_Tomorrow" xml:space="preserve"><value>MORGEN</value></data>
+  <data name="Trips_Delete" xml:space="preserve"><value>Einzelfahrt löschen</value></data>
+  <data name="Trips_DeleteTitle" xml:space="preserve"><value>Einzelfahrt löschen?</value></data>
+  <data name="Trips_DeleteMessage" xml:space="preserve"><value>„{0}“ am {1} wird gelöscht und nicht mehr geprüft.</value></data>
+  <data name="Trips_Deleted" xml:space="preserve"><value>Einzelfahrt gelöscht.</value></data>
+  <data name="Trips_Back" xml:space="preserve"><value>‹ Zurück zu den Fahrten</value></data>
 </root>

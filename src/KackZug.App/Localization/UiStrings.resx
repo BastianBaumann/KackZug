@@ -111,7 +111,7 @@
   <data name="Import_EnterManually" xml:space="preserve"><value>Enter by hand</value></data>
   <data name="Import_Recognized" xml:space="preserve"><value>Connection found</value></data>
   <data name="Import_EditManual" xml:space="preserve"><value>Edit entry</value></data>
-  <data name="Import_WhichShift" xml:space="preserve"><value>For which shift?</value></data>
+  <data name="Import_WhichShift" xml:space="preserve"><value>What is this connection for?</value></data>
   <data name="Import_NewShiftPlaceholder" xml:space="preserve"><value>Name of the new shift, e.g. Early shift</value></data>
   <data name="Import_Replaced" xml:space="preserve"><value>The existing trip will be replaced</value></data>
   <data name="Import_Before" xml:space="preserve"><value>Before</value></data>
@@ -139,7 +139,7 @@
   <data name="Tutorial_WelcomeText" xml:space="preserve"><value>KackZug checks your train connections to work and speaks up loudly when something's off.</value></data>
   <data name="Tutorial_UpdatedText" xml:space="preserve"><value>KackZug was updated to version {0}. Here's a quick recap of what matters.</value></data>
   <data name="Tutorial_ShareTitle" xml:space="preserve"><value>Share a connection</value></data>
-  <data name="Tutorial_ShareText" xml:space="preserve"><value>Look up your connection to work in DB Navigator, tap “Share” and pick KackZug. Then save it as the outbound or return trip of a shift, for example “Early shift”.</value></data>
+  <data name="Tutorial_ShareText" xml:space="preserve"><value>Look up your connection to work in DB Navigator, tap “Share” and pick KackZug. Then save it as the outbound or return trip of a shift, for example “Early shift”, or as a one-off trip for a specific day.</value></data>
   <data name="Tutorial_WeekTitle" xml:space="preserve"><value>Plan your week</value></data>
   <data name="Tutorial_WeekText" xml:space="preserve"><value>Under “Week” you give each day a shift or leave it free. You can switch off the outbound and return trip per day. A new week can copy last week's plan if you like.</value></data>
   <data name="Tutorial_CheckTitle" xml:space="preserve"><value>Check and alert</value></data>
@@ -210,4 +210,26 @@
   <data name="Settings_Saved" xml:space="preserve"><value>Saved</value></data>
   <data name="Day_CheckedAt" xml:space="preserve"><value>checked {0}</value></data>
   <data name="Day_TripOff" xml:space="preserve"><value>Off</value></data>
+  <data name="Nav_Trips" xml:space="preserve"><value>Trips</value></data>
+  <data name="Format_Date" xml:space="preserve"><value>dd/MM/yyyy</value></data>
+  <data name="Import_TargetOneOff" xml:space="preserve"><value>One-off trip</value></data>
+  <data name="Import_TargetOneOffHint" xml:space="preserve"><value>Just one day, then it's gone</value></data>
+  <data name="Import_TripDate" xml:space="preserve"><value>Date</value></data>
+  <data name="Import_TripDatePlaceholder" xml:space="preserve"><value>DD.MM.YYYY</value></data>
+  <data name="Import_TripName" xml:space="preserve"><value>Name (optional)</value></data>
+  <data name="Import_DateInvalid" xml:space="preserve"><value>Please type the date as DD.MM.YYYY, e.g. 24.12.2026.</value></data>
+  <data name="Import_DatePast" xml:space="preserve"><value>That day is already over. Pick today or later.</value></data>
+  <data name="Import_DateOver" xml:space="preserve"><value>This trip is already over for today.</value></data>
+  <data name="Import_OneOffHint" xml:space="preserve"><value>KackZug checks this trip on that day only and deletes it by itself an hour after arrival.</value></data>
+  <data name="Import_SavedOneOff" xml:space="preserve"><value>One-off trip on {0} saved.</value></data>
+  <data name="Trips_Heading" xml:space="preserve"><value>One-off trips</value></data>
+  <data name="Trips_OneOff" xml:space="preserve"><value>One-off trip</value></data>
+  <data name="Trips_EmptyTitle" xml:space="preserve"><value>No one-off trips yet</value></data>
+  <data name="Trips_EmptyText" xml:space="preserve"><value>Share a connection from DB Navigator with KackZug and pick “One-off trip”. It is checked on that day only and disappears by itself afterwards.</value></data>
+  <data name="Trips_Tomorrow" xml:space="preserve"><value>TOMORROW</value></data>
+  <data name="Trips_Delete" xml:space="preserve"><value>Delete one-off trip</value></data>
+  <data name="Trips_DeleteTitle" xml:space="preserve"><value>Delete one-off trip?</value></data>
+  <data name="Trips_DeleteMessage" xml:space="preserve"><value>“{0}” on {1} will be deleted and no longer checked.</value></data>
+  <data name="Trips_Deleted" xml:space="preserve"><value>One-off trip deleted.</value></data>
+  <data name="Trips_Back" xml:space="preserve"><value>‹ Back to the trips</value></data>
 </root>

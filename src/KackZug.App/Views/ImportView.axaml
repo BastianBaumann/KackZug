@@ -67,7 +67,10 @@
                                         <Ellipse Stroke="{DynamicResource AppMutedBrush}" StrokeThickness="2" IsVisible="{Binding !IsSelected}" />
                                         <Ellipse Stroke="{DynamicResource AppAccentBrush}" StrokeThickness="6" IsVisible="{Binding IsSelected}" />
                                     </Grid>
-                                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                                    <StackPanel VerticalAlignment="Center" Spacing="1">
+                                        <TextBlock Text="{Binding Title}" />
+                                        <TextBlock Text="{Binding Subtitle}" Classes="caption" TextWrapping="Wrap" IsVisible="{Binding HasSubtitle}" />
+                                    </StackPanel>
                                 </StackPanel>
                             </RadioButton>
                         </DataTemplate>
@@ -77,7 +80,24 @@
                          IsVisible="{Binding IsNewTarget}" />
             </StackPanel>
 
-            <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
+            <StackPanel Spacing="12" IsVisible="{Binding IsOneOffTarget}">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{x:Static l:UiStrings.Import_TripDate}" Classes="caption" />
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <TextBox Classes="date" Text="{Binding TripDateText}" PlaceholderText="{x:Static l:UiStrings.Import_TripDatePlaceholder}"
+                                 MaxLength="10" TextInputOptions.ContentType="Number" />
+                        <TextBlock Text="{Binding TripWeekday}" Classes="body-lg" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding TripDateError}" Classes="caption" TextWrapping="Wrap" Foreground="{DynamicResource AppLateInkBrush}"
+                               IsVisible="{Binding HasTripDateError}" />
+                </StackPanel>
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{x:Static l:UiStrings.Import_TripName}" Classes="caption" />
+                    <TextBox Text="{Binding TripName}" PlaceholderText="{Binding TripNamePlaceholder}" MaxLength="60" />
+                </StackPanel>
+            </StackPanel>
+
+            <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4" IsVisible="{Binding !IsOneOffTarget}">
                 <UniformGrid Rows="1">
                     <RadioButton Classes="segment" GroupName="direction" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsOutbound, Mode=OneWay}" Command="{Binding ChooseOutboundCommand}">
                         <TextBlock Text="{x:Static l:UiStrings.Common_Outbound}" />
@@ -105,7 +125,7 @@
                 <TextBlock Text="{x:Static l:UiStrings.Common_Cancel}" />
             </Button>
             <TextBlock Classes="caption" TextWrapping="Wrap"
-                       Text="{x:Static l:UiStrings.Import_PatternHint}" />
+                       Text="{Binding SaveHint}" />
         </StackPanel>
     </StackPanel>
 </UserControl>
