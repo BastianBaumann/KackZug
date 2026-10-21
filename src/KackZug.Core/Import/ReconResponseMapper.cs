@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 using KackZug.Core.Bahn;
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
 
 namespace KackZug.Core.Import;
@@ -91,7 +92,7 @@ public static class ReconResponseMapper
         if (type == "WALK")
         {
             leg.Kind = LegKind.Walk;
-            leg.Name = "Fussweg";
+            leg.Name = Strings.Import_WalkName;
             return leg;
         }
 

@@ -1,10 +1,10 @@
-using System.Globalization;
 using System.Text;
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
 
 namespace KackZug.Core.Checking;
 
-/// <summary>Schreibt aus einem Pruefergebnis eine kurze, konkrete Meldung auf Deutsch</summary>
+/// <summary>Schreibt aus einem Pruefergebnis eine kurze, konkrete Meldung in der eingestellten Sprache</summary>
 public static class AlertComposer
 {
     public static TripAlert Compose(Shift shift, TripDirection direction, DateOnly travelDate, TripStatus status)
@@ -23,7 +23,7 @@ public static class AlertComposer
         alert.Title = shift.Name + " " + DirectionName(direction) + ": " + headline;
         if (alert.Severity == AlertSeverity.Problem)
         {
-            alert.Title = (shift.Name + " " + ShortDirectionName(direction) + ": " + headline).ToUpper(German);
+            alert.Title = (shift.Name + " " + ShortDirectionName(direction) + ": " + headline).ToUpper(Language.Culture);
         }
 
         alert.BadgeText = BadgeText(status);
@@ -38,20 +38,20 @@ public static class AlertComposer
     {
         if (direction == TripDirection.Outbound)
         {
-            return "Hinfahrt";
+            return Strings.Alert_DirectionOutbound;
         }
 
-        return "Rückfahrt";
+        return Strings.Alert_DirectionReturn;
     }
 
     public static string ShortDirectionName(TripDirection direction)
     {
         if (direction == TripDirection.Outbound)
         {
-            return "Hin";
+            return Strings.Alert_DirectionOutboundShort;
         }
 
-        return "Rück";
+        return Strings.Alert_DirectionReturnShort;
     }
 
     public static string BadgeText(TripStatus status)
@@ -59,36 +59,36 @@ public static class AlertComposer
         switch (status.Overall)
         {
             case LegStatus.OnTime:
-                return "Planmäßig";
+                return Strings.Alert_BadgeOnTime;
             case LegStatus.PlannedOnly:
-                return "Laut Fahrplan";
+                return Strings.Alert_BadgePlannedOnly;
             case LegStatus.Unknown:
-                return "Nicht geprüft";
+                return Strings.Alert_BadgeUnknown;
             case LegStatus.Delayed:
                 var delay = status.Legs.Max(result => result.DelayMinutes);
-                return "+" + delay + " min";
+                return Format(Strings.Alert_BadgeDelay, delay);
             case LegStatus.PlatformChanged:
                 var changed = status.Legs.First(result => result.NewPlatform is not null);
                 if (string.IsNullOrEmpty(changed.Leg.PlannedPlatform))
                 {
-                    return "Gleis " + changed.NewPlatform;
+                    return Format(Strings.Alert_BadgePlatform, changed.NewPlatform);
                 }
 
-                return "Gleis " + changed.Leg.PlannedPlatform + " → " + changed.NewPlatform;
+                return Format(Strings.Alert_BadgePlatformChange, changed.Leg.PlannedPlatform, changed.NewPlatform);
             case LegStatus.TransferAtRisk:
                 var lateLeg = DelayedLeg(status);
                 if (lateLeg is not null)
                 {
-                    return "+" + lateLeg.DelayMinutes + " · Anschluss knapp";
+                    return Format(Strings.Alert_BadgeTransferAtRiskDelay, lateLeg.DelayMinutes);
                 }
 
-                return "Anschluss knapp";
+                return Strings.Alert_BadgeTransferAtRisk;
             case LegStatus.NotFound:
-                return "Nicht gefunden";
+                return Strings.Alert_BadgeNotFound;
             case LegStatus.PartlyCancelled:
-                return "Teilausfall";
+                return Strings.Alert_BadgePartlyCancelled;
             default:
-                return "Fällt aus";
+                return Strings.Alert_BadgeCancelled;
         }
     }
 
@@ -125,13 +125,11 @@ public static class AlertComposer
         return builder.ToString();
     }
 
-    private static readonly CultureInfo German = new CultureInfo("de-DE");
-
     private static string Kicker(Shift shift, TripDirection direction, DateOnly travelDate)
     {
-        var day = German.DateTimeFormat.GetAbbreviatedDayName(travelDate.DayOfWeek);
-        var text = shift.Name + " · " + DirectionName(direction) + " · " + day + " " + travelDate.ToString("dd.MM.", German);
-        return text.ToUpper(German);
+        var day = Language.Culture.DateTimeFormat.GetAbbreviatedDayName(travelDate.DayOfWeek);
+        var text = shift.Name + " · " + DirectionName(direction) + " · " + Format(Strings.Alert_KickerDate, day, travelDate);
+        return text.ToUpper(Language.Culture);
     }
 
     private static string AlarmHeadline(TripStatus status)
@@ -139,24 +137,24 @@ public static class AlertComposer
         switch (status.Overall)
         {
             case LegStatus.Cancelled:
-                return "FÄLLT AUS";
+                return Strings.Alert_HeadlineCancelled;
             case LegStatus.PartlyCancelled:
-                return "TEILAUSFALL";
+                return Strings.Alert_HeadlinePartlyCancelled;
             case LegStatus.NotFound:
-                return "NICHT GEFUNDEN";
+                return Strings.Alert_HeadlineNotFound;
             case LegStatus.TransferAtRisk:
-                return "ANSCHLUSS GEFÄHRDET";
+                return Strings.Alert_HeadlineTransferAtRisk;
             case LegStatus.Delayed:
                 var delay = status.Legs.Max(result => result.DelayMinutes);
-                return "+" + delay + " MIN.";
+                return Format(Strings.Alert_HeadlineDelay, delay);
             case LegStatus.PlatformChanged:
-                return "GLEISWECHSEL";
+                return Strings.Alert_HeadlinePlatformChanged;
             case LegStatus.Unknown:
-                return "NICHT GEPRÜFT";
+                return Strings.Alert_HeadlineUnknown;
             case LegStatus.PlannedOnly:
-                return "LAUT FAHRPLAN";
+                return Strings.Alert_HeadlinePlannedOnly;
             default:
-                return "PLANMÄSSIG";
+                return Strings.Alert_HeadlineOnTime;
         }
     }
 
@@ -184,7 +182,7 @@ public static class AlertComposer
         var line = leg.Leg.Name + " · " + leg.Leg.PlannedDeparture.ToString("HH:mm") + " " + leg.Leg.From.Name + " → " + leg.Leg.To.Name;
         if (status.Overall == LegStatus.TransferAtRisk && leg.Status == LegStatus.Delayed)
         {
-            line += " · +" + leg.DelayMinutes + " min";
+            line += " · " + Format(Strings.Alert_BadgeDelay, leg.DelayMinutes);
         }
 
         return line;
@@ -200,10 +198,10 @@ public static class AlertComposer
             var lateLeg = DelayedLeg(status);
             if (lateLeg is not null)
             {
-                return Describe(lateLeg) + " +" + lateLeg.DelayMinutes + " Min., Anschluss in " + station + " gefährdet";
+                return Format(Strings.Alert_TitleTransferDelayed, Describe(lateLeg), lateLeg.DelayMinutes, station);
             }
 
-            return "Anschluss in " + station + " gefährdet";
+            return Format(Strings.Alert_TitleTransferAtRisk, station);
         }
 
         if (worstIndex < 0)
@@ -211,10 +209,10 @@ public static class AlertComposer
             var firstRide = status.Legs.First(result => !result.Leg.IsWalk);
             if (status.Overall == LegStatus.PlannedOnly)
             {
-                return Describe(firstRide) + " fährt laut Fahrplan";
+                return Format(Strings.Alert_TitlePlannedOnly, Describe(firstRide));
             }
 
-            return Describe(firstRide) + " fährt planmäßig";
+            return Format(Strings.Alert_TitleOnTime, Describe(firstRide));
         }
 
         return Describe(status.Legs[worstIndex]) + " " + Problem(status.Legs[worstIndex]);
@@ -234,7 +232,7 @@ public static class AlertComposer
             var problem = Problem(result);
             if (status.Overall == LegStatus.PlannedOnly)
             {
-                problem = "laut Fahrplan";
+                problem = Strings.Alert_ProblemPlannedOnly;
             }
 
             var line = Describe(result) + " " + result.Leg.From.Name + " → " + result.Leg.To.Name + ": " + problem;
@@ -250,17 +248,17 @@ public static class AlertComposer
 
             var station = status.Legs[transfer.ArrivingLegIndex].Leg.To.Name;
             var spare = Math.Max(0, transfer.SpareMinutes);
-            lines.Add("Umstieg in " + station + ": nur noch " + spare + " Min. Puffer");
+            lines.Add(Format(Strings.Alert_DetailTransfer, station, spare));
         }
 
         if (status.Overall == LegStatus.PlannedOnly)
         {
-            lines.Add("Echtzeitdaten gibt es erst kurz vor der Abfahrt. KackZug prüft dann noch einmal.");
+            lines.Add(Strings.Alert_DetailPlannedOnly);
         }
 
         if (status.Overall == LegStatus.NotFound || status.Overall == LegStatus.Cancelled || status.Overall == LegStatus.PartlyCancelled)
         {
-            lines.Add("Eventuell gibt es Ersatzverkehr. Bitte im DB Navigator prüfen.");
+            lines.Add(Strings.Alert_DetailReplacement);
         }
 
         return string.Join("\n", lines);
@@ -312,19 +310,24 @@ public static class AlertComposer
         switch (result.Status)
         {
             case LegStatus.Cancelled:
-                return "fällt aus";
+                return Strings.Alert_ProblemCancelled;
             case LegStatus.PartlyCancelled:
-                return "hält nicht in " + result.Leg.To.Name;
+                return Format(Strings.Alert_ProblemPartlyCancelled, result.Leg.To.Name);
             case LegStatus.NotFound:
-                return "fährt so nicht mehr";
+                return Strings.Alert_ProblemNotFound;
             case LegStatus.Delayed:
-                return "+" + result.DelayMinutes + " Min.";
+                return Format(Strings.Alert_ProblemDelay, result.DelayMinutes);
             case LegStatus.PlatformChanged:
-                return "jetzt Gleis " + result.NewPlatform;
+                return Format(Strings.Alert_ProblemPlatform, result.NewPlatform);
             case LegStatus.Unknown:
-                return "konnte nicht geprüft werden";
+                return Strings.Alert_ProblemUnknown;
             default:
-                return "pünktlich";
+                return Strings.Alert_ProblemOnTime;
         }
+    }
+
+    private static string Format(string text, params object?[] values)
+    {
+        return string.Format(Language.Culture, text, values);
     }
 }

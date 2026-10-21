@@ -1,4 +1,5 @@
 using System.Globalization;
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
 
 namespace KackZug.Core.Import;
@@ -26,7 +27,7 @@ public static class ReconStringParser
             var fields = sectionText.Split('$');
             if (fields.Length < 6)
             {
-                throw new ImportException("Die Verbindung konnte nicht gelesen werden.");
+                throw new ImportException(Strings.Import_ErrorUnreadable);
             }
 
             var departure = ParseTime(fields[3]);
@@ -49,7 +50,7 @@ public static class ReconStringParser
             if (fields[0] == "W")
             {
                 leg.Kind = LegKind.Walk;
-                leg.Name = "Fussweg";
+                leg.Name = Strings.Import_WalkName;
             }
             else
             {
@@ -61,7 +62,7 @@ public static class ReconStringParser
 
         if (startDate is null || connection.FirstRide is null)
         {
-            throw new ImportException("Die Verbindung konnte nicht gelesen werden.");
+            throw new ImportException(Strings.Import_ErrorUnreadable);
         }
 
         return new ResolvedConnection(connection, DateOnly.FromDateTime(startDate.Value), false);
@@ -72,7 +73,7 @@ public static class ReconStringParser
         var parsed = DateTime.TryParseExact(text, TimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var time);
         if (!parsed)
         {
-            throw new ImportException("Die Verbindung konnte nicht gelesen werden.");
+            throw new ImportException(Strings.Import_ErrorUnreadable);
         }
 
         return time;
@@ -101,7 +102,7 @@ public static class ReconStringParser
         var words = trainText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (words.Length == 0)
         {
-            leg.Name = "Zug";
+            leg.Name = Strings.Import_TrainName;
             return;
         }
 
@@ -114,7 +115,7 @@ public static class ReconStringParser
         }
         else
         {
-            leg.Name = "Zug " + number;
+            leg.Name = string.Format(Language.Culture, Strings.Import_TrainNameWithNumber, number);
         }
     }
 }

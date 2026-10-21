@@ -5,6 +5,7 @@ using Android.OS;
 using AndroidX.Core.App;
 using KackZug.Core.Alarms;
 using KackZug.Core.Checking;
+using KackZug.Core.Localization;
 
 namespace KackZug.Android;
 
@@ -48,18 +49,47 @@ public static class AlertNotifier
 
         if (manager.GetNotificationChannel(ProblemChannelId) is null)
         {
-            var problem = CreateProblemChannel(context, ProblemChannelId, "Störung");
+            var problem = CreateProblemChannel(context, ProblemChannelId, Strings.Android_ChannelProblemName);
             manager.CreateNotificationChannel(problem);
+        }
+        else
+        {
+            UpdateTexts(manager, ProblemChannelId, Strings.Android_ChannelProblemName, Strings.Android_ChannelProblemDescription);
         }
 
         if (manager.GetNotificationChannel(InfoChannelId) is null)
         {
-            var info = new NotificationChannel(InfoChannelId, "Info", NotificationImportance.Default)
+            var info = new NotificationChannel(InfoChannelId, Strings.Android_ChannelInfoName, NotificationImportance.Default)
             {
-                Description = "Fahrt planmäßig oder konnte nicht geprüft werden"
+                Description = Strings.Android_ChannelInfoDescription
             };
             manager.CreateNotificationChannel(info);
         }
+        else
+        {
+            UpdateTexts(manager, InfoChannelId, Strings.Android_ChannelInfoName, Strings.Android_ChannelInfoDescription);
+        }
+
+        UpdateTexts(manager, ProblemDoNotDisturbChannelId, Strings.Android_ChannelProblemDoNotDisturbName, Strings.Android_ChannelProblemDescription);
+    }
+
+    /// <remarks>Name und Beschreibung folgen der Sprache; Ton und Vibration eines bestehenden Kanals bleiben unberuehrt.</remarks>
+    private static void UpdateTexts(NotificationManager manager, string id, string name, string description)
+    {
+        var channel = manager.GetNotificationChannel(id);
+        if (channel is null)
+        {
+            return;
+        }
+
+        if (channel.Name == name && channel.Description == description)
+        {
+            return;
+        }
+
+        channel.Name = name;
+        channel.Description = description;
+        manager.CreateNotificationChannel(channel);
     }
 
     public static bool HasDoNotDisturbAccess(Context context)
@@ -85,7 +115,7 @@ public static class AlertNotifier
 
         if (manager.GetNotificationChannel(ProblemDoNotDisturbChannelId) is null)
         {
-            var channel = CreateProblemChannel(context, ProblemDoNotDisturbChannelId, "Störung (auch bei Bitte nicht stören)");
+            var channel = CreateProblemChannel(context, ProblemDoNotDisturbChannelId, Strings.Android_ChannelProblemDoNotDisturbName);
             channel.SetBypassDnd(true);
             manager.CreateNotificationChannel(channel);
         }
@@ -97,7 +127,7 @@ public static class AlertNotifier
     {
         var channel = new NotificationChannel(id, name, NotificationImportance.High)
         {
-            Description = "Ausfall, Verspätung, Gleiswechsel oder gefährdeter Anschluss",
+            Description = Strings.Android_ChannelProblemDescription,
             LockscreenVisibility = NotificationVisibility.Public
         };
         channel.EnableVibration(true);

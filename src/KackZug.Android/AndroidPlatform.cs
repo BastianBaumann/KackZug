@@ -6,6 +6,7 @@ using AndroidX.Core.App;
 using AppUpdater;
 using AppUpdater.Android;
 using KackZug.Core.Checking;
+using KackZug.Core.Localization;
 using KackZug.Core.Planning;
 using KackZug.Services;
 
@@ -139,15 +140,15 @@ public sealed class AndroidPlatform : IPlatform
 
         var permissions = new List<PermissionInfo>
         {
-            new PermissionInfo(PermissionNotifications, "Benachrichtigungen", "Ohne sie kann KackZug keine Störung melden.", notificationsAllowed),
-            new PermissionInfo(PermissionExactAlarms, "Pünktliche Alarme", "Damit die Prüfung genau zur eingestellten Zeit läuft.", exactAllowed),
-            new PermissionInfo(PermissionBattery, "Akku-Optimierung aus", "Sonst kann Android die Prüfung verzögern oder ganz auslassen.", batteryFree),
-            new PermissionInfo(PermissionFullScreen, "Vollbild-Alarm", "Damit eine Störung auch auf dem Sperrbildschirm groß erscheint.", fullScreenAllowed)
+            new PermissionInfo(PermissionNotifications, Strings.Android_PermissionNotificationsTitle, Strings.Android_PermissionNotificationsDescription, notificationsAllowed),
+            new PermissionInfo(PermissionExactAlarms, Strings.Android_PermissionExactAlarmsTitle, Strings.Android_PermissionExactAlarmsDescription, exactAllowed),
+            new PermissionInfo(PermissionBattery, Strings.Android_PermissionBatteryTitle, Strings.Android_PermissionBatteryDescription, batteryFree),
+            new PermissionInfo(PermissionFullScreen, Strings.Android_PermissionFullScreenTitle, Strings.Android_PermissionFullScreenDescription, fullScreenAllowed)
         };
 
         if (App.Services is not null && App.Services.Data.Settings.BreakThroughDoNotDisturb)
         {
-            permissions.Add(new PermissionInfo(PermissionDoNotDisturb, "Bitte nicht stören", "Damit eine Störung auch im Ruhemodus klingelt.", AlertNotifier.HasDoNotDisturbAccess(_context)));
+            permissions.Add(new PermissionInfo(PermissionDoNotDisturb, Strings.Android_PermissionDoNotDisturbTitle, Strings.Android_PermissionDoNotDisturbDescription, AlertNotifier.HasDoNotDisturbAccess(_context)));
         }
 
         return permissions;

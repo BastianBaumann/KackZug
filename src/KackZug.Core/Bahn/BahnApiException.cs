@@ -1,3 +1,5 @@
+using KackZug.Core.Localization;
+
 namespace KackZug.Core.Bahn;
 
 /// <summary>Fehler bei einer Anfrage an bahn.de</summary>
@@ -22,13 +24,13 @@ public sealed class BahnApiException : Exception
             switch (Kind)
             {
                 case BahnApiErrorKind.Blocked:
-                    return "bahn.de laesst gerade keine Anfragen zu. Bitte spaeter noch einmal versuchen.";
+                    return Strings.Bahn_ErrorBlocked;
                 case BahnApiErrorKind.NotFound:
-                    return "Die Verbindung wurde bei bahn.de nicht gefunden. Bitte im DB Navigator neu teilen.";
+                    return Strings.Bahn_ErrorNotFound;
                 case BahnApiErrorKind.Network:
-                    return "bahn.de ist gerade nicht erreichbar. Besteht eine Internetverbindung?";
+                    return Strings.Bahn_ErrorNetwork;
                 default:
-                    return "Die Antwort von bahn.de konnte nicht gelesen werden.";
+                    return Strings.Bahn_ErrorFormat;
             }
         }
     }

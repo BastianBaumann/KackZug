@@ -1,4 +1,5 @@
 using KackZug.Core.Bahn;
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
 
 namespace KackZug.Core.Checking;
@@ -35,7 +36,7 @@ public sealed class BahnWebTripStatusSource : ITripStatusSource
 
         if (board.Count == 0)
         {
-            return LegObservation.Unknown(plannedDeparture, plannedArrival, "bahn.de hat für diesen Tag und diese Uhrzeit noch keine Daten.");
+            return LegObservation.Unknown(plannedDeparture, plannedArrival, Strings.Check_NoBoardData);
         }
 
         var observation = new LegObservation

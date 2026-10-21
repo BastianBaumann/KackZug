@@ -1,3 +1,5 @@
+using KackZug.Core.Localization;
+
 namespace KackZug.Core.Checking;
 
 /// <summary>Beispielmeldung fuer den Test-Alarm in den Einstellungen</summary>
@@ -7,16 +9,16 @@ public static class TestAlert
     {
         return new TripAlert
         {
-            Title = "TEST HIN: RE7 06:42 FÄLLT AUS",
-            Text = "So sieht eine Störung aus. Alles gut, das war nur ein Test.",
+            Title = Strings.Test_Title,
+            Text = Strings.Test_Text,
             Severity = AlertSeverity.Problem,
             Status = LegStatus.Cancelled,
             StatusHash = "test",
             TravelDate = DateOnly.FromDateTime(now.LocalDateTime),
             ShiftId = Guid.Empty,
-            Kicker = "TEST · HINFAHRT",
-            Headline = "FÄLLT AUS",
-            TripLine = "RE7 · 06:42 Musterstadt Hbf → Beispielhausen",
+            Kicker = Strings.Test_Kicker,
+            Headline = Strings.Alert_HeadlineCancelled,
+            TripLine = Strings.Test_TripLine,
             RepeatUntil = now.AddMinutes(11)
         };
     }

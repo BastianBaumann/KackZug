@@ -20,6 +20,7 @@ public sealed class NotificationActionReceiver : BroadcastReceiver
             return;
         }
 
+        AlarmFlow.ApplyLanguage(context);
         var notificationId = intent.GetIntExtra(AlarmFlow.ExtraNotificationId, 0);
         switch (intent.Action)
         {

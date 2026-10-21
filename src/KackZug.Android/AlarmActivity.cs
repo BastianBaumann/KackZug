@@ -9,6 +9,7 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 using KackZug.Core.Alarms;
+using KackZug.Core.Localization;
 
 namespace KackZug.Android;
 
@@ -108,6 +109,7 @@ public class AlarmActivity : Activity
         }
 
         _current = this;
+        AlarmFlow.ApplyLanguage(this);
         var frame = new FrameLayout(this);
         frame.SetBackgroundColor(new Color(GroundColor));
         frame.SetFitsSystemWindows(true);
@@ -145,7 +147,7 @@ public class AlarmActivity : Activity
         scroll.AddView(detail);
         root.AddView(scroll, detailParams);
 
-        var seen = new Button(this) { Text = "Gesehen" };
+        var seen = new Button(this) { Text = Strings.Android_ActionSeen };
         seen.SetAllCaps(false);
         seen.SetTextSize(ComplexUnitType.Sp, 20);
         seen.SetTypeface(Typeface.DefaultBold, TypefaceStyle.Bold);
@@ -160,7 +162,7 @@ public class AlarmActivity : Activity
         seenParams.TopMargin = Dp(24);
         root.AddView(seen, seenParams);
 
-        var navigator = new Button(this) { Text = "DB Navigator öffnen" };
+        var navigator = new Button(this) { Text = Strings.Android_ActionOpenNavigator };
         navigator.SetAllCaps(false);
         navigator.SetTextSize(ComplexUnitType.Sp, 17);
         navigator.SetTextColor(new Color(unchecked((int)0xFFFFFFFF)));

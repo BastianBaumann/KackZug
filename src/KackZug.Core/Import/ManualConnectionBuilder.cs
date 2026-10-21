@@ -1,3 +1,4 @@
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
 
@@ -10,7 +11,7 @@ public static class ManualConnectionBuilder
     {
         if (inputs.Count == 0)
         {
-            return ManualBuildResult.Failure("Bitte mindestens eine Teilstrecke eingeben.");
+            return ManualBuildResult.Failure(Strings.Manual_ErrorNoLegs);
         }
 
         var connection = new SavedConnection { ImportedAt = now };
@@ -21,44 +22,44 @@ public static class ManualConnectionBuilder
         for (var index = 0; index < inputs.Count; index++)
         {
             var input = inputs[index];
-            var prefix = "Teilstrecke " + (index + 1) + ": ";
+            var number = index + 1;
             if (input.From is null)
             {
-                return ManualBuildResult.Failure(prefix + "Bitte den Start-Bahnhof suchen und antippen.");
+                return ManualBuildResult.Failure(LegError(number, Strings.Manual_ErrorNoStart));
             }
 
             if (input.To is null)
             {
-                return ManualBuildResult.Failure(prefix + "Bitte das Ziel suchen und antippen.");
+                return ManualBuildResult.Failure(LegError(number, Strings.Manual_ErrorNoDestination));
             }
 
             if (input.From.EvaNumber == input.To.EvaNumber)
             {
-                return ManualBuildResult.Failure(prefix + "Start und Ziel sind gleich.");
+                return ManualBuildResult.Failure(LegError(number, Strings.Manual_ErrorSameStations));
             }
 
             var departure = ClockText.Parse(input.DepartureText);
             if (departure is null)
             {
-                return ManualBuildResult.Failure(prefix + "Abfahrt bitte als HH:mm eingeben.");
+                return ManualBuildResult.Failure(LegError(number, Strings.Manual_ErrorDepartureTime));
             }
 
             var arrival = ClockText.Parse(input.ArrivalText);
             if (arrival is null)
             {
-                return ManualBuildResult.Failure(prefix + "Ankunft bitte als HH:mm eingeben.");
+                return ManualBuildResult.Failure(LegError(number, Strings.Manual_ErrorArrivalTime));
             }
 
             var line = input.LineText.Trim();
             if (line.Length == 0)
             {
-                return ManualBuildResult.Failure(prefix + "Bitte die Linie eingeben, z. B. RE 1 oder Bus 11.");
+                return ManualBuildResult.Failure(LegError(number, Strings.Manual_ErrorNoLine));
             }
 
             var trainNumber = input.TrainNumberText.Trim();
             if (trainNumber.Length > 0 && !trainNumber.All(char.IsAsciiDigit))
             {
-                return ManualBuildResult.Failure(prefix + "Die Zugnummer besteht nur aus Ziffern.");
+                return ManualBuildResult.Failure(LegError(number, Strings.Manual_ErrorTrainNumberDigits));
             }
 
             if (previousTime is not null && departure.Value < previousTime.Value)
@@ -77,7 +78,7 @@ public static class ManualConnectionBuilder
                     DepartureDayOffset = previousRide.ArrivalDayOffset,
                     PlannedArrival = departure.Value,
                     ArrivalDayOffset = dayOffset,
-                    Name = "Fussweg"
+                    Name = Strings.Import_WalkName
                 });
             }
 
@@ -110,5 +111,10 @@ public static class ManualConnectionBuilder
         }
 
         return ManualBuildResult.Success(connection);
+    }
+
+    private static string LegError(int number, string message)
+    {
+        return string.Format(Language.Culture, Strings.Manual_ErrorLegPrefix, number, message);
     }
 }

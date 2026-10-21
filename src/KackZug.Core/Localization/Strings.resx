@@ -4,6 +4,86 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Alert_BadgeCancelled" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="Alert_BadgeDelay" xml:space="preserve"><value>+{0} min</value></data>
+  <data name="Alert_BadgeNotFound" xml:space="preserve"><value>Not found</value></data>
+  <data name="Alert_BadgeOnTime" xml:space="preserve"><value>On time</value></data>
+  <data name="Alert_BadgePartlyCancelled" xml:space="preserve"><value>Partly cancelled</value></data>
+  <data name="Alert_BadgePlannedOnly" xml:space="preserve"><value>As scheduled</value></data>
+  <data name="Alert_BadgePlatform" xml:space="preserve"><value>Platform {0}</value></data>
+  <data name="Alert_BadgePlatformChange" xml:space="preserve"><value>Platform {0} → {1}</value></data>
+  <data name="Alert_BadgeTransferAtRisk" xml:space="preserve"><value>Tight connection</value></data>
+  <data name="Alert_BadgeTransferAtRiskDelay" xml:space="preserve"><value>+{0} · Tight connection</value></data>
+  <data name="Alert_BadgeUnknown" xml:space="preserve"><value>Not checked</value></data>
+  <data name="Alert_DetailPlannedOnly" xml:space="preserve"><value>Live data is only available shortly before departure. KackZug will check again then.</value></data>
+  <data name="Alert_DetailReplacement" xml:space="preserve"><value>There may be replacement transport. Please check in DB Navigator.</value></data>
+  <data name="Alert_DetailTransfer" xml:space="preserve"><value>Change at {0}: only {1} min to spare</value></data>
+  <data name="Alert_DirectionOutbound" xml:space="preserve"><value>Outbound</value></data>
+  <data name="Alert_DirectionOutboundShort" xml:space="preserve"><value>Out</value></data>
+  <data name="Alert_DirectionReturn" xml:space="preserve"><value>Return</value></data>
+  <data name="Alert_DirectionReturnShort" xml:space="preserve"><value>Back</value></data>
+  <data name="Alert_HeadlineCancelled" xml:space="preserve"><value>CANCELLED</value></data>
+  <data name="Alert_HeadlineDelay" xml:space="preserve"><value>+{0} MIN</value></data>
+  <data name="Alert_HeadlineNotFound" xml:space="preserve"><value>NOT FOUND</value></data>
+  <data name="Alert_HeadlineOnTime" xml:space="preserve"><value>ON TIME</value></data>
+  <data name="Alert_HeadlinePartlyCancelled" xml:space="preserve"><value>PARTLY CANCELLED</value></data>
+  <data name="Alert_HeadlinePlannedOnly" xml:space="preserve"><value>AS SCHEDULED</value></data>
+  <data name="Alert_HeadlinePlatformChanged" xml:space="preserve"><value>PLATFORM CHANGE</value></data>
+  <data name="Alert_HeadlineTransferAtRisk" xml:space="preserve"><value>CONNECTION AT RISK</value></data>
+  <data name="Alert_HeadlineUnknown" xml:space="preserve"><value>NOT CHECKED</value></data>
+  <data name="Alert_KickerDate" xml:space="preserve"><value>{0} {1:dd/MM}</value></data>
+  <data name="Alert_ProblemCancelled" xml:space="preserve"><value>cancelled</value></data>
+  <data name="Alert_ProblemDelay" xml:space="preserve"><value>+{0} min</value></data>
+  <data name="Alert_ProblemNotFound" xml:space="preserve"><value>no longer runs like this</value></data>
+  <data name="Alert_ProblemOnTime" xml:space="preserve"><value>on time</value></data>
+  <data name="Alert_ProblemPartlyCancelled" xml:space="preserve"><value>does not stop at {0}</value></data>
+  <data name="Alert_ProblemPlannedOnly" xml:space="preserve"><value>as scheduled</value></data>
+  <data name="Alert_ProblemPlatform" xml:space="preserve"><value>now platform {0}</value></data>
+  <data name="Alert_ProblemUnknown" xml:space="preserve"><value>could not be checked</value></data>
+  <data name="Alert_TitleOnTime" xml:space="preserve"><value>{0} is on time</value></data>
+  <data name="Alert_TitlePlannedOnly" xml:space="preserve"><value>{0} runs as scheduled</value></data>
+  <data name="Alert_TitleTransferAtRisk" xml:space="preserve"><value>Connection at {0} at risk</value></data>
+  <data name="Alert_TitleTransferDelayed" xml:space="preserve"><value>{0} +{1} min, connection at {2} at risk</value></data>
+  <data name="Android_ActionOpenNavigator" xml:space="preserve"><value>Open DB Navigator</value></data>
+  <data name="Android_ActionSeen" xml:space="preserve"><value>Seen</value></data>
+  <data name="Android_ChannelInfoDescription" xml:space="preserve"><value>Trip on time or could not be checked</value></data>
+  <data name="Android_ChannelInfoName" xml:space="preserve"><value>Info</value></data>
+  <data name="Android_ChannelProblemDescription" xml:space="preserve"><value>Cancellation, delay, platform change or connection at risk</value></data>
+  <data name="Android_ChannelProblemDoNotDisturbName" xml:space="preserve"><value>Disruption (even in Do Not Disturb)</value></data>
+  <data name="Android_ChannelProblemName" xml:space="preserve"><value>Disruption</value></data>
+  <data name="Android_PermissionBatteryDescription" xml:space="preserve"><value>Otherwise Android may delay the check or skip it entirely.</value></data>
+  <data name="Android_PermissionBatteryTitle" xml:space="preserve"><value>Battery optimisation off</value></data>
+  <data name="Android_PermissionDoNotDisturbDescription" xml:space="preserve"><value>So a disruption rings even in Do Not Disturb.</value></data>
+  <data name="Android_PermissionDoNotDisturbTitle" xml:space="preserve"><value>Do Not Disturb</value></data>
+  <data name="Android_PermissionExactAlarmsDescription" xml:space="preserve"><value>So the check runs exactly at the set time.</value></data>
+  <data name="Android_PermissionExactAlarmsTitle" xml:space="preserve"><value>Exact alarms</value></data>
+  <data name="Android_PermissionFullScreenDescription" xml:space="preserve"><value>So a disruption shows up big on the lock screen too.</value></data>
+  <data name="Android_PermissionFullScreenTitle" xml:space="preserve"><value>Full-screen alarm</value></data>
+  <data name="Android_PermissionNotificationsDescription" xml:space="preserve"><value>Without them KackZug can't report a disruption.</value></data>
+  <data name="Android_PermissionNotificationsTitle" xml:space="preserve"><value>Notifications</value></data>
+  <data name="Bahn_ErrorBlocked" xml:space="preserve"><value>bahn.de is not accepting requests right now. Please try again later.</value></data>
+  <data name="Bahn_ErrorFormat" xml:space="preserve"><value>The response from bahn.de could not be read.</value></data>
+  <data name="Bahn_ErrorNetwork" xml:space="preserve"><value>bahn.de can't be reached right now. Are you connected to the internet?</value></data>
+  <data name="Bahn_ErrorNotFound" xml:space="preserve"><value>bahn.de could not find the connection. Please share it again from DB Navigator.</value></data>
+  <data name="Check_NoBoardData" xml:space="preserve"><value>bahn.de has no data for this day and time yet.</value></data>
+  <data name="Import_ErrorNoLink" xml:space="preserve"><value>No bahn.de link was found in the shared text.</value></data>
+  <data name="Import_ErrorUnreadable" xml:space="preserve"><value>The connection could not be read.</value></data>
+  <data name="Import_TrainName" xml:space="preserve"><value>Train</value></data>
+  <data name="Import_TrainNameWithNumber" xml:space="preserve"><value>Train {0}</value></data>
+  <data name="Import_WalkName" xml:space="preserve"><value>Walk</value></data>
+  <data name="Manual_ErrorArrivalTime" xml:space="preserve"><value>Please enter the arrival as HH:mm.</value></data>
+  <data name="Manual_ErrorDepartureTime" xml:space="preserve"><value>Please enter the departure as HH:mm.</value></data>
+  <data name="Manual_ErrorLegPrefix" xml:space="preserve"><value>Leg {0}: {1}</value></data>
+  <data name="Manual_ErrorNoDestination" xml:space="preserve"><value>Please search for the destination and tap it.</value></data>
+  <data name="Manual_ErrorNoLegs" xml:space="preserve"><value>Please enter at least one leg.</value></data>
+  <data name="Manual_ErrorNoLine" xml:space="preserve"><value>Please enter the line, e.g. RE 1 or Bus 11.</value></data>
+  <data name="Manual_ErrorNoStart" xml:space="preserve"><value>Please search for the departure station and tap it.</value></data>
+  <data name="Manual_ErrorSameStations" xml:space="preserve"><value>Start and destination are the same.</value></data>
+  <data name="Manual_ErrorTrainNumberDigits" xml:space="preserve"><value>The train number may only contain digits.</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Language</value></data>
   <data name="Settings_LanguageSystem" xml:space="preserve"><value>System</value></data>
+  <data name="Test_Kicker" xml:space="preserve"><value>TEST · OUTBOUND</value></data>
+  <data name="Test_Text" xml:space="preserve"><value>This is what a disruption looks like. All good, this was only a test.</value></data>
+  <data name="Test_Title" xml:space="preserve"><value>TEST OUT: RE7 06:42 CANCELLED</value></data>
+  <data name="Test_TripLine" xml:space="preserve"><value>RE7 · 06:42 Sampletown Hbf → Exampleton</value></data>
 </root>

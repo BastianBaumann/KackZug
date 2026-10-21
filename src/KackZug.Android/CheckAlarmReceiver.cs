@@ -3,6 +3,7 @@ using Android.Content;
 using KackZug.Core;
 using KackZug.Core.Bahn;
 using KackZug.Core.Checking;
+using KackZug.Core.Localization;
 using KackZug.Core.Storage;
 
 namespace KackZug.Android;
@@ -55,6 +56,7 @@ public sealed class CheckAlarmReceiver : BroadcastReceiver
             if (result.AlertToShow is not null)
             {
                 var settings = store.Load().Settings;
+                Language.Apply(settings.Language);
                 AlertNotifier.Show(context, result.AlertToShow, settings.InsistentAlerts);
             }
 

@@ -4,6 +4,86 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Alert_BadgeCancelled" xml:space="preserve"><value>Fällt aus</value></data>
+  <data name="Alert_BadgeDelay" xml:space="preserve"><value>+{0} min</value></data>
+  <data name="Alert_BadgeNotFound" xml:space="preserve"><value>Nicht gefunden</value></data>
+  <data name="Alert_BadgeOnTime" xml:space="preserve"><value>Planmäßig</value></data>
+  <data name="Alert_BadgePartlyCancelled" xml:space="preserve"><value>Teilausfall</value></data>
+  <data name="Alert_BadgePlannedOnly" xml:space="preserve"><value>Laut Fahrplan</value></data>
+  <data name="Alert_BadgePlatform" xml:space="preserve"><value>Gleis {0}</value></data>
+  <data name="Alert_BadgePlatformChange" xml:space="preserve"><value>Gleis {0} → {1}</value></data>
+  <data name="Alert_BadgeTransferAtRisk" xml:space="preserve"><value>Anschluss knapp</value></data>
+  <data name="Alert_BadgeTransferAtRiskDelay" xml:space="preserve"><value>+{0} · Anschluss knapp</value></data>
+  <data name="Alert_BadgeUnknown" xml:space="preserve"><value>Nicht geprüft</value></data>
+  <data name="Alert_DetailPlannedOnly" xml:space="preserve"><value>Echtzeitdaten gibt es erst kurz vor der Abfahrt. KackZug prüft dann noch einmal.</value></data>
+  <data name="Alert_DetailReplacement" xml:space="preserve"><value>Eventuell gibt es Ersatzverkehr. Bitte im DB Navigator prüfen.</value></data>
+  <data name="Alert_DetailTransfer" xml:space="preserve"><value>Umstieg in {0}: nur noch {1} Min. Puffer</value></data>
+  <data name="Alert_DirectionOutbound" xml:space="preserve"><value>Hinfahrt</value></data>
+  <data name="Alert_DirectionOutboundShort" xml:space="preserve"><value>Hin</value></data>
+  <data name="Alert_DirectionReturn" xml:space="preserve"><value>Rückfahrt</value></data>
+  <data name="Alert_DirectionReturnShort" xml:space="preserve"><value>Rück</value></data>
+  <data name="Alert_HeadlineCancelled" xml:space="preserve"><value>FÄLLT AUS</value></data>
+  <data name="Alert_HeadlineDelay" xml:space="preserve"><value>+{0} MIN.</value></data>
+  <data name="Alert_HeadlineNotFound" xml:space="preserve"><value>NICHT GEFUNDEN</value></data>
+  <data name="Alert_HeadlineOnTime" xml:space="preserve"><value>PLANMÄSSIG</value></data>
+  <data name="Alert_HeadlinePartlyCancelled" xml:space="preserve"><value>TEILAUSFALL</value></data>
+  <data name="Alert_HeadlinePlannedOnly" xml:space="preserve"><value>LAUT FAHRPLAN</value></data>
+  <data name="Alert_HeadlinePlatformChanged" xml:space="preserve"><value>GLEISWECHSEL</value></data>
+  <data name="Alert_HeadlineTransferAtRisk" xml:space="preserve"><value>ANSCHLUSS GEFÄHRDET</value></data>
+  <data name="Alert_HeadlineUnknown" xml:space="preserve"><value>NICHT GEPRÜFT</value></data>
+  <data name="Alert_KickerDate" xml:space="preserve"><value>{0} {1:dd.MM.}</value></data>
+  <data name="Alert_ProblemCancelled" xml:space="preserve"><value>fällt aus</value></data>
+  <data name="Alert_ProblemDelay" xml:space="preserve"><value>+{0} Min.</value></data>
+  <data name="Alert_ProblemNotFound" xml:space="preserve"><value>fährt so nicht mehr</value></data>
+  <data name="Alert_ProblemOnTime" xml:space="preserve"><value>pünktlich</value></data>
+  <data name="Alert_ProblemPartlyCancelled" xml:space="preserve"><value>hält nicht in {0}</value></data>
+  <data name="Alert_ProblemPlannedOnly" xml:space="preserve"><value>laut Fahrplan</value></data>
+  <data name="Alert_ProblemPlatform" xml:space="preserve"><value>jetzt Gleis {0}</value></data>
+  <data name="Alert_ProblemUnknown" xml:space="preserve"><value>konnte nicht geprüft werden</value></data>
+  <data name="Alert_TitleOnTime" xml:space="preserve"><value>{0} fährt planmäßig</value></data>
+  <data name="Alert_TitlePlannedOnly" xml:space="preserve"><value>{0} fährt laut Fahrplan</value></data>
+  <data name="Alert_TitleTransferAtRisk" xml:space="preserve"><value>Anschluss in {0} gefährdet</value></data>
+  <data name="Alert_TitleTransferDelayed" xml:space="preserve"><value>{0} +{1} Min., Anschluss in {2} gefährdet</value></data>
+  <data name="Android_ActionOpenNavigator" xml:space="preserve"><value>DB Navigator öffnen</value></data>
+  <data name="Android_ActionSeen" xml:space="preserve"><value>Gesehen</value></data>
+  <data name="Android_ChannelInfoDescription" xml:space="preserve"><value>Fahrt planmäßig oder konnte nicht geprüft werden</value></data>
+  <data name="Android_ChannelInfoName" xml:space="preserve"><value>Info</value></data>
+  <data name="Android_ChannelProblemDescription" xml:space="preserve"><value>Ausfall, Verspätung, Gleiswechsel oder gefährdeter Anschluss</value></data>
+  <data name="Android_ChannelProblemDoNotDisturbName" xml:space="preserve"><value>Störung (auch bei Bitte nicht stören)</value></data>
+  <data name="Android_ChannelProblemName" xml:space="preserve"><value>Störung</value></data>
+  <data name="Android_PermissionBatteryDescription" xml:space="preserve"><value>Sonst kann Android die Prüfung verzögern oder ganz auslassen.</value></data>
+  <data name="Android_PermissionBatteryTitle" xml:space="preserve"><value>Akku-Optimierung aus</value></data>
+  <data name="Android_PermissionDoNotDisturbDescription" xml:space="preserve"><value>Damit eine Störung auch im Ruhemodus klingelt.</value></data>
+  <data name="Android_PermissionDoNotDisturbTitle" xml:space="preserve"><value>Bitte nicht stören</value></data>
+  <data name="Android_PermissionExactAlarmsDescription" xml:space="preserve"><value>Damit die Prüfung genau zur eingestellten Zeit läuft.</value></data>
+  <data name="Android_PermissionExactAlarmsTitle" xml:space="preserve"><value>Pünktliche Alarme</value></data>
+  <data name="Android_PermissionFullScreenDescription" xml:space="preserve"><value>Damit eine Störung auch auf dem Sperrbildschirm groß erscheint.</value></data>
+  <data name="Android_PermissionFullScreenTitle" xml:space="preserve"><value>Vollbild-Alarm</value></data>
+  <data name="Android_PermissionNotificationsDescription" xml:space="preserve"><value>Ohne sie kann KackZug keine Störung melden.</value></data>
+  <data name="Android_PermissionNotificationsTitle" xml:space="preserve"><value>Benachrichtigungen</value></data>
+  <data name="Bahn_ErrorBlocked" xml:space="preserve"><value>bahn.de lässt gerade keine Anfragen zu. Bitte später noch einmal versuchen.</value></data>
+  <data name="Bahn_ErrorFormat" xml:space="preserve"><value>Die Antwort von bahn.de konnte nicht gelesen werden.</value></data>
+  <data name="Bahn_ErrorNetwork" xml:space="preserve"><value>bahn.de ist gerade nicht erreichbar. Besteht eine Internetverbindung?</value></data>
+  <data name="Bahn_ErrorNotFound" xml:space="preserve"><value>Die Verbindung wurde bei bahn.de nicht gefunden. Bitte im DB Navigator neu teilen.</value></data>
+  <data name="Check_NoBoardData" xml:space="preserve"><value>bahn.de hat für diesen Tag und diese Uhrzeit noch keine Daten.</value></data>
+  <data name="Import_ErrorNoLink" xml:space="preserve"><value>Im geteilten Text wurde kein Link von bahn.de gefunden.</value></data>
+  <data name="Import_ErrorUnreadable" xml:space="preserve"><value>Die Verbindung konnte nicht gelesen werden.</value></data>
+  <data name="Import_TrainName" xml:space="preserve"><value>Zug</value></data>
+  <data name="Import_TrainNameWithNumber" xml:space="preserve"><value>Zug {0}</value></data>
+  <data name="Import_WalkName" xml:space="preserve"><value>Fussweg</value></data>
+  <data name="Manual_ErrorArrivalTime" xml:space="preserve"><value>Ankunft bitte als HH:mm eingeben.</value></data>
+  <data name="Manual_ErrorDepartureTime" xml:space="preserve"><value>Abfahrt bitte als HH:mm eingeben.</value></data>
+  <data name="Manual_ErrorLegPrefix" xml:space="preserve"><value>Teilstrecke {0}: {1}</value></data>
+  <data name="Manual_ErrorNoDestination" xml:space="preserve"><value>Bitte das Ziel suchen und antippen.</value></data>
+  <data name="Manual_ErrorNoLegs" xml:space="preserve"><value>Bitte mindestens eine Teilstrecke eingeben.</value></data>
+  <data name="Manual_ErrorNoLine" xml:space="preserve"><value>Bitte die Linie eingeben, z. B. RE 1 oder Bus 11.</value></data>
+  <data name="Manual_ErrorNoStart" xml:space="preserve"><value>Bitte den Start-Bahnhof suchen und antippen.</value></data>
+  <data name="Manual_ErrorSameStations" xml:space="preserve"><value>Start und Ziel sind gleich.</value></data>
+  <data name="Manual_ErrorTrainNumberDigits" xml:space="preserve"><value>Die Zugnummer besteht nur aus Ziffern.</value></data>
   <data name="Settings_Language" xml:space="preserve"><value>Sprache</value></data>
   <data name="Settings_LanguageSystem" xml:space="preserve"><value>System</value></data>
+  <data name="Test_Kicker" xml:space="preserve"><value>TEST · HINFAHRT</value></data>
+  <data name="Test_Text" xml:space="preserve"><value>So sieht eine Störung aus. Alles gut, das war nur ein Test.</value></data>
+  <data name="Test_Title" xml:space="preserve"><value>TEST HIN: RE7 06:42 FÄLLT AUS</value></data>
+  <data name="Test_TripLine" xml:space="preserve"><value>RE7 · 06:42 Musterstadt Hbf → Beispielhausen</value></data>
 </root>

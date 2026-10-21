@@ -94,6 +94,7 @@ public sealed class BackgroundCheckTests : IDisposable
     {
         var store = new AppDataStore(_directory);
         var data = new AppData();
+        data.Settings.Language = AppLanguage.German;
         var shift = SampleData.CreateShift("Frühdienst");
         data.Shifts.Add(shift);
         data.CurrentWeek = WeekPlan.CreateEmpty(new DateOnly(2026, 10, 19));

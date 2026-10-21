@@ -2,6 +2,7 @@ using Android.App;
 using Android.Content;
 using AndroidX.Core.App;
 using KackZug.Core.Alarms;
+using KackZug.Core.Localization;
 using KackZug.Core.Planning;
 
 namespace KackZug.Android;
@@ -41,8 +42,8 @@ public static class AlarmFlow
         builder.SetContentIntent(AlarmScreenIntent(context, id));
         builder.SetFullScreenIntent(AlarmScreenIntent(context, id), true);
         builder.SetDeleteIntent(ActionIntent(context, NotificationActionReceiver.ActionRepost, id));
-        builder.AddAction(0, "Gesehen", ActionIntent(context, NotificationActionReceiver.ActionSeen, id));
-        builder.AddAction(0, "DB Navigator öffnen", ActionIntent(context, NotificationActionReceiver.ActionNavigator, id));
+        builder.AddAction(0, Strings.Android_ActionSeen, ActionIntent(context, NotificationActionReceiver.ActionSeen, id));
+        builder.AddAction(0, Strings.Android_ActionOpenNavigator, ActionIntent(context, NotificationActionReceiver.ActionNavigator, id));
 
         var notification = builder.Build()!;
         if (insistent)
@@ -136,6 +137,12 @@ public static class AlarmFlow
         {
             alarmManager.SetAndAllowWhileIdle(AlarmType.RtcWakeup, milliseconds, pending);
         }
+    }
+
+    /// <summary>Stellt die Sprache aus den gespeicherten Einstellungen ein, auch wenn die App nicht laeuft</summary>
+    public static void ApplyLanguage(Context context)
+    {
+        Language.Apply(LoadSettings(context).Language);
     }
 
     private static bool Insistent(Context context)

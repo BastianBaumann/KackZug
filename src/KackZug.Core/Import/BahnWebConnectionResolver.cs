@@ -1,4 +1,5 @@
 using KackZug.Core.Bahn;
+using KackZug.Core.Localization;
 
 namespace KackZug.Core.Import;
 
@@ -19,7 +20,7 @@ public sealed class BahnWebConnectionResolver : IConnectionResolver
         var vbid = ShareLinkParser.FindVbid(sharedText);
         if (vbid is null)
         {
-            throw new ImportException("Im geteilten Text wurde kein Link von bahn.de gefunden.");
+            throw new ImportException(Strings.Import_ErrorNoLink);
         }
 
         string recon;
