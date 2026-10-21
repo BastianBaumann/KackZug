@@ -110,19 +110,24 @@
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>
-                                        <ContentControl Margin="0,0,0,6" VerticalAlignment="Center"
-                                                        Content="{Binding DayBadge}" ContentTemplate="{StaticResource BadgeTemplate}"
-                                                        IsVisible="{Binding DayBadge, Converter={x:Static ObjectConverters.IsNotNull}}" />
                                     </WrapPanel>
                                     <WrapPanel IsVisible="{Binding HasShift}">
-                                        <ToggleButton Classes="trip" Margin="0,0,8,4" IsChecked="{Binding OutboundEnabled}"
-                                                      IsEnabled="{Binding CanToggleOutbound}" IsVisible="{Binding HasOutbound}">
-                                            <TextBlock Text="{Binding OutboundLabel}" />
-                                        </ToggleButton>
-                                        <ToggleButton Classes="trip" Margin="0,0,8,4" IsChecked="{Binding ReturnEnabled}"
-                                                      IsEnabled="{Binding CanToggleReturn}" IsVisible="{Binding HasReturn}">
-                                            <TextBlock Text="{Binding ReturnLabel}" />
-                                        </ToggleButton>
+                                        <StackPanel Margin="0,0,8,4" Spacing="4" IsVisible="{Binding HasOutbound}">
+                                            <ToggleButton Classes="trip" IsChecked="{Binding OutboundEnabled}" IsEnabled="{Binding CanToggleOutbound}">
+                                                <TextBlock Text="{Binding OutboundLabel}" />
+                                            </ToggleButton>
+                                            <ContentControl HorizontalAlignment="Left"
+                                                            Content="{Binding OutboundStatus}" ContentTemplate="{StaticResource BadgeTemplate}"
+                                                            IsVisible="{Binding OutboundStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                        </StackPanel>
+                                        <StackPanel Margin="0,0,8,4" Spacing="4" IsVisible="{Binding HasReturn}">
+                                            <ToggleButton Classes="trip" IsChecked="{Binding ReturnEnabled}" IsEnabled="{Binding CanToggleReturn}">
+                                                <TextBlock Text="{Binding ReturnLabel}" />
+                                            </ToggleButton>
+                                            <ContentControl HorizontalAlignment="Left"
+                                                            Content="{Binding ReturnStatus}" ContentTemplate="{StaticResource BadgeTemplate}"
+                                                            IsVisible="{Binding ReturnStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                        </StackPanel>
                                     </WrapPanel>
                                     <TextBlock Text="{Binding OutboundCaption}" Classes="caption" TextWrapping="Wrap"
                                                IsVisible="{Binding OutboundCaption, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />

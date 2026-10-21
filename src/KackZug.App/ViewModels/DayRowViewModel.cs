@@ -138,9 +138,6 @@ public partial class DayRowViewModel : ViewModelBase
     [ObservableProperty]
     public partial StatusBadge? ReturnStatus { get; set; }
 
-    [ObservableProperty]
-    public partial StatusBadge? DayBadge { get; set; }
-
     public string? OutboundCaption
     {
         get { return OutboundStatus?.Caption; }
@@ -209,7 +206,6 @@ public partial class DayRowViewModel : ViewModelBase
     {
         OutboundStatus = BadgeFor(TripDirection.Outbound, HasOutbound && OutboundEnabled);
         ReturnStatus = BadgeFor(TripDirection.Return, HasReturn && ReturnEnabled);
-        DayBadge = WorstBadge();
         OnPropertyChanged(nameof(OutboundCaption));
         OnPropertyChanged(nameof(ReturnCaption));
         OnPropertyChanged(nameof(OutboundLabel));
@@ -321,39 +317,6 @@ public partial class DayRowViewModel : ViewModelBase
 
         var caption = UiLanguage.Format(UiStrings.Day_Caption, label, badgeText, CheckedText(state.LastCheckedAt));
         return new StatusBadge(state.LastStatus, badgeText, caption);
-    }
-
-    private StatusBadge? WorstBadge()
-    {
-        StatusBadge? worst = null;
-        var worstRank = -1;
-        foreach (var direction in new[] { TripDirection.Outbound, TripDirection.Return })
-        {
-            var badge = ReturnStatus;
-            if (direction == TripDirection.Outbound)
-            {
-                badge = OutboundStatus;
-            }
-            if (badge is null)
-            {
-                continue;
-            }
-
-            var state = StateFor(direction);
-            var rank = 0;
-            if (state is not null && state.LastStatus is not null)
-            {
-                rank = (int)state.LastStatus.Value + 1;
-            }
-
-            if (rank > worstRank)
-            {
-                worstRank = rank;
-                worst = badge;
-            }
-        }
-
-        return worst;
     }
 
     private string CheckedText(DateTimeOffset checkedAt)

@@ -115,7 +115,9 @@ internal static class TourSteps
         check(reloaded.ShiftId == plan.ShiftId, "Aenderung in der Datei");
         await week.CheckNowCommand.ExecuteAsync(null);
         var refreshedToday = week.Days.First(day => day.IsToday);
-        check(refreshedToday.OutboundCaption is not null && refreshedToday.OutboundCaption.Contains("Anschluss knapp") && refreshedToday.DayBadge!.Text == "+8 · Anschluss knapp", "Jetzt pruefen zeigt Anschluss gefaehrdet");
+        check(refreshedToday.OutboundCaption is not null && refreshedToday.OutboundCaption.Contains("Anschluss knapp") && refreshedToday.OutboundStatus!.Text == "+8 · Anschluss knapp", "Jetzt pruefen zeigt Anschluss gefaehrdet");
+        var bothTrips = week.Days.FirstOrDefault(day => day.OutboundStatus is not null && day.ReturnStatus is not null);
+        check(bothTrips is not null && refreshedToday.OutboundStatus.Text != "—", "Hin- und Rueckfahrt haben je ein eigenes Kennzeichen");
         await capture(window, Path.Combine(directory, "week-checked.png"));
         check(monday.DayName == "Montag", "Wochentage auf Deutsch");
 
