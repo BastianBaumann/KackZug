@@ -20,6 +20,7 @@ public partial class MainViewModel : ViewModelBase
         NavItems = new ObservableCollection<NavItem>
         {
             new NavItem("week", UiStrings.Nav_Week, "IconWeek", () => new WeekViewModel(this)),
+            new NavItem("trips", UiStrings.Nav_Trips, "IconTrain", () => new TripsViewModel(this)),
             new NavItem("shifts", UiStrings.Nav_Shifts, "IconShifts", () => new ShiftsViewModel(this)),
             new NavItem("settings", UiStrings.Nav_Settings, "IconSettings", () => new SettingsViewModel(this))
         };
@@ -252,6 +253,11 @@ public partial class MainViewModel : ViewModelBase
             return true;
         }
 
+        if (CurrentPage is TripsViewModel trips && trips.HandleBack())
+        {
+            return true;
+        }
+
         if (CurrentPage is ShiftsViewModel shifts && shifts.HandleBack())
         {
             return true;
@@ -275,7 +281,14 @@ public partial class MainViewModel : ViewModelBase
 
     public void StartManualEntry()
     {
+        StartManualEntry(false);
+    }
+
+    /// <summary>Eingabe von Hand; aus dem Tab Fahrten ist danach gleich die Einzelfahrt gewaehlt</summary>
+    public void StartManualEntry(bool asOneOffTrip)
+    {
         var import = new ImportViewModel(this);
+        import.PrefersOneOffTrip = asOneOffTrip;
         import.StartManual();
         Import = import;
     }

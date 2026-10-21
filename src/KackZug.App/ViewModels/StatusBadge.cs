@@ -48,6 +48,20 @@ public sealed class StatusBadge
         return state.LastBadgeText;
     }
 
+    /// <summary>Wann zuletzt geprueft wurde: heute nur die Uhrzeit, sonst mit Wochentag</summary>
+    public static string CheckedTime(DateTimeOffset checkedAt, DateTimeOffset now)
+    {
+        var wallClock = Core.Planning.BerlinTime.ToWallClock(checkedAt, Core.Planning.BerlinTime.Zone);
+        var checkedDay = DateOnly.FromDateTime(wallClock);
+        var today = DateOnly.FromDateTime(Core.Planning.BerlinTime.ToWallClock(now, Core.Planning.BerlinTime.Zone));
+        if (checkedDay == today)
+        {
+            return wallClock.ToString("HH:mm");
+        }
+
+        return Language.Culture.DateTimeFormat.GetAbbreviatedDayName(wallClock.DayOfWeek) + " " + wallClock.ToString("HH:mm");
+    }
+
     public static string ShortText(LegStatus? status)
     {
         if (status is null)

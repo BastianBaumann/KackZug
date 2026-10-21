@@ -362,14 +362,6 @@ public partial class DayRowViewModel : ViewModelBase
 
     private string CheckedText(DateTimeOffset checkedAt)
     {
-        var wallClock = Core.Planning.BerlinTime.ToWallClock(checkedAt, Core.Planning.BerlinTime.Zone);
-        var checkedDay = DateOnly.FromDateTime(wallClock);
-        var today = DateOnly.FromDateTime(Core.Planning.BerlinTime.ToWallClock(_week.Main.Services.Clock.Now, Core.Planning.BerlinTime.Zone));
-        if (checkedDay == today)
-        {
-            return wallClock.ToString("HH:mm");
-        }
-
-        return Language.Culture.DateTimeFormat.GetAbbreviatedDayName(wallClock.DayOfWeek) + " " + wallClock.ToString("HH:mm");
+        return StatusBadge.CheckedTime(checkedAt, _week.Main.Services.Clock.Now);
     }
 }

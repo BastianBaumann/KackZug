@@ -5,37 +5,6 @@
              xmlns:c="using:KackZug.Controls"
              x:Class="KackZug.Views.WeekView"
              x:DataType="vm:WeekViewModel">
-    <UserControl.Resources>
-        <DataTemplate x:Key="DetailLegTemplate" x:DataType="vm:LegDetailLine">
-            <Grid>
-                <StackPanel Orientation="Horizontal" Spacing="8" Margin="64,0,0,12" IsVisible="{Binding IsWalk}">
-                    <c:OutlineIcon Data="{StaticResource IconTransfer}" Width="18" Height="18" Foreground="{DynamicResource AppMutedBrush}" />
-                    <TextBlock Text="{Binding Details}" Classes="caption" VerticalAlignment="Center" />
-                </StackPanel>
-                <Grid ColumnDefinitions="56,20,*" RowDefinitions="Auto,Auto,Auto,Auto" IsVisible="{Binding !IsWalk}" Margin="0,0,0,12">
-                    <TextBlock Grid.Row="0" Text="{Binding DepartureTime}" Classes="time body-lg" />
-                    <TextBlock Grid.Row="3" Text="{Binding ArrivalTime}" Classes="time body-lg" Margin="0,8,0,0" />
-                    <Grid Grid.Column="1" Grid.RowSpan="4" RowDefinitions="Auto,*,Auto">
-                        <Ellipse Grid.Row="0" Width="14" Height="14" Margin="0,5,0,0" Stroke="{DynamicResource AppTextBrush}" StrokeThickness="3" Fill="{DynamicResource AppSurfaceBrush}" />
-                        <Rectangle Grid.Row="1" Width="3" Fill="{DynamicResource AppTextBrush}" />
-                        <Ellipse Grid.Row="2" Width="14" Height="14" Margin="0,0,0,5" Stroke="{DynamicResource AppTextBrush}" StrokeThickness="3" Fill="{DynamicResource AppSurfaceBrush}" />
-                    </Grid>
-                    <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding FromName}" Classes="body-lg" TextWrapping="Wrap" Margin="8,0,0,0" />
-                    <WrapPanel Grid.Column="2" Grid.Row="1" Margin="8,4,0,0">
-                        <Border Classes="line-tag" Margin="0,0,8,4">
-                            <TextBlock Text="{Binding LineName}" FontSize="13" FontWeight="Bold" />
-                        </Border>
-                        <ContentControl Content="{Binding Badge}" ContentTemplate="{StaticResource BadgeTemplate}" Margin="0,0,8,4"
-                                        IsVisible="{Binding Badge, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                        <TextBlock Text="{Binding Meta}" Classes="caption" VerticalAlignment="Center" />
-                    </WrapPanel>
-                    <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding LiveText}" Classes="caption" Foreground="{DynamicResource AppLateInkBrush}"
-                               TextWrapping="Wrap" Margin="8,2,0,0" IsVisible="{Binding LiveText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                    <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding ToName}" Classes="body-lg" TextWrapping="Wrap" Margin="8,8,0,0" />
-                </Grid>
-            </Grid>
-        </DataTemplate>
-    </UserControl.Resources>
     <Grid RowDefinitions="*,Auto">
     <ScrollViewer Grid.Row="0" IsVisible="{Binding IsListVisible}">
         <StackPanel Margin="16" Spacing="12">
@@ -164,70 +133,7 @@
     </ScrollViewer>
 
     <ScrollViewer Grid.Row="0" IsVisible="{Binding HasDetail}">
-        <ContentControl Content="{Binding Detail}" Margin="16">
-            <ContentControl.ContentTemplate>
-                <DataTemplate x:DataType="vm:TripDetailViewModel">
-                    <StackPanel Spacing="12">
-                        <Button Classes="ghost" Padding="0" HorizontalAlignment="Left" Command="{Binding CloseCommand}">
-                            <TextBlock Text="{x:Static l:UiStrings.Detail_Back}" />
-                        </Button>
-                        <StackPanel Spacing="2">
-                            <TextBlock Text="{Binding Heading}" Classes="title-lg" />
-                            <TextBlock Text="{Binding ShiftName}" Classes="caption" />
-                        </StackPanel>
-                        <TextBlock Text="{x:Static l:UiStrings.Detail_NoTrips}" Classes="muted" IsVisible="{Binding HasNoTrips}" />
-                        <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsChecking}" />
-                        <ItemsControl ItemsSource="{Binding Trips}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Spacing="12" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:TripCardViewModel">
-                                    <Border Classes="card">
-                                        <StackPanel Spacing="12">
-                                            <TextBlock Text="{Binding Title}" Classes="title" />
-                                            <WrapPanel>
-                                                <TextBlock Text="{Binding BigTime}" FontSize="40" LineHeight="44" FontWeight="Bold" FontFeatures="+tnum" Margin="0,0,12,0"
-                                                           Classes.cancelled="{Binding IsCancelled}" VerticalAlignment="Center" />
-                                                <ContentControl Content="{Binding Badge}" ContentTemplate="{StaticResource BadgeTemplate}" VerticalAlignment="Center"
-                                                                IsVisible="{Binding Badge, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                                            </WrapPanel>
-                                            <TextBlock Text="{Binding NowText}" Classes="label" Foreground="{DynamicResource AppLateInkBrush}" FontFeatures="+tnum"
-                                                       IsVisible="{Binding NowText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                                            <ItemsControl ItemsSource="{Binding Legs}" ItemTemplate="{StaticResource DetailLegTemplate}" />
-                                            <ItemsControl ItemsSource="{Binding Notes}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate x:DataType="x:String">
-                                                        <TextBlock Text="{Binding}" Classes="caption" TextWrapping="Wrap" Margin="0,2" />
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                            <TextBlock Text="{Binding CheckedText}" Classes="caption" />
-                                            <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding OpenInNavigatorCommand}">
-                                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                                    <c:OutlineIcon Data="{StaticResource IconTrain}" Width="20" Height="20" />
-                                                    <TextBlock Text="{x:Static l:UiStrings.Detail_OpenNavigator}" IsVisible="{Binding !IsPreparingNavigator}" />
-                                                    <TextBlock Text="{x:Static l:UiStrings.Detail_PreparingNavigator}" IsVisible="{Binding IsPreparingNavigator}" />
-                                                </StackPanel>
-                                            </Button>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding RefreshCommand}"
-                                IsVisible="{Binding !HasNoTrips}">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <c:OutlineIcon Data="{StaticResource IconRefresh}" Width="20" Height="20" />
-                                <TextBlock Text="{x:Static l:UiStrings.Detail_CheckLive}" />
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </DataTemplate>
-            </ContentControl.ContentTemplate>
-        </ContentControl>
+        <ContentControl Content="{Binding Detail}" Margin="16" ContentTemplate="{StaticResource TripDetailTemplate}" />
     </ScrollViewer>
 
     <Border Grid.Row="1" IsVisible="{Binding IsSelecting}" Background="{DynamicResource AppSurfaceBrush}"

@@ -33,6 +33,8 @@ public class ViewLocator : IDataTemplate
         {
             case WeekViewModel:
                 return new WeekView();
+            case TripsViewModel:
+                return new TripsView();
             case ShiftsViewModel:
                 return new ShiftsView();
             case SettingsViewModel:

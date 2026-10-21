@@ -4,6 +4,8 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using KackZug.Core.Localization;
+using KackZug.Core.Models;
+using KackZug.Core.Planning;
 using KackZug.ViewModels;
 
 namespace KackZug.Desktop;
@@ -255,6 +257,7 @@ internal static class TourSteps
         check(!main.Services.Store.Load().Settings.BreakThroughDoNotDisturb, "Bitte-nicht-stoeren-Schalter wieder aus");
 
         await RunManualEntryAsync(main, window, directory, check, capture);
+        await RunTripsAsync(main, window, directory, check, capture);
         await RunUpdateCheckAsync(main, window, directory, check, capture);
         await RunSecondViewAsync(main, window, directory, check, capture);
         await RunLanguageAsync(main, window, directory, check, capture);
@@ -275,7 +278,7 @@ internal static class TourSteps
         await SettleAsync();
         var english = App.Main!;
         check(!ReferenceEquals(english, main) && !Language.IsGerman && main.Services.Store.Load().Settings.Language == Core.Models.AppLanguage.English, "Englisch gewaehlt und gespeichert");
-        check(english.NavItems.Select(item => item.Title).SequenceEqual(new[] { "Week", "Shifts", "Settings" }), "Tabs auf Englisch");
+        check(english.NavItems.Select(item => item.Title).SequenceEqual(new[] { "Week", "Trips", "Shifts", "Settings" }), "Tabs auf Englisch");
         check(english.CurrentPage is SettingsViewModel && HasText(window, "Language") && HasText(window, "Check for updates"), "Neu aufgebaute Einstellungen auf Englisch");
         check(HasText(window, "Offer pre-releases") && HasText(window, "Test builds from dev, may have bugs."), "Schalter Vorabversionen auf Englisch");
         check(english.Updates.HasUpdate && HasText(window, "Version 9.9.9 is here.") && HasText(window, "Open download page"), "Update-Hinweis bleibt nach dem Sprachwechsel, auf Englisch");
@@ -297,13 +300,21 @@ internal static class TourSteps
         english.Toast = null;
         await capture(window, Path.Combine(directory, "week-en.png"));
 
+        english.Navigate("trips");
+        await SettleAsync();
+        var trips = (TripsViewModel)english.CurrentPage!;
+        var tripCard = trips.Trips.FirstOrDefault();
+        check(HasText(window, "One-off trips") && tripCard is not null && tripCard.Kicker == "TOMORROW"
+              && tripCard.DateText.StartsWith(tripCard.Trip.TravelDate.DayOfWeek + ", ") && HasText(window, "Open in DB Navigator"), "Fahrten auf Englisch");
+        await capture(window, Path.Combine(directory, "trips-en.png"));
+
         english.Navigate("settings");
         await SettleAsync();
         LanguageRadios(window)[1].IsChecked = true;
         await SettleAsync();
         var german = App.Main!;
         check(!ReferenceEquals(german, english) && Language.IsGerman && german.Services.Store.Load().Settings.Language == Core.Models.AppLanguage.German, "Zurueck auf Deutsch");
-        check(german.NavItems.Select(item => item.Title).SequenceEqual(new[] { "Woche", "Schichten", "Einstellungen" }) && HasText(window, "Sprache") && HasText(window, "Nach Updates suchen"), "Oberflaeche wieder auf Deutsch");
+        check(german.NavItems.Select(item => item.Title).SequenceEqual(new[] { "Woche", "Fahrten", "Schichten", "Einstellungen" }) && HasText(window, "Sprache") && HasText(window, "Nach Updates suchen"), "Oberflaeche wieder auf Deutsch");
         check(german.Updates.HasUpdate && HasText(window, "Version 9.9.9 ist da.") && HasText(window, "Download-Seite öffnen"), "Update-Hinweis wieder auf Deutsch");
         await capture(window, Path.Combine(directory, "settings-de.png"));
         german.DismissUpdateCommand.Execute(null);
@@ -464,6 +475,122 @@ internal static class TourSteps
         {
             await Task.Delay(50);
         }
+    }
+
+    private static async Task RunTripsAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)
+    {
+        var services = main.Services;
+        var today = DateOnly.FromDateTime(BerlinTime.ToWallClock(services.Clock.Now, BerlinTime.Zone));
+        var tomorrow = today.AddDays(1);
+        var previousVariant = Avalonia.Application.Current!.RequestedThemeVariant;
+        Avalonia.Application.Current.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Light;
+        main.Toast = null;
+        main.Navigate("trips");
+        await SettleAsync();
+        var trips = (TripsViewModel)main.CurrentPage!;
+        check(main.NavItems.Select(item => item.Key).SequenceEqual(new[] { "week", "trips", "shifts", "settings" }), "Tab Fahrten zwischen Woche und Schichten");
+        check(trips.IsEmpty && HasText(window, "Noch keine Einzelfahrt"), "Fahrten ohne Einzelfahrt zeigt den Hinweis");
+        await capture(window, Path.Combine(directory, "trips-empty.png"));
+
+        trips.EnterManuallyCommand.Execute(null);
+        check(main.Import is not null && main.Import.IsManualStep && main.Import.PrefersOneOffTrip, "Eingabe von Hand aus Fahrten waehlt die Einzelfahrt vor");
+        main.Import!.CloseCommand.Execute(null);
+
+        await main.StartImportAsync("https://int.bahn.de/en/buchung/start?vbid=demo");
+        var import = main.Import!;
+        var oneOff = import.Targets.FirstOrDefault(target => target.IsOneOffTrip);
+        check(oneOff is not null && oneOff.Title == "Einzelfahrt" && import.Targets.Last() == oneOff, "Import bietet Einzelfahrt an");
+        import.SelectTargetCommand.Execute(oneOff);
+        await SettleAsync();
+        check(import.IsOneOffTarget && import.TripDateText == DateText.Format(today) && import.TripNamePlaceholder == "Beispielhausen → Musterstadt Hbf",
+              "Einzelfahrt: Datum vom geteilten Tag, Name aus Start und Ziel");
+        var directionRadios = window.GetVisualDescendants().OfType<RadioButton>().Where(radio => radio.GroupName == "direction").ToList();
+        check(directionRadios.Count == 2 && directionRadios.All(radio => !radio.IsEffectivelyVisible), "Einzelfahrt ohne Hin und Rueck");
+        var dateBox = window.GetVisualDescendants().OfType<TextBox>().First(box => box.Classes.Contains("date"));
+        check(dateBox.IsEffectivelyVisible && Math.Abs(dateBox.Bounds.Height - 48) < 1, "Datumsfeld sichtbar, 48 hoch");
+        var yesterday = today.AddDays(-1);
+        dateBox.Text = yesterday.ToString("ddMMyyyy");
+        check(dateBox.Text == DateText.Format(yesterday), "Punkte im Datum kommen beim Tippen von selbst: " + dateBox.Text);
+        check(import.HasTripDateError && import.TripDateError!.Contains("vorbei") && !import.SaveCommand.CanExecute(null), "Datum in der Vergangenheit wird abgelehnt");
+        await capture(window, Path.Combine(directory, "import-trip-past.png"));
+        dateBox.Text = "31.02.2027";
+        check(import.HasTripDateError && import.TripDateError!.Contains("TT.MM.JJJJ") && !import.SaveCommand.CanExecute(null), "Falsches Datum zeigt Hinweis");
+        dateBox.Text = "";
+        dateBox.Text = tomorrow.ToString("ddMMyyyy");
+        var tomorrowName = Language.Culture.DateTimeFormat.GetDayName(tomorrow.DayOfWeek);
+        check(!import.HasTripDateError && import.TripWeekday == tomorrowName && import.SaveCommand.CanExecute(null), "Morgen ist speicherbar, Wochentag daneben: " + import.TripWeekday);
+        import.TripName = "Konzert im Stadtpark mit der ganzen Familie und Freunden";
+        await SettleAsync();
+        await capture(window, Path.Combine(directory, "import-trip.png"));
+        import.SaveCommand.Execute(null);
+        check(!main.HasImport && main.CurrentPage is TripsViewModel && main.Toast is not null && main.Toast.StartsWith("Einzelfahrt am "), "Einzelfahrt gespeichert, Tab Fahrten offen");
+        var stored = services.Store.Load().Trips;
+        check(stored.Count == 1 && stored[0].TravelDate == tomorrow && stored[0].Name.StartsWith("Konzert") && stored[0].Connection.Legs[0].Name == "RB21", "Einzelfahrt mit Datum in der Datei");
+        var tripId = stored[0].Id;
+        var planned = CheckPlanner.Plan(services.Data, services.Clock.Now, BerlinTime.Zone);
+        check(planned.Any(item => item.ShiftId == tripId && item.TravelDate == tomorrow), "Pruefungen fuer die Einzelfahrt geplant");
+
+        trips = (TripsViewModel)main.CurrentPage!;
+        var card = trips.Trips.Single();
+        check(card.Kicker == "MORGEN" && card.DateText == tomorrowName + ", " + DateText.Format(tomorrow) && card.TimesText == "22:10 → 22:41"
+              && card.RouteText == "Beispielhausen → Musterstadt Hbf" && card.Live.Badge is not null && card.Live.Badge.Text == "—", "Karte zeigt Name, Datum, Zeiten und Kennzeichen");
+        main.Toast = null;
+        await SettleAsync();
+        var nameBlock = window.GetVisualDescendants().OfType<TextBlock>().First(text => text.Text == card.Name);
+        var deleteButton = window.GetVisualDescendants().OfType<Button>().First(button => button.CommandParameter == card && button.Classes.Contains("icon"));
+        var nameRight = Avalonia.VisualExtensions.TranslatePoint(nameBlock, new Avalonia.Point(nameBlock.Bounds.Width, 0), window)!.Value.X;
+        var deleteLeft = Avalonia.VisualExtensions.TranslatePoint(deleteButton, new Avalonia.Point(0, 0), window)!.Value.X;
+        check(nameRight <= deleteLeft + 0.5 && nameBlock.TextLayout.TextLines.Any(line => line.HasCollapsed), "Langer Name wird gekuerzt, Loeschen bleibt sichtbar");
+        check(deleteLeft + deleteButton.Bounds.Width <= window.ClientSize.Width, "Karte passt in 400 Pixel");
+        await capture(window, Path.Combine(directory, "trips-light.png"));
+        Avalonia.Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
+        await capture(window, Path.Combine(directory, "trips-dark.png"));
+        Avalonia.Application.Current.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Light;
+
+        trips.OpenDetailCommand.Execute(card);
+        check(trips.HasDetail && trips.Detail!.BackText == "‹ Zurück zu den Fahrten" && trips.Detail.Trips.Count == 1, "Details der Einzelfahrt geoeffnet");
+        await trips.Detail.RefreshCommand.ExecuteAsync(null);
+        var live = trips.Detail.Trips[0];
+        check(live.Title == "Einzelfahrt" && live.Badge is not null && live.Badge.Text == "Planmäßig" && live.CheckedText == "Gerade geprüft", "Details zeigen den Live-Stand");
+        await SettleAsync();
+        await capture(window, Path.Combine(directory, "trip-oneoff-detail.png"));
+        check(main.HandleBack() && !trips.HasDetail, "Zurueck schliesst die Details der Einzelfahrt");
+        card = trips.Trips.Single();
+        check(card.Live.Badge!.Text == "Planmäßig" && card.CheckedText.StartsWith("geprüft "), "Karte zeigt den Stand nach der Pruefung: " + card.CheckedText);
+
+        var opened = new List<string>();
+        var platform = (Services.DefaultPlatform)services.Platform;
+        platform.UrlOpener = url => opened.Add(url);
+        var shareLinks = new DemoShareLinks { Link = "https://www.bahn.de/buchung/start?vbid=einzel" };
+        services.ShareLinks = shareLinks;
+        await card.Live.OpenInNavigatorCommand.ExecuteAsync(null);
+        check(opened.Count == 1 && opened[0] == shareLinks.Link && shareLinks.RequestedDays.SequenceEqual(new[] { tomorrow }), "Navigator bekommt den Teilen-Link fuer den Tag der Einzelfahrt");
+        platform.UrlOpener = null;
+
+        var deleteTask = trips.DeleteCommand.ExecuteAsync(card);
+        await Task.Delay(300);
+        check(main.HasDialog && main.Dialog!.Message.Contains("Konzert"), "Rueckfrage beim Loeschen der Einzelfahrt");
+        await capture(window, Path.Combine(directory, "trips-delete-confirm.png"));
+        main.Dialog!.CancelCommand.Execute(null);
+        await deleteTask;
+        check(trips.Trips.Count == 1, "Abbrechen behaelt die Einzelfahrt");
+        deleteTask = trips.DeleteCommand.ExecuteAsync(trips.Trips[0]);
+        await Task.Delay(300);
+        main.Dialog!.ConfirmCommand.Execute(null);
+        await deleteTask;
+        check(trips.IsEmpty && services.Store.Load().Trips.Count == 0 && !services.Data.CheckStates.Any(state => state.ShiftId == tripId), "Einzelfahrt geloescht, mit ihrem Stand");
+        main.Toast = null;
+
+        var resolved = await new DemoResolver().ResolveAsync("demo", CancellationToken.None);
+        services.Data.Trips.Add(new OneOffTrip { Name = "Gestern", TravelDate = yesterday, Connection = resolved.Connection });
+        resolved = await new DemoResolver().ResolveAsync("demo", CancellationToken.None);
+        services.Data.Trips.Add(new OneOffTrip { Name = "Messe", TravelDate = tomorrow, Connection = resolved.Connection });
+        services.Store.Save(services.Data);
+        main.Navigate("week");
+        main.Navigate("trips");
+        await SettleAsync();
+        check(trips.Trips.Count == 1 && trips.Trips[0].Name == "Messe" && services.Store.Load().Trips.All(trip => trip.Name != "Gestern"), "Vorbei gefahrene Einzelfahrt verschwindet");
+        Avalonia.Application.Current.RequestedThemeVariant = previousVariant;
     }
 
     private static async Task RunManualEntryAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)

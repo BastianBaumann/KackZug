@@ -9,7 +9,7 @@ using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
-/// <summary>Detailansicht eines Tages: alle Fahrten mit Live-Stand, auf Wunsch neu geprueft</summary>
+/// <summary>Detailansicht eines Tages oder einer Einzelfahrt: alle Fahrten mit Live-Stand, auf Wunsch neu geprueft</summary>
 public partial class TripDetailViewModel : ViewModelBase
 {
     private readonly MainViewModel _main;
@@ -20,8 +20,9 @@ public partial class TripDetailViewModel : ViewModelBase
         _main = main;
         _close = close;
         Date = date;
-        Heading = Language.Culture.DateTimeFormat.GetDayName(date.DayOfWeek) + ", " + date.ToString(UiStrings.Format_DayMonth, Language.Culture);
+        Heading = HeadingFor(date);
         ShiftName = shift.Name;
+        BackText = UiStrings.Detail_Back;
 
         foreach (var direction in new[] { TripDirection.Outbound, TripDirection.Return })
         {
@@ -33,7 +34,24 @@ public partial class TripDetailViewModel : ViewModelBase
 
             var state = main.Services.Data.CheckStates.FirstOrDefault(item =>
                 item.Date == date && item.ShiftId == shift.Id && item.Direction == direction);
-            Trips.Add(new TripCardViewModel(main, date, shift, direction, connection, state));
+            Trips.Add(new TripCardViewModel(main, date, shift.Id, AlertComposer.DirectionName(direction), direction, connection, state));
+        }
+
+        HasNoTrips = Trips.Count == 0;
+    }
+
+    public TripDetailViewModel(MainViewModel main, OneOffTrip trip, Action close)
+    {
+        _main = main;
+        _close = close;
+        Date = trip.TravelDate;
+        Heading = HeadingFor(trip.TravelDate);
+        ShiftName = trip.Name;
+        BackText = UiStrings.Trips_Back;
+        if (trip.Connection.FirstRide is not null)
+        {
+            var state = main.Services.Data.CheckStates.FirstOrDefault(item => item.Date == trip.TravelDate && item.ShiftId == trip.Id);
+            Trips.Add(new TripCardViewModel(main, trip.TravelDate, trip.Id, UiStrings.Trips_OneOff, TripDirection.Outbound, trip.Connection, state));
         }
 
         HasNoTrips = Trips.Count == 0;
@@ -44,6 +62,8 @@ public partial class TripDetailViewModel : ViewModelBase
     public string Heading { get; }
 
     public string ShiftName { get; }
+
+    public string BackText { get; }
 
     public ObservableCollection<TripCardViewModel> Trips { get; } = new ObservableCollection<TripCardViewModel>();
 
@@ -72,7 +92,7 @@ public partial class TripDetailViewModel : ViewModelBase
             var checker = new TripChecker(services.CreateStatusSource(), services.Clock);
             foreach (var trip in Trips)
             {
-                var outcome = await checker.CheckAsync(services.Data, Date, trip.Shift.Id, trip.Direction, CheckContext.Manual, CancellationToken.None);
+                var outcome = await checker.CheckAsync(services.Data, Date, trip.OwnerId, trip.Direction, CheckContext.Manual, CancellationToken.None);
                 if (outcome is not null)
                 {
                     trip.Show(outcome.Status, null);
@@ -96,5 +116,10 @@ public partial class TripDetailViewModel : ViewModelBase
     private bool CanRefresh()
     {
         return !IsChecking;
+    }
+
+    private static string HeadingFor(DateOnly date)
+    {
+        return Language.Culture.DateTimeFormat.GetDayName(date.DayOfWeek) + ", " + date.ToString(UiStrings.Format_DayMonth, Language.Culture);
     }
 }

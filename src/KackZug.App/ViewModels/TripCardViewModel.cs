@@ -7,26 +7,27 @@ using KackZug.Localization;
 
 namespace KackZug.ViewModels;
 
-/// <summary>Eine Fahrt (Hin oder Rueck) in der Detailansicht: grosse Zeit, Status und Teilstrecken</summary>
+/// <summary>Eine Fahrt (Hin, Rueck oder Einzelfahrt) in der Detailansicht: grosse Zeit, Status und Teilstrecken</summary>
 public partial class TripCardViewModel : ViewModelBase
 {
     private readonly MainViewModel _main;
     private readonly DateOnly _date;
     private string? _shareLink;
 
-    public TripCardViewModel(MainViewModel main, DateOnly date, Shift shift, TripDirection direction, SavedConnection connection, CheckState? state)
+    public TripCardViewModel(MainViewModel main, DateOnly date, Guid ownerId, string title, TripDirection direction, SavedConnection connection, CheckState? state)
     {
         _main = main;
         _date = date;
-        Shift = shift;
+        OwnerId = ownerId;
         Direction = direction;
         Connection = connection;
-        Title = AlertComposer.DirectionName(direction);
+        Title = title;
         BigTime = connection.FirstRide!.PlannedDeparture.ToString("HH:mm");
         Show(null, state);
     }
 
-    public Shift Shift { get; }
+    /// <summary>Id der Schicht oder der Einzelfahrt</summary>
+    public Guid OwnerId { get; }
 
     public TripDirection Direction { get; }
 
