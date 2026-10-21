@@ -81,6 +81,45 @@ public class BahnWebTripStatusSourceTests
     }
 
     [Fact]
+    public async Task GeneralDisruptionTextIsNoCancellation()
+    {
+        var arrival = BahnJsonBuilder.Stop("8000002", "Beispielhausen", "2026-10-21T07:10:00", null, null, null, "5");
+        arrival["priorisierteMeldungen"] = new JsonArray(new JsonObject
+        {
+            ["type"] = "HIM",
+            ["text"] = "Wegen einer Reparatur fällt aus: RE7 zwischen Beispielhausen und Musterdorf"
+        });
+        var handler = new FakeHttpHandler();
+        handler.Answer("reiseloesung/abfahrten", HttpStatusCode.OK, BahnJsonBuilder.Board(
+            BahnJsonBuilder.BoardEntry("2026-10-21T06:42:00", "RE7", "NRE", "4711", "2")));
+        handler.Answer("reiseloesung/fahrt", HttpStatusCode.OK, BahnJsonBuilder.Trip(false,
+            BahnJsonBuilder.Stop("8000001", "Musterstadt Hbf", null, null, "2026-10-21T06:42:00", null, "2"),
+            arrival));
+
+        var observation = await CreateSource(handler).ObserveAsync(TrainLeg(), TravelDate, CancellationToken.None);
+
+        Assert.False(observation.ArrivalCancelled);
+        Assert.False(observation.DepartureCancelled);
+    }
+
+    [Fact]
+    public async Task CancelledStopNoteOfThisTripIsReported()
+    {
+        var arrival = BahnJsonBuilder.Stop("8000002", "Beispielhausen", "2026-10-21T07:10:00", null, null, null, "5");
+        arrival["risNotizen"] = new JsonArray(new JsonObject { ["key"] = "text.realtime.stop.cancelled", ["value"] = "Halt entfällt" });
+        var handler = new FakeHttpHandler();
+        handler.Answer("reiseloesung/abfahrten", HttpStatusCode.OK, BahnJsonBuilder.Board(
+            BahnJsonBuilder.BoardEntry("2026-10-21T06:42:00", "RE7", "NRE", "4711", "2")));
+        handler.Answer("reiseloesung/fahrt", HttpStatusCode.OK, BahnJsonBuilder.Trip(false,
+            BahnJsonBuilder.Stop("8000001", "Musterstadt Hbf", null, null, "2026-10-21T06:42:00", null, "2"),
+            arrival));
+
+        var observation = await CreateSource(handler).ObserveAsync(TrainLeg(), TravelDate, CancellationToken.None);
+
+        Assert.True(observation.ArrivalCancelled);
+    }
+
+    [Fact]
     public async Task OtherTrainAtSameTimeIsNotTaken()
     {
         var handler = new FakeHttpHandler();
