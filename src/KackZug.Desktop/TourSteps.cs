@@ -239,6 +239,22 @@ internal static class TourSteps
 
         await RunManualEntryAsync(main, window, directory, check, capture);
         await RunUpdateCheckAsync(main, window, directory, check, capture);
+        await RunSecondViewAsync(main, window, directory, check, capture);
+    }
+
+    private static async Task RunSecondViewAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)
+    {
+        main.Navigate("week");
+        var second = new Window { Width = 400, Height = 820, Content = new Views.MainView { DataContext = main } };
+        second.Show();
+        await capture(second, Path.Combine(directory, "second-view.png"));
+        check(second.GetVisualDescendants().OfType<Views.WeekView>().Any() && window.GetVisualDescendants().OfType<Views.WeekView>().Any(), "Zweite Hauptansicht zeigt die Woche, die erste behaelt sie");
+        main.Navigate("shifts");
+        await capture(second, Path.Combine(directory, "second-view-shifts.png"));
+        check(second.GetVisualDescendants().OfType<Views.ShiftsView>().Any(), "Zweite Hauptansicht wechselt die Seite");
+        second.Close();
+        main.Navigate("week");
+        check(window.GetVisualDescendants().OfType<Views.WeekView>().Any(), "Erste Hauptansicht nach dem Schliessen weiter nutzbar");
     }
 
     private static async Task RunUpdateCheckAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)

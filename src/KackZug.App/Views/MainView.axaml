@@ -2,9 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:KackZug.ViewModels"
              xmlns:c="using:KackZug.Controls"
+             xmlns:local="using:KackZug"
              x:Class="KackZug.Views.MainView"
              x:DataType="vm:MainViewModel"
              Background="{DynamicResource AppBackgroundBrush}">
+    <UserControl.DataTemplates>
+        <local:ViewLocator />
+    </UserControl.DataTemplates>
+
     <Grid>
         <Grid RowDefinitions="Auto,*,Auto">
             <Border Grid.Row="0" Padding="16,10" Background="{DynamicResource AppSurfaceBrush}"

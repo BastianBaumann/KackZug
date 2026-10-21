@@ -15,7 +15,7 @@ namespace KackZug.Android;
     Icon = "@mipmap/icon",
     MainLauncher = true,
     Exported = true,
-    LaunchMode = LaunchMode.SingleTop,
+    LaunchMode = LaunchMode.SingleTask,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
 [IntentFilter(new[] { Intent.ActionSend }, Categories = new[] { Intent.CategoryDefault }, DataMimeType = "text/plain")]
 public class MainActivity : AvaloniaMainActivity

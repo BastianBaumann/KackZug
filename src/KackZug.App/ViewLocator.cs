@@ -5,7 +5,7 @@ using KackZug.Views;
 
 namespace KackZug;
 
-/// <summary>Ordnet jedem ViewModel fest seine View zu; Seiten werden einmal gebaut und wiederverwendet</summary>
+/// <summary>Ordnet jedem ViewModel fest seine View zu; Seiten werden je Hauptansicht einmal gebaut und wiederverwendet</summary>
 public class ViewLocator : IDataTemplate
 {
     private readonly Dictionary<PageViewModel, Control> _pageViews = new Dictionary<PageViewModel, Control>();
