@@ -21,6 +21,10 @@ er verspätet, wechselt das Gleis oder wird der Anschluss knapp, meldet sich Kac
   pro Tag einzeln abschalten. Die nächste Woche kannst du schon vorher planen, und mit „Mehrere Tage
   setzen“ (oder langem Druck auf einen Tag) bekommen gleich mehrere Tage dieselbe Schicht. Eine neue
   Woche übernimmt auf Wunsch den Plan der Vorwoche.
+- **Einzelfahrten:** Eine Verbindung, die du nur einmal fährst, etwa zum Konzert, speicherst du als
+  Einzelfahrt mit Datum statt in einer Schicht. Sie wird genauso geprüft und gemeldet wie eine Fahrt
+  aus einer Schicht und steht mit ihrem Stand im eigenen Tab „Fahrten“. Eine Stunde nach der geplanten
+  Ankunft löscht KackZug sie von selbst.
 - **Details zu jeder Fahrt:** große Abfahrtszeit, aktueller Stand jeder Teilstrecke (Verspätung, neues
   Gleis, Ausfall) und wie viel Puffer beim Umsteigen bleibt. Der Knopf „Im DB Navigator öffnen“ öffnet
   die Verbindung für genau diesen Tag im DB Navigator. Ist der DB Navigator nicht installiert, öffnet
@@ -91,7 +95,7 @@ kannst du prüfen, ob eine Meldung auch bei gesperrtem Bildschirm laut genug ank
 ## Datenschutz
 
 - Es gibt keine Konten, keine Werbung und keine Auswertung, was du in der App machst.
-- Schichten, Wochenplan und Einstellungen liegen nur auf deinem Handy.
+- Schichten, Einzelfahrten, Wochenplan und Einstellungen liegen nur auf deinem Handy.
 - Für die Prüfung fragt das Handy direkt bei bahn.de nach. Dabei sieht bahn.de die IP-Adresse des
   Handys, aber nicht, wer du bist oder welche Schichten du hast.
 - Für den Update-Hinweis fragt das Handy einmal am Tag bei GitHub nach. Das lässt sich abschalten.

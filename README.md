@@ -21,6 +21,10 @@ cancelled, delayed, changes platform or a connection gets tight, KackZug lets yo
   off separately for each day. You can plan next week in advance, and with "Set several days"
   ("Mehrere Tage setzen", or a long press on a day) several days get the same shift at once. If you
   like, a new week takes over the plan of the previous week.
+- **One-off trips:** A connection you only take once, say to a concert, is saved as a one-off trip
+  ("Einzelfahrt") with a date instead of in a shift. It is checked and reported like any shift trip
+  and shows up in its own "Trips" tab ("Fahrten") with its status. An hour after the planned arrival
+  KackZug deletes it by itself.
 - **Details for every trip:** a large departure time, the current state of each leg (delay, new
   platform, cancellation) and how much time you have left to change trains. The "Open in DB
   Navigator" button ("Im DB Navigator öffnen") opens the connection for exactly that day in DB
@@ -92,7 +96,7 @@ whether an alert arrives loud enough even when the screen is locked.
 ## Privacy
 
 - There are no accounts, no ads and no tracking of what you do in the app.
-- Shifts, weekly plan and settings are stored only on your phone.
+- Shifts, one-off trips, weekly plan and settings are stored only on your phone.
 - For the checks, the phone asks bahn.de directly. bahn.de sees the phone's IP address, but not who
   you are or which shifts you have.
 - For the update notice, the phone asks GitHub once a day. This can be turned off. The app only
