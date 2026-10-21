@@ -48,14 +48,21 @@ KackZug gibt es nicht im Play Store. Die fertige APK liegt auf der
 
 ### Updates
 
-KackZug schaut einmal am Tag auf GitHub nach, ob es eine neue Version gibt, und zeigt dann oben einen
-Hinweis mit Link zur Release-Seite. Die neue APK einfach herunterladen und öffnen: Android installiert
-sie als Update über die alte Version, deine Schichten und der Wochenplan bleiben erhalten. Die Prüfung
-lässt sich in den Einstellungen abschalten. Mit „Nach Updates suchen“ in den Einstellungen schaut die
-App sofort nach. Vorabversionen (Tags mit Bindestrich, z. B. `v0.3.0-dev.1`) bietet sie nicht an.
+KackZug aktualisiert sich selbst. Die App schaut einmal am Tag auf GitHub nach, ob es eine neue Version
+gibt, und zeigt dann oben einen Hinweis. Ein Tipp auf „Jetzt aktualisieren“ lädt die neue APK in der
+App herunter, prüft sie und installiert sie als Update über die alte Version. Deine Schichten und der
+Wochenplan bleiben erhalten.
 
-Wer Updates automatisch haben möchte, kann [Obtainium](https://github.com/ImranR98/Obtainium)
-verwenden und dort `https://github.com/BastianBaumann/KackZug` eintragen.
+Beim ersten Update fragt Android einmal, ob KackZug Apps installieren darf. Das einmal erlauben, danach
+geht es von selbst weiter. Ab Android 12 laufen spätere Updates meist ohne weitere Rückfrage durch;
+sonst zeigt Android vor dem Installieren noch einmal kurz seinen Bestätigungsdialog.
+
+Die tägliche Prüfung lässt sich in den Einstellungen abschalten. Mit „Nach Updates suchen“ schaut die
+App sofort nach. Vorabversionen (Tags mit Bindestrich, z. B. `v0.3.0-dev.1`) bietet sie nur an, wenn
+„Vorabversionen anbieten“ eingeschaltet ist. Das sind Testversionen aus `dev`, die Fehler haben können.
+
+Wer Updates lieber über [Obtainium](https://github.com/ImranR98/Obtainium) bezieht, trägt dort
+`https://github.com/BastianBaumann/KackZug` ein.
 
 ## Damit die Alarme sicher ankommen
 
@@ -80,6 +87,7 @@ kannst du prüfen, ob eine Meldung auch bei gesperrtem Bildschirm laut genug ank
 - Für die Prüfung fragt das Handy direkt bei bahn.de nach. Dabei sieht bahn.de die IP-Adresse des
   Handys, aber nicht, wer du bist oder welche Schichten du hast.
 - Für den Update-Hinweis fragt das Handy einmal am Tag bei GitHub nach. Das lässt sich abschalten.
+  Die neue Version lädt die App erst, wenn du auf „Jetzt aktualisieren“ tippst.
 
 ## Grenzen
 
@@ -121,8 +129,9 @@ Der Störungston wird mit `python tools/sound/build_alarm.py` erzeugt, die App-G
 ### Release erstellen
 
 Ein Tag der Form `v1.2.3` startet den Release-Workflow. Er baut die APK, signiert sie mit dem
-Release-Schlüssel aus der geschützten Umgebung `release` und veröffentlicht sie als GitHub-Release.
-Damit Updates über eine bestehende Installation gehen, muss es immer derselbe Schlüssel sein. Stabile
+Release-Schlüssel aus der geschützten Umgebung `release` und veröffentlicht sie als GitHub-Release,
+zusammen mit der Prüfsumme `KackZug-x.y.z.apk.sha256`, die das Update in der App kontrolliert. Damit
+Updates über eine bestehende Installation gehen, muss es immer derselbe Schlüssel sein. Stabile
 Versionen baut er nur von Commits, die auf `main` liegen; Tags darf nur der Maintainer setzen (siehe
 `.github/rulesets/`).
 
