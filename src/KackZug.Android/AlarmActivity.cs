@@ -8,6 +8,7 @@ using Android.OS;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using Android.Window;
 using KackZug.Core.Alarms;
 using KackZug.Core.Localization;
 
@@ -31,6 +32,8 @@ public class AlarmActivity : Activity
     private static AlarmActivity? _current;
 
     private int _notificationId;
+    private bool _closing;
+    private BlockedBackCallback? _backCallback;
     private ObjectAnimator? _pulse;
 
     public static void CloseIfShowing(int notificationId)
@@ -38,6 +41,7 @@ public class AlarmActivity : Activity
         var current = _current;
         if (current is not null && current._notificationId == notificationId)
         {
+            current._closing = true;
             current.RunOnUiThread(() => current.Finish());
         }
     }
@@ -45,6 +49,7 @@ public class AlarmActivity : Activity
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
+        BlockBack();
         ShowOverLockScreen();
         Show(Intent);
     }
@@ -64,6 +69,40 @@ public class AlarmActivity : Activity
 
         _pulse?.Cancel();
         base.OnDestroy();
+    }
+
+    /// <remarks>Wird der Alarm ohne "Gesehen" verlassen (Startknopf, App-Wechsel), kommt er mit Ton und Vollbild zurueck.
+    /// Bei ausgeschaltetem Bildschirm nicht, sonst liesse er sich nie ausschalten; dann holt ihn die Wiederholung zurueck.</remarks>
+    protected override void OnStop()
+    {
+        base.OnStop();
+        if (_closing || IsFinishing || _notificationId == 0)
+        {
+            return;
+        }
+
+        var power = (PowerManager?)GetSystemService(PowerService);
+        if (power is null || !power.IsInteractive)
+        {
+            return;
+        }
+
+        AlarmFlow.Repost(this, _notificationId);
+    }
+
+    public override void OnBackPressed()
+    {
+    }
+
+    private void BlockBack()
+    {
+        if (!OperatingSystem.IsAndroidVersionAtLeast(33))
+        {
+            return;
+        }
+
+        _backCallback = new BlockedBackCallback();
+        OnBackInvokedDispatcher.RegisterOnBackInvokedCallback(IOnBackInvokedDispatcher.PriorityOverlay, _backCallback);
     }
 
     public override bool OnKeyDown(Keycode keyCode, KeyEvent? e)
