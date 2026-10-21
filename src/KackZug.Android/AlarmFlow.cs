@@ -27,7 +27,8 @@ public static class AlarmFlow
     public static void Post(Context context, PendingAlarm alarm, bool insistent)
     {
         var id = alarm.NotificationId;
-        var channel = AlertNotifier.ProblemChannelFor(context, BreakThroughDoNotDisturb(context));
+        var settings = LoadSettings(context);
+        var channel = AlertNotifier.ProblemChannelFor(context, settings.BreakThroughDoNotDisturb, settings.AlarmSound);
         var builder = new NotificationCompat.Builder(context, channel);
         builder.SetSmallIcon(Resource.Drawable.ic_notification);
         builder.SetContentTitle(alarm.Title);
@@ -40,7 +41,10 @@ public static class AlarmFlow
         builder.SetAutoCancel(false);
         builder.SetColor(AlertNotifier.ProblemColor);
         builder.SetContentIntent(AlarmScreenIntent(context, id));
-        builder.SetFullScreenIntent(AlarmScreenIntent(context, id), true);
+        if (settings.AlarmFullScreen)
+        {
+            builder.SetFullScreenIntent(AlarmScreenIntent(context, id), true);
+        }
         builder.SetDeleteIntent(ActionIntent(context, NotificationActionReceiver.ActionRepost, id));
         builder.AddAction(0, Strings.Android_ActionSeen, ActionIntent(context, NotificationActionReceiver.ActionSeen, id));
         builder.AddAction(0, Strings.Android_ActionOpenNavigator, ActionIntent(context, NotificationActionReceiver.ActionNavigator, id));
@@ -158,11 +162,6 @@ public static class AlarmFlow
     private static bool Insistent(Context context)
     {
         return LoadSettings(context).InsistentAlerts;
-    }
-
-    private static bool BreakThroughDoNotDisturb(Context context)
-    {
-        return LoadSettings(context).BreakThroughDoNotDisturb;
     }
 
     private static Core.Models.Settings LoadSettings(Context context)

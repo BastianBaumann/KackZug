@@ -226,6 +226,17 @@ internal static class TourSteps
         timeField.Text = "1930";
         check(timeField.Text == "19:30", "Doppelpunkt kommt beim Tippen von selbst");
         check(settings.ShowSaved, "Aenderung zeigt kurz Gespeichert");
+        check(settings.AlarmSound && settings.AlarmFullScreen, "Ton und Vollbild sind am Anfang an");
+        settings.AlarmSound = false;
+        settings.AlarmFullScreen = false;
+        var storedAlarm = main.Services.Store.Load().Settings;
+        check(!storedAlarm.AlarmSound && !storedAlarm.AlarmFullScreen, "Ton und Vollbild lassen sich abschalten");
+        settings.AlarmSound = true;
+        settings.AlarmFullScreen = true;
+        var soundLabel = window.GetVisualDescendants().OfType<TextBlock>().First(text => text.Text == "Vollbild auf dem Sperrbildschirm");
+        soundLabel.BringIntoView();
+        await SettleAsync();
+        await capture(window, Path.Combine(directory, "settings-alarm.png"));
         check(main.Services.Store.Load().Settings.EveningCheckTime == new TimeOnly(19, 30) && !settings.EveningCheckTimeInvalid, "Uhrzeit 1930 gespeichert");
         settings.TidyTextFields();
         check(timeField.Text == "19:30", "Uhrzeit aufgeraeumt zu 19:30");

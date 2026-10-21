@@ -210,4 +210,8 @@
   <data name="Settings_Saved" xml:space="preserve"><value>Saved</value></data>
   <data name="Day_CheckedAt" xml:space="preserve"><value>checked {0}</value></data>
   <data name="Day_TripOff" xml:space="preserve"><value>Off</value></data>
+  <data name="Settings_Sound" xml:space="preserve"><value>Sound</value></data>
+  <data name="Settings_SoundHint" xml:space="preserve"><value>Disruptions ring with the KackZug tone. Off: vibration only.</value></data>
+  <data name="Settings_FullScreen" xml:space="preserve"><value>Full screen on the lock screen</value></data>
+  <data name="Settings_FullScreenHint" xml:space="preserve"><value>Off: only the notification, no big alarm screen.</value></data>
 </root>

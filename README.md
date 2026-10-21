@@ -32,7 +32,7 @@ cancelled, delayed, changes platform or a connection gets tight, KackZug lets yo
   set, a platform change, a connection at risk, or a trip that no longer exists in this form. A
   full-screen alarm opens, even on the lock screen. It rings and comes back every five minutes until
   you tap "Seen". KackZug has its own shrill tone for this. If you want, it also rings in "Do not
-  disturb" mode.
+  disturb" mode. Sound, full screen and repeating can each be turned off in the settings.
 - **Colours you understand at a glance:** messages that everything is on time are green and come
   without a sound, problems are red and loud.
 - **Honest status:** bahn.de has the timetable days in advance, but real-time data only shortly

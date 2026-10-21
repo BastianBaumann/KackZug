@@ -15,6 +15,10 @@ public sealed class Settings
 
     public bool InsistentAlerts { get; set; } = true;
 
+    public bool AlarmSound { get; set; } = true;
+
+    public bool AlarmFullScreen { get; set; } = true;
+
     public bool BreakThroughDoNotDisturb { get; set; }
 
     public NewWeekMode NewWeekMode { get; set; } = NewWeekMode.CopyPrevious;

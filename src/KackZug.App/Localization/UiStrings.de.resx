@@ -210,4 +210,8 @@
   <data name="Settings_Saved" xml:space="preserve"><value>Gespeichert</value></data>
   <data name="Day_CheckedAt" xml:space="preserve"><value>geprüft {0}</value></data>
   <data name="Day_TripOff" xml:space="preserve"><value>Aus</value></data>
+  <data name="Settings_Sound" xml:space="preserve"><value>Ton</value></data>
+  <data name="Settings_SoundHint" xml:space="preserve"><value>Störungen klingeln mit dem KackZug-Ton. Aus: nur Vibration.</value></data>
+  <data name="Settings_FullScreen" xml:space="preserve"><value>Vollbild auf dem Sperrbildschirm</value></data>
+  <data name="Settings_FullScreenHint" xml:space="preserve"><value>Aus: nur die Benachrichtigung, kein großes Alarmbild.</value></data>
 </root>
