@@ -291,13 +291,37 @@ public sealed partial class UpdateController : ObservableObject
         ProgressPercent = (int)Math.Floor(fraction.Value * 100);
     }
 
+    /// <summary>Loescht beim Start heruntergeladene Updates, die schon installiert oder aelter sind</summary>
+    public void RemoveOutdatedDownloads()
+    {
+        if (!AppVersion.TryParse(AppInfo.FullVersion, out var current))
+        {
+            return;
+        }
+
+        try
+        {
+            UpdateDownloader.RemoveOutdated(DownloadDirectory, current);
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
+    }
+
+    private string DownloadDirectory
+    {
+        get { return Path.Combine(_services.Platform.DataDirectory, "updates"); }
+    }
+
     private UpdateService CreateService()
     {
         var http = _services.CreateUpdateHttpClient();
         var userAgent = "KackZug/" + AppInfo.Version;
         var source = new GitHubReleaseSource(http, Owner, Repo, AssetPattern, userAgent);
         var downloader = new UpdateDownloader(http, userAgent);
-        var directory = Path.Combine(_services.Platform.DataDirectory, "updates");
-        return new UpdateService(source, downloader, CurrentInstaller, directory);
+        return new UpdateService(source, downloader, CurrentInstaller, DownloadDirectory);
     }
 }

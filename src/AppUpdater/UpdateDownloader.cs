@@ -96,6 +96,51 @@ public sealed class UpdateDownloader
         return finalPath;
     }
 
+    /// <summary>
+    /// Deletes downloads that are no longer needed: partial files and update files whose version
+    /// (read from the file name, e.g. "MyApp-1.2.3.apk") is not newer than <paramref name="currentVersion"/>.
+    /// Call it on app start; after an update was installed, its file is otherwise kept until the next download.
+    /// Returns the number of deleted files.
+    /// </summary>
+    public static int RemoveOutdated(string directory, AppVersion currentVersion)
+    {
+        ArgumentNullException.ThrowIfNull(currentVersion);
+        if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory))
+        {
+            return 0;
+        }
+
+        var deleted = 0;
+        foreach (var path in Directory.EnumerateFiles(directory))
+        {
+            var name = Path.GetFileName(path);
+            var isPartial = name.EndsWith(PartialSuffix, StringComparison.OrdinalIgnoreCase);
+            var version = VersionInFileName(name);
+            var isOutdated = version is not null && version <= currentVersion;
+            if ((isPartial || isOutdated) && TryDelete(path))
+            {
+                deleted++;
+            }
+        }
+
+        return deleted;
+    }
+
+    /// <summary>Reads the version from a file name like "MyApp-1.2.3-dev.4.apk": the part after the first '-' followed by a digit.</summary>
+    public static AppVersion? VersionInFileName(string fileName)
+    {
+        var name = Path.GetFileNameWithoutExtension(fileName);
+        for (var index = 0; index < name.Length - 1; index++)
+        {
+            if (name[index] == '-' && char.IsAsciiDigit(name[index + 1]) && AppVersion.TryParse(name.Substring(index + 1), out var version))
+            {
+                return version;
+            }
+        }
+
+        return null;
+    }
+
     /// <summary>Computes the SHA-256 of a file as lowercase hex.</summary>
     public static async Task<string> ComputeSha256Async(string filePath, CancellationToken cancellationToken)
     {
@@ -188,17 +233,20 @@ public sealed class UpdateDownloader
         }
     }
 
-    private static void TryDelete(string path)
+    private static bool TryDelete(string path)
     {
         try
         {
             File.Delete(path);
+            return true;
         }
         catch (IOException)
         {
+            return false;
         }
         catch (UnauthorizedAccessException)
         {
+            return false;
         }
     }
 }

@@ -15,6 +15,7 @@ public sealed class BootReceiver : BroadcastReceiver
             return;
         }
 
+        AlarmFlow.RemoveExpired(context);
         AlarmScheduler.ScheduleFromFile(context);
     }
 }

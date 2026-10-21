@@ -54,6 +54,16 @@ public static class AlarmFlow
         NotificationManagerCompat.From(context)!.Notify(id, notification);
     }
 
+    /// <summary>Raeumt Alarme weg, deren Fahrt vorbei ist, etwa wenn die Wiederholung durch einen Neustart verloren ging</summary>
+    public static void RemoveExpired(Context context)
+    {
+        var expired = Store(context).RemoveExpired(DateTimeOffset.Now);
+        foreach (var alarm in expired)
+        {
+            NotificationManagerCompat.From(context)!.Cancel(alarm.NotificationId);
+        }
+    }
+
     public static void Acknowledge(Context context, int notificationId)
     {
         Store(context).Acknowledge(notificationId);

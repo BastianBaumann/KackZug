@@ -22,6 +22,7 @@ public class MainApplication : AvaloniaAndroidApplication<App>
     {
         App.Platform = new AndroidPlatform(this);
         AlertNotifier.EnsureChannels(this);
+        AlarmFlow.RemoveExpired(this);
         InstallStatusReceiver.StatusReceived += OnInstallStatus;
         base.OnCreate();
     }
