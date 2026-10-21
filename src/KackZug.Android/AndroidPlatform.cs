@@ -79,9 +79,10 @@ public sealed class AndroidPlatform : IPlatform
         _context.StartActivity(intent);
     }
 
-    public void OpenInNavigator(string? connectionUrl)
+    public bool OpenInNavigator(string? connectionUrl)
     {
         Intent? intent = null;
+        var inNavigator = true;
         if (connectionUrl is not null)
         {
             var uri = global::Android.Net.Uri.Parse(connectionUrl);
@@ -90,6 +91,7 @@ public sealed class AndroidPlatform : IPlatform
             if (_context.PackageManager?.ResolveActivity(intent, 0) is null)
             {
                 intent = new Intent(Intent.ActionView, uri);
+                inNavigator = false;
             }
         }
         else
@@ -98,11 +100,21 @@ public sealed class AndroidPlatform : IPlatform
             if (intent is null)
             {
                 intent = new Intent(Intent.ActionView, global::Android.Net.Uri.Parse("https://www.bahn.de"));
+                inNavigator = false;
             }
         }
 
         intent.AddFlags(ActivityFlags.NewTask);
-        _context.StartActivity(intent);
+        try
+        {
+            _context.StartActivity(intent);
+        }
+        catch (ActivityNotFoundException)
+        {
+            return false;
+        }
+
+        return inNavigator;
     }
 
     public IReadOnlyList<PermissionInfo> GetPermissions()

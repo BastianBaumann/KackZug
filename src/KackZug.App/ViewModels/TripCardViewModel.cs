@@ -75,12 +75,19 @@ public partial class TripCardViewModel : ViewModelBase
             }
         }
 
-        if (_shareLink is null)
+        var openedInNavigator = _main.Services.Platform.OpenInNavigator(_shareLink);
+        if (!openedInNavigator && _shareLink is null)
+        {
+            _main.ShowToast("Der DB Navigator ist nicht installiert und die Verbindung fand ich bei bahn.de nicht. Ich öffne bahn.de im Browser.", true);
+        }
+        else if (!openedInNavigator)
+        {
+            _main.ShowToast("Der DB Navigator ist nicht installiert. Die Verbindung öffnet im Browser.", false);
+        }
+        else if (_shareLink is null)
         {
             _main.ShowToast("Die Verbindung an diesem Tag fand ich bei bahn.de nicht. Der Navigator öffnet ohne sie.", true);
         }
-
-        _main.Services.Platform.OpenInNavigator(_shareLink);
     }
 
     private bool CanOpenInNavigator()

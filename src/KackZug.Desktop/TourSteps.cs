@@ -154,6 +154,12 @@ internal static class TourSteps
         check(opened.Count == 2 && opened[1] == shareLinks.Link && shareLinks.RequestedDays.All(day => day == detailDay.Date), "Navigator bekommt den Teilen-Link fuer diesen Tag");
         await firstTrip.OpenInNavigatorCommand.ExecuteAsync(null);
         check(opened.Count == 3 && shareLinks.RequestedDays.Count == 2, "Teilen-Link wird nur einmal erzeugt");
+        var platform = (Services.DefaultPlatform)main.Services.Platform;
+        platform.HasNavigator = false;
+        main.Toast = null;
+        await firstTrip.OpenInNavigatorCommand.ExecuteAsync(null);
+        check(opened.Count == 4 && opened[3] == shareLinks.Link && main.Toast!.Contains("nicht installiert"), "Ohne Navigator oeffnet der Browser, mit Hinweis");
+        platform.HasNavigator = true;
         await capture(window, Path.Combine(directory, "trip-detail.png"));
         check(window.GetVisualDescendants().OfType<TextBlock>().Any(text => text.Text == "Im DB Navigator öffnen" && text.IsEffectivelyVisible), "Navigator-Knopf sichtbar");
         check(main.HandleBack() && !week.HasDetail, "Zurueck schliesst die Detailansicht");

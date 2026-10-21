@@ -66,9 +66,13 @@ public sealed class DefaultPlatform : IPlatform
         Process.Start(start);
     }
 
-    public void OpenInNavigator(string? connectionUrl)
+    /// <remarks>Auf dem Desktop gibt es keinen Navigator, bahn.de im Browser ist hier der normale Weg.</remarks>
+    public bool HasNavigator { get; set; } = true;
+
+    public bool OpenInNavigator(string? connectionUrl)
     {
         OpenUrl(connectionUrl ?? "https://www.bahn.de");
+        return HasNavigator;
     }
 
     public IReadOnlyList<PermissionInfo> GetPermissions()
