@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/AppUpdater.Android/AppUpdater.Android.csproj" />
+    <Project Path="src/AppUpdater/AppUpdater.csproj" />
     <Project Path="src/KackZug.Android/KackZug.Android.csproj" />
     <Project Path="src/KackZug.App/KackZug.App.csproj" />
     <Project Path="src/KackZug.Core/KackZug.Core.csproj" />
