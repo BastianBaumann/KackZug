@@ -19,6 +19,9 @@ public sealed class CheckState
 
     public string LastBadgeText { get; set; } = "";
 
+    /// <remarks>Sprache, in der LastBadgeText geschrieben wurde; leer bei alten Daten, die noch deutsch sind.</remarks>
+    public string LastBadgeLanguage { get; set; } = "";
+
     public DateTimeOffset LastCheckedAt { get; set; }
 
     public DateTimeOffset? LastNotifiedAt { get; set; }

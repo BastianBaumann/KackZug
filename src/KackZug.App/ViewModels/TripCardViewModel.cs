@@ -160,11 +160,7 @@ public partial class TripCardViewModel : ViewModelBase
             return;
         }
 
-        var badgeText = state.LastBadgeText;
-        if (string.IsNullOrEmpty(badgeText))
-        {
-            badgeText = StatusBadge.ShortText(state.LastStatus);
-        }
+        var badgeText = StatusBadge.TextFor(state);
 
         Badge = new StatusBadge(state.LastStatus, badgeText, "");
         IsCancelled = state.LastStatus == LegStatus.Cancelled;

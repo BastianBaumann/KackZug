@@ -317,11 +317,7 @@ public partial class DayRowViewModel : ViewModelBase
             return new StatusBadge(null, "—", label + " · " + StatusBadge.ShortText(null));
         }
 
-        var badgeText = state.LastBadgeText;
-        if (string.IsNullOrEmpty(badgeText))
-        {
-            badgeText = StatusBadge.ShortText(state.LastStatus);
-        }
+        var badgeText = StatusBadge.TextFor(state);
 
         var caption = UiLanguage.Format(UiStrings.Day_Caption, label, badgeText, CheckedText(state.LastCheckedAt));
         return new StatusBadge(state.LastStatus, badgeText, caption);

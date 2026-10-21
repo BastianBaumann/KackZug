@@ -270,6 +270,9 @@ internal static class TourSteps
         await SettleAsync();
         var week = (WeekViewModel)english.CurrentPage!;
         check(week.WeekTitle == "This week" && week.Days[0].DayName == "Monday" && HasText(window, "Set several days"), "Woche auf Englisch");
+        var germanBadges = new[] { "Teilausfall", "Fällt aus", "Planmäßig", "Laut Fahrplan", "Nicht geprüft", "Nicht gefunden" };
+        var storedStates = english.Services.Data.CheckStates.Where(state => !string.IsNullOrEmpty(state.LastBadgeText)).ToList();
+        check(storedStates.Count > 0 && week.Days.All(day => day.OutboundStatus is null || !germanBadges.Contains(day.OutboundStatus.Text)) && week.Days.All(day => day.ReturnStatus is null || !germanBadges.Contains(day.ReturnStatus.Text)), "Deutsch gespeicherte Statustexte erscheinen auf Englisch");
         var today = week.Days.First(day => day.IsToday);
         check(today.OutboundCaption is not null && today.OutboundCaption.StartsWith("Out "), "Fahrt-Hinweis auf Englisch: " + today.OutboundCaption);
         week.StartSelectingCommand.Execute(null);

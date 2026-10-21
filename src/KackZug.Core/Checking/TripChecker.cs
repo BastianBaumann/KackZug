@@ -1,3 +1,4 @@
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
 
@@ -52,6 +53,7 @@ public sealed class TripChecker
         state.LastStatus = status.Overall;
         state.LastSummary = alert.Title;
         state.LastBadgeText = alert.BadgeText;
+        state.LastBadgeLanguage = Language.Culture.TwoLetterISOLanguageName;
         state.LastCheckedAt = _clock.Now;
         if (shouldNotify)
         {

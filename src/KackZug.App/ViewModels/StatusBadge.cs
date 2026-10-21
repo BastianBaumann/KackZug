@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Media;
 using KackZug.Core.Checking;
+using KackZug.Core.Localization;
+using KackZug.Core.Models;
 using KackZug.Localization;
 using KackZug.Services;
 
@@ -28,6 +30,23 @@ public sealed class StatusBadge
     public IBrush Foreground { get; }
 
     public Geometry? Icon { get; }
+
+    /// <remarks>Ein gespeicherter Text aus einer anderen Sprache wird durch den kurzen Text in der aktuellen Sprache ersetzt.</remarks>
+    public static string TextFor(CheckState state)
+    {
+        var language = state.LastBadgeLanguage;
+        if (string.IsNullOrEmpty(language))
+        {
+            language = "de";
+        }
+
+        if (string.IsNullOrEmpty(state.LastBadgeText) || language != Language.Culture.TwoLetterISOLanguageName)
+        {
+            return ShortText(state.LastStatus);
+        }
+
+        return state.LastBadgeText;
+    }
 
     public static string ShortText(LegStatus? status)
     {
