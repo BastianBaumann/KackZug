@@ -1,0 +1,39 @@
+name: Fehler melden
+description: Etwas funktioniert nicht wie erwartet.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Was ist passiert?
+      description: Was hast du erwartet und was ist stattdessen passiert?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Schritte zum Nachstellen
+      placeholder: |
+        1. KackZug öffnen
+        2. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: KackZug-Version
+      description: Steht in den Einstellungen der App.
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Handy und Android-Version
+      placeholder: z. B. Pixel 8, Android 15
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Sonstiges
+      description: Bildschirmfotos, geteilter Link (ohne private Daten) oder andere Hinweise.

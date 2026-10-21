@@ -121,8 +121,17 @@ Der Störungston wird mit `python tools/sound/build_alarm.py` erzeugt, die App-G
 ### Release erstellen
 
 Ein Tag der Form `v1.2.3` startet den Release-Workflow. Er baut die APK, signiert sie mit dem
-Release-Schlüssel aus den Repository-Secrets und veröffentlicht sie als GitHub-Release. Damit Updates
-über eine bestehende Installation gehen, muss es immer derselbe Schlüssel sein.
+Release-Schlüssel aus der geschützten Umgebung `release` und veröffentlicht sie als GitHub-Release.
+Damit Updates über eine bestehende Installation gehen, muss es immer derselbe Schlüssel sein. Stabile
+Versionen baut er nur von Commits, die auf `main` liegen; Tags darf nur der Maintainer setzen (siehe
+`.github/rulesets/`).
+
+## Mitmachen
+
+Fehlerberichte, Ideen und Pull Requests sind willkommen. Wie das abläuft, steht in
+[CONTRIBUTING.md](CONTRIBUTING.md). Pull Requests gehen gegen den Branch `dev`. Sicherheitslücken bitte
+wie in [SECURITY.md](SECURITY.md) beschrieben privat melden. Es gelten die
+[Verhaltensregeln](CODE_OF_CONDUCT.md).
 
 ## Lizenz
 
