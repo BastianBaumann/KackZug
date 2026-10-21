@@ -28,6 +28,7 @@ public class MainActivity : AvaloniaMainActivity
     {
         base.OnCreate(savedInstanceState);
         Current = this;
+        HoldSplash();
         AskForNotifications();
         HandleIntent(Intent);
     }
@@ -37,6 +38,12 @@ public class MainActivity : AvaloniaMainActivity
         base.OnResume();
         App.ReloadFromBackground();
         App.ContinueUpdateAfterResume();
+    }
+
+    /// <remarks>Zwischen Startbildschirm des Systems und erstem Bild der Oberflaeche waere sonst kurz alles schwarz.</remarks>
+    private void HoldSplash()
+    {
+        SplashOverlay.Show(this);
     }
 
     protected override void OnDestroy()

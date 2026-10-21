@@ -3,5 +3,6 @@
   <style name="KackZugTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>
+    <item name="android:windowBackground">@drawable/splash_window</item>
   </style>
 </resources>

@@ -1,3 +1,4 @@
+using KackZug.Core.Models;
 using AppUpdater;
 using KackZug.Core.Checking;
 using KackZug.Core.Planning;
@@ -24,6 +25,9 @@ public interface IPlatform
 
     /// <remarks>Nur dort noetig, wo die App die Hauptansicht nicht selbst austauschen kann (Android-Aktivitaet).</remarks>
     void RecreateMainView();
+
+    /// <remarks>Damit auch der Startbildschirm des Systems hell oder dunkel wie in den Einstellungen ist.</remarks>
+    void ApplyThemeMode(ThemeMode mode);
 
     IReadOnlyList<PermissionInfo> GetPermissions();
 

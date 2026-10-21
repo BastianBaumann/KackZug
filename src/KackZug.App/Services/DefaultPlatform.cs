@@ -1,3 +1,4 @@
+using KackZug.Core.Models;
 using System.Diagnostics;
 using AppUpdater;
 using KackZug.Core.Checking;
@@ -77,6 +78,10 @@ public sealed class DefaultPlatform : IPlatform
     }
 
     public void RecreateMainView()
+    {
+    }
+
+    public void ApplyThemeMode(ThemeMode mode)
     {
     }
 

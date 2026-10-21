@@ -39,6 +39,7 @@ public sealed class ThemeService
         }
 
         application.RequestedThemeVariant = ToThemeVariant(settings.ThemeMode);
+        App.Platform.ApplyThemeMode(settings.ThemeMode);
         var resources = application.Resources;
         var accent = Parse(settings.AccentColor, DefaultAccent);
         var isDefault = IsDefault(settings.AccentColor);

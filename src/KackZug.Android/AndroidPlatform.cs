@@ -1,12 +1,13 @@
 using Android;
+using Android.App;
 using Android.Content;
-
 using Android.OS;
 using AndroidX.Core.App;
 using AppUpdater;
 using AppUpdater.Android;
 using KackZug.Core.Checking;
 using KackZug.Core.Localization;
+using KackZug.Core.Models;
 using KackZug.Core.Planning;
 using KackZug.Services;
 
@@ -118,6 +119,35 @@ public sealed class AndroidPlatform : IPlatform
         }
 
         return inNavigator;
+    }
+
+    public void ApplyThemeMode(ThemeMode mode)
+    {
+        if (!OperatingSystem.IsAndroidVersionAtLeast(31))
+        {
+            return;
+        }
+
+        var uiMode = (UiModeManager?)_context.GetSystemService(Context.UiModeService);
+        if (uiMode is null)
+        {
+            return;
+        }
+
+        var nightMode = UiNightMode.Auto;
+        if (mode == ThemeMode.Light)
+        {
+            nightMode = UiNightMode.No;
+        }
+        else if (mode == ThemeMode.Dark)
+        {
+            nightMode = UiNightMode.Yes;
+        }
+
+        if (uiMode.NightMode != nightMode)
+        {
+            uiMode.SetApplicationNightMode((int)nightMode);
+        }
     }
 
     public void RecreateMainView()
