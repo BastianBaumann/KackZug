@@ -7,7 +7,7 @@
   <data name="Nav_Week" xml:space="preserve"><value>Woche</value></data>
   <data name="Nav_Shifts" xml:space="preserve"><value>Schichten</value></data>
   <data name="Nav_Settings" xml:space="preserve"><value>Einstellungen</value></data>
-  <data name="View_Missing" xml:space="preserve"><value>Keine Ansicht fuer {0}</value></data>
+  <data name="View_Missing" xml:space="preserve"><value>Keine Ansicht für {0}</value></data>
   <data name="Common_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
   <data name="Common_Save" xml:space="preserve"><value>Speichern</value></data>
   <data name="Common_Close" xml:space="preserve"><value>Schließen</value></data>
