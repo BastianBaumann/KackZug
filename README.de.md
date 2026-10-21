@@ -34,7 +34,8 @@ er verspätet, wechselt das Gleis oder wird der Anschluss knapp, meldet sich Kac
   „Bitte nicht stören“.
 - **Farben, die man sofort versteht:** Meldungen, dass alles pünktlich ist, sind grün und kommen ohne Ton, Probleme sind rot und laut.
 - **Ehrliche Anzeige:** bahn.de hat den Fahrplan schon Tage vorher, Echtzeitdaten aber erst kurz vor der
-  Abfahrt. Solange es keine Echtzeit gibt, zeigt KackZug „Laut Fahrplan“ statt „Planmäßig“.
+  Abfahrt. Solange es keine Echtzeit gibt, zeigt KackZug „Laut Fahrplan“ statt „Planmäßig“. Liefert
+  bahn.de für eine Fahrt keine brauchbaren Daten, steht dort grau „Keine Daten“ statt eines Alarms.
 - **„Jetzt prüfen“** für heute und morgen, ein **Test-Alarm** und eine kurze **Einführung** beim
   ersten Start.
 - **Deutsch oder Englisch:** Die Sprache lässt sich in den Einstellungen umstellen. Standard ist die

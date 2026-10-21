@@ -74,6 +74,12 @@ public static class StatusEvaluator
             return result;
         }
 
+        if (observation.ArrivalMissing)
+        {
+            result.Status = LegStatus.Unknown;
+            return result;
+        }
+
         var departureDelay = MinutesLate(observation.PlannedDeparture, observation.LiveDeparture);
         var arrivalDelay = MinutesLate(observation.PlannedArrival, observation.LiveArrival);
         result.DelayMinutes = Math.Max(departureDelay, arrivalDelay);

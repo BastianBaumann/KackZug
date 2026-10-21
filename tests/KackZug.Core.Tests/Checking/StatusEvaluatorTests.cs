@@ -140,6 +140,20 @@ public class StatusEvaluatorTests
     }
 
     [Fact]
+    public void MissingDestinationIsNoDataNotPartlyCancelled()
+    {
+        var connection = Connection();
+        var observations = Observations(connection, 0, 0);
+        observations[0]!.ArrivalMissing = true;
+
+        var status = StatusEvaluator.Evaluate(connection, observations, new Settings());
+
+        Assert.Equal(LegStatus.Unknown, status.Legs[0].Status);
+        Assert.Equal(LegStatus.Unknown, status.Overall);
+        Assert.Equal(AlertSeverity.Info, AlertComposer.SeverityOf(status.Overall));
+    }
+
+    [Fact]
     public void PlatformChangeIsReported()
     {
         var connection = Connection();

@@ -37,7 +37,8 @@ cancelled, delayed, changes platform or a connection gets tight, KackZug lets yo
   without a sound, problems are red and loud.
 - **Honest status:** bahn.de has the timetable days in advance, but real-time data only shortly
   before departure. As long as there is no real-time data, KackZug shows "As scheduled" ("Laut
-  Fahrplan") instead of "On time" ("Planmäßig").
+  Fahrplan") instead of "On time" ("Planmäßig"). If bahn.de has no usable data for a trip, it shows a
+  grey "No data" instead of an alarm.
 - **"Check now"** for today and tomorrow, a **test alarm** and a short **introduction** on first
   launch.
 - **German or English:** The language can be switched in the settings. The default is the phone's

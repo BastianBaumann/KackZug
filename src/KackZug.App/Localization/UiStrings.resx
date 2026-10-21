@@ -81,7 +81,7 @@
   <data name="Status_NotChecked" xml:space="preserve"><value>Not checked yet</value></data>
   <data name="Status_OnTime" xml:space="preserve"><value>On time</value></data>
   <data name="Status_PlannedOnly" xml:space="preserve"><value>As scheduled, live data to follow</value></data>
-  <data name="Status_Unknown" xml:space="preserve"><value>Not checked</value></data>
+  <data name="Status_Unknown" xml:space="preserve"><value>No data</value></data>
   <data name="Status_PlatformChanged" xml:space="preserve"><value>Platform change</value></data>
   <data name="Status_Delayed" xml:space="preserve"><value>Delayed</value></data>
   <data name="Status_TransferAtRisk" xml:space="preserve"><value>Tight connection</value></data>

@@ -14,7 +14,7 @@
   <data name="Alert_BadgePlatformChange" xml:space="preserve"><value>Platform {0} → {1}</value></data>
   <data name="Alert_BadgeTransferAtRisk" xml:space="preserve"><value>Tight connection</value></data>
   <data name="Alert_BadgeTransferAtRiskDelay" xml:space="preserve"><value>+{0} · Tight connection</value></data>
-  <data name="Alert_BadgeUnknown" xml:space="preserve"><value>Not checked</value></data>
+  <data name="Alert_BadgeUnknown" xml:space="preserve"><value>No data</value></data>
   <data name="Alert_DetailPlannedOnly" xml:space="preserve"><value>Live data is only available shortly before departure. KackZug will check again then.</value></data>
   <data name="Alert_DetailReplacement" xml:space="preserve"><value>There may be replacement transport. Please check in DB Navigator.</value></data>
   <data name="Alert_DetailTransfer" xml:space="preserve"><value>Change at {0}: only {1} min to spare</value></data>
@@ -39,7 +39,7 @@
   <data name="Alert_ProblemPartlyCancelled" xml:space="preserve"><value>does not stop at {0}</value></data>
   <data name="Alert_ProblemPlannedOnly" xml:space="preserve"><value>as scheduled</value></data>
   <data name="Alert_ProblemPlatform" xml:space="preserve"><value>now platform {0}</value></data>
-  <data name="Alert_ProblemUnknown" xml:space="preserve"><value>could not be checked</value></data>
+  <data name="Alert_ProblemUnknown" xml:space="preserve"><value>no data from bahn.de</value></data>
   <data name="Alert_TitleOnTime" xml:space="preserve"><value>{0} is on time</value></data>
   <data name="Alert_TitlePlannedOnly" xml:space="preserve"><value>{0} runs as scheduled</value></data>
   <data name="Alert_TitleTransferAtRisk" xml:space="preserve"><value>Connection at {0} at risk</value></data>

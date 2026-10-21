@@ -65,7 +65,7 @@ public class BahnWebTripStatusSourceTests
     }
 
     [Fact]
-    public async Task MissingDestinationStopMeansPartlyCancelled()
+    public async Task MissingDestinationStopMeansNoData()
     {
         var handler = new FakeHttpHandler();
         handler.Answer("reiseloesung/abfahrten", HttpStatusCode.OK, BahnJsonBuilder.Board(
@@ -76,7 +76,8 @@ public class BahnWebTripStatusSourceTests
 
         var observation = await CreateSource(handler).ObserveAsync(TrainLeg(), TravelDate, CancellationToken.None);
 
-        Assert.True(observation.ArrivalCancelled);
+        Assert.True(observation.ArrivalMissing);
+        Assert.False(observation.ArrivalCancelled);
         Assert.False(observation.DepartureCancelled);
     }
 

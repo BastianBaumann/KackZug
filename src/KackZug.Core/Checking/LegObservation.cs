@@ -21,6 +21,10 @@ public sealed class LegObservation
 
     public bool ArrivalCancelled { get; set; }
 
+    /// <remarks>Der Zielhalt fehlt in den Fahrtdaten von bahn.de. Ein ausgefallener Halt bleibt dort mit Hinweis stehen,
+    /// ein fehlender heisst meist nur, dass die Daten unvollstaendig sind oder der Halt anders heisst.</remarks>
+    public bool ArrivalMissing { get; set; }
+
     public string? CurrentPlatform { get; set; }
 
     public string? Problem { get; set; }

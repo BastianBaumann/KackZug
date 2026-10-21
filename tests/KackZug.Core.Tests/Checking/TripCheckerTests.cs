@@ -175,8 +175,8 @@ public class TripCheckerTests
 
         Assert.False(early!.ShouldNotify);
         Assert.True(last!.ShouldNotify);
-        Assert.Contains("konnte nicht geprüft werden", last.Alert.Title);
-        Assert.Equal("Nicht geprüft", last.Alert.BadgeText);
+        Assert.Contains("keine Daten von bahn.de", last.Alert.Title);
+        Assert.Equal("Keine Daten", last.Alert.BadgeText);
     }
 
     [Fact]

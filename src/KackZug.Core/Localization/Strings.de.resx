@@ -14,7 +14,7 @@
   <data name="Alert_BadgePlatformChange" xml:space="preserve"><value>Gleis {0} → {1}</value></data>
   <data name="Alert_BadgeTransferAtRisk" xml:space="preserve"><value>Anschluss knapp</value></data>
   <data name="Alert_BadgeTransferAtRiskDelay" xml:space="preserve"><value>+{0} · Anschluss knapp</value></data>
-  <data name="Alert_BadgeUnknown" xml:space="preserve"><value>Nicht geprüft</value></data>
+  <data name="Alert_BadgeUnknown" xml:space="preserve"><value>Keine Daten</value></data>
   <data name="Alert_DetailPlannedOnly" xml:space="preserve"><value>Echtzeitdaten gibt es erst kurz vor der Abfahrt. KackZug prüft dann noch einmal.</value></data>
   <data name="Alert_DetailReplacement" xml:space="preserve"><value>Eventuell gibt es Ersatzverkehr. Bitte im DB Navigator prüfen.</value></data>
   <data name="Alert_DetailTransfer" xml:space="preserve"><value>Umstieg in {0}: nur noch {1} Min. Puffer</value></data>
@@ -39,7 +39,7 @@
   <data name="Alert_ProblemPartlyCancelled" xml:space="preserve"><value>hält nicht in {0}</value></data>
   <data name="Alert_ProblemPlannedOnly" xml:space="preserve"><value>laut Fahrplan</value></data>
   <data name="Alert_ProblemPlatform" xml:space="preserve"><value>jetzt Gleis {0}</value></data>
-  <data name="Alert_ProblemUnknown" xml:space="preserve"><value>konnte nicht geprüft werden</value></data>
+  <data name="Alert_ProblemUnknown" xml:space="preserve"><value>keine Daten von bahn.de</value></data>
   <data name="Alert_TitleOnTime" xml:space="preserve"><value>{0} fährt planmäßig</value></data>
   <data name="Alert_TitlePlannedOnly" xml:space="preserve"><value>{0} fährt laut Fahrplan</value></data>
   <data name="Alert_TitleTransferAtRisk" xml:space="preserve"><value>Anschluss in {0} gefährdet</value></data>

@@ -58,7 +58,7 @@ public static class TripReader
 
         if (arrivalIndex < 0)
         {
-            observation.ArrivalCancelled = true;
+            observation.ArrivalMissing = true;
             return;
         }
 

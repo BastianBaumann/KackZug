@@ -81,7 +81,7 @@
   <data name="Status_NotChecked" xml:space="preserve"><value>Noch nicht geprüft</value></data>
   <data name="Status_OnTime" xml:space="preserve"><value>Planmäßig</value></data>
   <data name="Status_PlannedOnly" xml:space="preserve"><value>Laut Fahrplan, Echtzeit folgt</value></data>
-  <data name="Status_Unknown" xml:space="preserve"><value>Nicht geprüft</value></data>
+  <data name="Status_Unknown" xml:space="preserve"><value>Keine Daten</value></data>
   <data name="Status_PlatformChanged" xml:space="preserve"><value>Gleiswechsel</value></data>
   <data name="Status_Delayed" xml:space="preserve"><value>Verspätet</value></data>
   <data name="Status_TransferAtRisk" xml:space="preserve"><value>Anschluss knapp</value></data>
