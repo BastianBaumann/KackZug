@@ -35,7 +35,7 @@ er verspätet, wechselt das Gleis oder wird der Anschluss knapp, meldet sich Kac
   Gleiswechsel, gefährdeter Anschluss oder eine Fahrt, die es so nicht mehr gibt. Es öffnet sich ein
   Vollbild-Alarm, auch auf dem Sperrbildschirm. Er klingelt und kommt alle fünf Minuten wieder, bis du
   „Gesehen“ tippst. Dafür hat KackZug einen eigenen, schrillen Ton. Auf Wunsch klingelt er auch bei
-  „Bitte nicht stören“.
+  „Bitte nicht stören“. Ton, Vollbild und Wiederholen lassen sich in den Einstellungen einzeln abschalten.
 - **Farben, die man sofort versteht:** Meldungen, dass alles pünktlich ist, sind grün und kommen ohne Ton, Probleme sind rot und laut.
 - **Ehrliche Anzeige:** bahn.de hat den Fahrplan schon Tage vorher, Echtzeitdaten aber erst kurz vor der
   Abfahrt. Solange es keine Echtzeit gibt, zeigt KackZug „Laut Fahrplan“ statt „Planmäßig“. Liefert

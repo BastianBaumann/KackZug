@@ -86,4 +86,6 @@
   <data name="Test_Text" xml:space="preserve"><value>So sieht eine Störung aus. Alles gut, das war nur ein Test.</value></data>
   <data name="Test_Title" xml:space="preserve"><value>TEST HIN: RE7 06:42 FÄLLT AUS</value></data>
   <data name="Test_TripLine" xml:space="preserve"><value>RE7 · 06:42 Musterstadt Hbf → Beispielhausen</value></data>
+  <data name="Android_ChannelProblemSilentName" xml:space="preserve"><value>Störung (ohne Ton)</value></data>
+  <data name="Android_ChannelProblemSilentDoNotDisturbName" xml:space="preserve"><value>Störung (ohne Ton, auch bei Bitte nicht stören)</value></data>
 </root>

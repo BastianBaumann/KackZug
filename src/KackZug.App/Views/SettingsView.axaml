@@ -139,6 +139,24 @@
                         <Border Classes="setting">
                             <Grid ColumnDefinitions="*,Auto">
                                 <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_Sound}" Classes="body-lg" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_SoundHint}" Classes="caption" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" IsChecked="{Binding AlarmSound}" OnContent="" OffContent="" />
+                            </Grid>
+                        </Border>
+                        <Border Classes="setting">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_FullScreen}" Classes="body-lg" TextWrapping="Wrap" />
+                                    <TextBlock Text="{x:Static l:UiStrings.Settings_FullScreenHint}" Classes="caption" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <ToggleSwitch Grid.Column="1" IsChecked="{Binding AlarmFullScreen}" OnContent="" OffContent="" />
+                            </Grid>
+                        </Border>
+                        <Border Classes="setting">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
                                     <TextBlock Text="{x:Static l:UiStrings.Settings_Dnd}" Classes="body-lg" TextWrapping="Wrap" />
                                     <TextBlock Text="{x:Static l:UiStrings.Settings_DndHint}" Classes="caption" TextWrapping="Wrap" />
                                 </StackPanel>

@@ -86,4 +86,6 @@
   <data name="Test_Text" xml:space="preserve"><value>This is what a disruption looks like. All good, this was only a test.</value></data>
   <data name="Test_Title" xml:space="preserve"><value>TEST OUT: RE7 06:42 CANCELLED</value></data>
   <data name="Test_TripLine" xml:space="preserve"><value>RE7 · 06:42 Sampletown Hbf → Exampleton</value></data>
+  <data name="Android_ChannelProblemSilentName" xml:space="preserve"><value>Disruption (no sound)</value></data>
+  <data name="Android_ChannelProblemSilentDoNotDisturbName" xml:space="preserve"><value>Disruption (no sound, also in Do not disturb)</value></data>
 </root>

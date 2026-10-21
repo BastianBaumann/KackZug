@@ -232,4 +232,8 @@
   <data name="Trips_DeleteMessage" xml:space="preserve"><value>„{0}“ am {1} wird gelöscht und nicht mehr geprüft.</value></data>
   <data name="Trips_Deleted" xml:space="preserve"><value>Einzelfahrt gelöscht.</value></data>
   <data name="Trips_Back" xml:space="preserve"><value>‹ Zurück zu den Fahrten</value></data>
+  <data name="Settings_Sound" xml:space="preserve"><value>Ton</value></data>
+  <data name="Settings_SoundHint" xml:space="preserve"><value>Störungen klingeln mit dem KackZug-Ton. Aus: nur Vibration.</value></data>
+  <data name="Settings_FullScreen" xml:space="preserve"><value>Vollbild auf dem Sperrbildschirm</value></data>
+  <data name="Settings_FullScreenHint" xml:space="preserve"><value>Aus: nur die Benachrichtigung, kein großes Alarmbild.</value></data>
 </root>

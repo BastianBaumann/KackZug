@@ -14,6 +14,8 @@ public static class AlertNotifier
 {
     public const string ProblemChannelId = "stoerung_v2";
     public const string ProblemDoNotDisturbChannelId = "stoerung_dnd_v2";
+    public const string ProblemSilentChannelId = "stoerung_silent_v1";
+    public const string ProblemSilentDoNotDisturbChannelId = "stoerung_silent_dnd_v1";
     public const string InfoChannelId = "info_v2";
     public const string DbNavigatorPackage = "de.hafas.android.db";
 
@@ -73,6 +75,8 @@ public static class AlertNotifier
         }
 
         UpdateTexts(manager, ProblemDoNotDisturbChannelId, Strings.Android_ChannelProblemDoNotDisturbName, Strings.Android_ChannelProblemDescription);
+        UpdateTexts(manager, ProblemSilentChannelId, Strings.Android_ChannelProblemSilentName, Strings.Android_ChannelProblemDescription);
+        UpdateTexts(manager, ProblemSilentDoNotDisturbChannelId, Strings.Android_ChannelProblemSilentDoNotDisturbName, Strings.Android_ChannelProblemDescription);
     }
 
     /// <remarks>Name und Beschreibung folgen der Sprache; Ton und Vibration eines bestehenden Kanals bleiben unberuehrt.</remarks>
@@ -100,11 +104,13 @@ public static class AlertNotifier
         return manager is not null && manager.IsNotificationPolicyAccessGranted;
     }
 
-    /// <remarks>Android uebernimmt "Bitte nicht stoeren durchbrechen" nur, wenn der Zugriff beim Anlegen des Kanals schon erlaubt ist.</remarks>
-    public static string ProblemChannelFor(Context context, bool breakThroughDoNotDisturb)
+    /// <remarks>Android uebernimmt "Bitte nicht stoeren durchbrechen" nur, wenn der Zugriff beim Anlegen des Kanals schon erlaubt ist.
+    /// Ein Kanal behaelt seinen Ton fuer immer, deshalb hat "ohne Ton" eigene Kanaele, die erst bei Bedarf entstehen.</remarks>
+    public static string ProblemChannelFor(Context context, bool breakThroughDoNotDisturb, bool withSound)
     {
         EnsureChannels(context);
-        if (!breakThroughDoNotDisturb || Build.VERSION.SdkInt < BuildVersionCodes.O || !HasDoNotDisturbAccess(context))
+        var bypass = breakThroughDoNotDisturb && Build.VERSION.SdkInt >= BuildVersionCodes.O && HasDoNotDisturbAccess(context);
+        if (withSound && !bypass)
         {
             return ProblemChannelId;
         }
@@ -115,14 +121,36 @@ public static class AlertNotifier
             return ProblemChannelId;
         }
 
-        if (manager.GetNotificationChannel(ProblemDoNotDisturbChannelId) is null)
+        var id = ProblemDoNotDisturbChannelId;
+        var name = Strings.Android_ChannelProblemDoNotDisturbName;
+        if (!withSound && bypass)
         {
-            var channel = CreateProblemChannel(context, ProblemDoNotDisturbChannelId, Strings.Android_ChannelProblemDoNotDisturbName);
-            channel.SetBypassDnd(true);
+            id = ProblemSilentDoNotDisturbChannelId;
+            name = Strings.Android_ChannelProblemSilentDoNotDisturbName;
+        }
+        else if (!withSound)
+        {
+            id = ProblemSilentChannelId;
+            name = Strings.Android_ChannelProblemSilentName;
+        }
+
+        if (manager.GetNotificationChannel(id) is null)
+        {
+            var channel = CreateProblemChannel(context, id, name);
+            if (!withSound)
+            {
+                channel.SetSound(null, null);
+            }
+
+            if (bypass)
+            {
+                channel.SetBypassDnd(true);
+            }
+
             manager.CreateNotificationChannel(channel);
         }
 
-        return ProblemDoNotDisturbChannelId;
+        return id;
     }
 
     private static NotificationChannel CreateProblemChannel(Context context, string id, string name)

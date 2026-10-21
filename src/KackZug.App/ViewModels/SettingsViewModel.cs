@@ -82,6 +82,12 @@ public partial class SettingsViewModel : PageViewModel
     public partial bool InsistentAlerts { get; set; }
 
     [ObservableProperty]
+    public partial bool AlarmSound { get; set; }
+
+    [ObservableProperty]
+    public partial bool AlarmFullScreen { get; set; }
+
+    [ObservableProperty]
     public partial bool BreakThroughDoNotDisturb { get; set; }
 
     [ObservableProperty]
@@ -215,6 +221,8 @@ public partial class SettingsViewModel : PageViewModel
         MinTransferText = settings.MinTransferMinutes.ToString();
         MinTransferInvalid = false;
         InsistentAlerts = settings.InsistentAlerts;
+        AlarmSound = settings.AlarmSound;
+        AlarmFullScreen = settings.AlarmFullScreen;
         BreakThroughDoNotDisturb = settings.BreakThroughDoNotDisturb;
         CopyPreviousWeek = settings.NewWeekMode == NewWeekMode.CopyPrevious;
         StartWeekEmpty = !CopyPreviousWeek;
@@ -408,6 +416,18 @@ public partial class SettingsViewModel : PageViewModel
     partial void OnInsistentAlertsChanged(bool value)
     {
         Settings.InsistentAlerts = value;
+        Save();
+    }
+
+    partial void OnAlarmSoundChanged(bool value)
+    {
+        Settings.AlarmSound = value;
+        Save();
+    }
+
+    partial void OnAlarmFullScreenChanged(bool value)
+    {
+        Settings.AlarmFullScreen = value;
         Save();
     }
 

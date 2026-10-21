@@ -232,4 +232,8 @@
   <data name="Trips_DeleteMessage" xml:space="preserve"><value>“{0}” on {1} will be deleted and no longer checked.</value></data>
   <data name="Trips_Deleted" xml:space="preserve"><value>One-off trip deleted.</value></data>
   <data name="Trips_Back" xml:space="preserve"><value>‹ Back to the trips</value></data>
+  <data name="Settings_Sound" xml:space="preserve"><value>Sound</value></data>
+  <data name="Settings_SoundHint" xml:space="preserve"><value>Disruptions ring with the KackZug tone. Off: vibration only.</value></data>
+  <data name="Settings_FullScreen" xml:space="preserve"><value>Full screen on the lock screen</value></data>
+  <data name="Settings_FullScreenHint" xml:space="preserve"><value>Off: only the notification, no big alarm screen.</value></data>
 </root>
