@@ -1,12 +1,12 @@
 using System.Collections.ObjectModel;
 using Avalonia.Media;
+using AppUpdater;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core;
 using KackZug.Core.Checking;
 using KackZug.Core.Models;
 using KackZug.Core.Planning;
-using KackZug.Core.Updates;
 using KackZug.Services;
 
 namespace KackZug.ViewModels;
@@ -87,6 +87,9 @@ public partial class SettingsViewModel : PageViewModel
 
     [ObservableProperty]
     public partial bool UpdateCheckEnabled { get; set; }
+
+    [ObservableProperty]
+    public partial bool IncludePrereleases { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CheckUpdatesNowCommand))]
@@ -199,6 +202,7 @@ public partial class SettingsViewModel : PageViewModel
         CopyPreviousWeek = settings.NewWeekMode == NewWeekMode.CopyPrevious;
         StartWeekEmpty = !CopyPreviousWeek;
         UpdateCheckEnabled = settings.UpdateCheckEnabled;
+        IncludePrereleases = settings.IncludePrereleases;
         ThemeSystem = settings.ThemeMode == ThemeMode.System;
         ThemeLight = settings.ThemeMode == ThemeMode.Light;
         ThemeDark = settings.ThemeMode == ThemeMode.Dark;
@@ -402,27 +406,49 @@ public partial class SettingsViewModel : PageViewModel
         UpdateStatusText = "Schaue auf GitHub nach …";
         try
         {
-            var result = await Main.Services.CreateUpdateChecker().CheckAsync(AppInfo.Version, CancellationToken.None);
-            Main.Services.Data.LastUpdateCheck = Main.Services.Clock.Now;
-            Main.Services.Store.Save(Main.Services.Data);
-            if (result.Outcome == UpdateCheckOutcome.NewVersion)
-            {
-                Main.ShowUpdate(result.Update!);
-                UpdateStatusText = "Version " + result.Update!.Version + " ist da. Oben auf „Herunterladen“ tippen.";
-            }
-            else if (result.Outcome == UpdateCheckOutcome.UpToDate)
-            {
-                UpdateStatusText = "Du hast die neueste Version (" + AppInfo.Version + ").";
-            }
-            else
-            {
-                UpdateStatusText = "Konnte bei GitHub nicht nachsehen. Internet da? Ist das Projekt öffentlich?";
-            }
+            var updates = Main.Services.Updates;
+            var result = await updates.CheckAsync();
+            UpdateStatusText = DescribeCheck(result, updates.ActionText);
         }
         finally
         {
             IsCheckingUpdates = false;
         }
+    }
+
+    private static string? DescribeCheck(UpdateCheckResult? result, string actionText)
+    {
+        if (result is null)
+        {
+            return null;
+        }
+
+        if (result.Outcome == UpdateCheckOutcome.UpdateAvailable)
+        {
+            return "Version " + result.Release!.Version + " ist da. Oben auf „" + actionText + "“ tippen.";
+        }
+
+        if (result.Outcome == UpdateCheckOutcome.UpToDate)
+        {
+            return "Du hast die neueste Version (" + AppInfo.FullVersion + ").";
+        }
+
+        if (result.FailureReason == UpdateFailureReason.RateLimited)
+        {
+            return "GitHub lässt gerade keine Abfragen zu. Versuch es in einer Stunde noch mal.";
+        }
+
+        if (result.FailureReason == UpdateFailureReason.NoMatchingAsset)
+        {
+            return "Zur neuesten Version gibt es noch keine App-Datei. Versuch es später noch mal.";
+        }
+
+        if (result.FailureReason == UpdateFailureReason.InvalidResponse)
+        {
+            return "Konnte bei GitHub nicht nachsehen. Ist das Projekt öffentlich?";
+        }
+
+        return "Konnte bei GitHub nicht nachsehen. Internet da?";
     }
 
     private bool CanCheckUpdatesNow()
@@ -433,6 +459,12 @@ public partial class SettingsViewModel : PageViewModel
     partial void OnUpdateCheckEnabledChanged(bool value)
     {
         Settings.UpdateCheckEnabled = value;
+        Save();
+    }
+
+    partial void OnIncludePrereleasesChanged(bool value)
+    {
+        Settings.IncludePrereleases = value;
         Save();
     }
 

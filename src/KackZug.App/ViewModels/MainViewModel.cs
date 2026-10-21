@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
+using AppUpdater;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KackZug.Core;
-using KackZug.Core.Updates;
 using KackZug.Services;
 
 namespace KackZug.ViewModels;
@@ -41,10 +41,6 @@ public partial class MainViewModel : ViewModelBase
     public partial TutorialViewModel? Tutorial { get; set; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasUpdate))]
-    public partial UpdateInfo? AvailableUpdate { get; set; }
-
-    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasImport))]
     public partial ImportViewModel? Import { get; set; }
 
@@ -63,24 +59,6 @@ public partial class MainViewModel : ViewModelBase
     public bool HasTutorial
     {
         get { return Tutorial is not null; }
-    }
-
-    public bool HasUpdate
-    {
-        get { return AvailableUpdate is not null; }
-    }
-
-    public string UpdateText
-    {
-        get
-        {
-            if (AvailableUpdate is null)
-            {
-                return "";
-            }
-
-            return "Version " + AvailableUpdate.Version + " ist da.";
-        }
     }
 
     public bool HasImport
@@ -140,43 +118,119 @@ public partial class MainViewModel : ViewModelBase
         Services.Store.Save(Services.Data);
     }
 
-    public async Task CheckForUpdateAsync()
+    public UpdateController Updates
     {
-        var data = Services.Data;
-        if (!data.Settings.UpdateCheckEnabled || !UpdateChecker.IsDue(data.LastUpdateCheck, Services.Clock.Now))
+        get { return Services.Updates; }
+    }
+
+    public Task CheckForUpdateAsync()
+    {
+        return Updates.CheckIfDueAsync();
+    }
+
+    /// <summary>Laedt die neue Version und startet die Installation; ohne Installer auf dieser Plattform oeffnet sich die Download-Seite</summary>
+    [RelayCommand]
+    public async Task UpdateNowAsync()
+    {
+        var updates = Updates;
+        var release = updates.Release;
+        if (release is null || updates.IsDownloading)
         {
             return;
         }
 
-        data.LastUpdateCheck = Services.Clock.Now;
-        Services.Store.Save(data);
-        var checker = Services.CreateUpdateChecker();
-        var update = await checker.FindNewerAsync(AppInfo.Version, CancellationToken.None);
-        if (update is not null)
+        if (!updates.CanInstall)
         {
-            ShowUpdate(update);
+            Services.Platform.OpenUrl(release.PageUrl);
+            return;
+        }
+
+        if (!updates.IsDownloaded)
+        {
+            try
+            {
+                await updates.DownloadAsync();
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            catch (UpdateVerificationException)
+            {
+                ShowToast("Die geladene Datei war fehlerhaft und wurde verworfen. Versuch es später noch mal.", true);
+                return;
+            }
+            catch (Exception)
+            {
+                ShowToast("Download hat nicht geklappt. Internet da? Tipp dann noch mal auf „Jetzt aktualisieren“.", true);
+                return;
+            }
+        }
+
+        await InstallUpdateAsync(true);
+    }
+
+    /// <summary>Nach der Rueckkehr in die App: Hat eine Installation auf die Erlaubnis gewartet, geht es jetzt weiter</summary>
+    public async Task ContinueUpdateAfterPermissionAsync()
+    {
+        if (!Updates.TakeWaitingForPermission())
+        {
+            return;
+        }
+
+        await InstallUpdateAsync(false);
+    }
+
+    private async Task InstallUpdateAsync(bool askForPermission)
+    {
+        var result = await Updates.InstallAsync();
+        if (result.Status == InstallStartStatus.Failed)
+        {
+            ShowToast("Das Update ließ sich nicht installieren. Über die Download-Seite auf GitHub geht es auch von Hand.", true);
+            return;
+        }
+
+        if (result.Status != InstallStartStatus.NeedsPermission)
+        {
+            return;
+        }
+
+        if (!askForPermission)
+        {
+            ShowToast("Ohne diese Erlaubnis kann sich KackZug nicht selbst aktualisieren.", false);
+            return;
+        }
+
+        var allowed = await ConfirmAsync("Apps installieren erlauben",
+            "Erlaube KackZug einmal, Apps zu installieren. Danach geht es von selbst weiter.", "Erlauben");
+        if (allowed)
+        {
+            Updates.OpenInstallPermissionSettings();
         }
     }
 
-    public void ShowUpdate(UpdateInfo update)
+    /// <summary>Android meldet das Ende einer Installation, die die App nicht neu gestartet hat</summary>
+    public void ReportInstallFinished(bool succeeded, bool aborted, string? message)
     {
-        AvailableUpdate = update;
-        OnPropertyChanged(nameof(UpdateText));
-    }
-
-    [RelayCommand]
-    private void OpenUpdatePage()
-    {
-        if (AvailableUpdate is not null)
+        Updates.ReportInstallFinished(succeeded, message);
+        if (succeeded)
         {
-            Services.Platform.OpenUrl(AvailableUpdate.PageUrl);
+            return;
         }
+
+        if (aborted)
+        {
+            ShowToast("Update abgebrochen. Oben kannst du es jederzeit neu starten.", false);
+            return;
+        }
+
+        ShowToast("Android hat das Update nicht installiert. Oben kannst du es noch mal versuchen.", true);
     }
 
     [RelayCommand]
     private void DismissUpdate()
     {
-        AvailableUpdate = null;
+        Updates.Dismiss();
     }
 
     public bool HandleBack()

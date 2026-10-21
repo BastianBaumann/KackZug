@@ -1,3 +1,4 @@
+using AppUpdater;
 using KackZug.Core.Checking;
 using KackZug.Core.Planning;
 
@@ -24,4 +25,10 @@ public interface IPlatform
     IReadOnlyList<PermissionInfo> GetPermissions();
 
     void OpenPermissionSettings(string key);
+
+    /// <remarks>Null, wo die App sich nicht selbst installieren kann; dann bleibt nur die Download-Seite.</remarks>
+    IUpdateInstaller? CreateUpdateInstaller();
+
+    /// <summary>Oeffnet die Systemseite, auf der der Nutzer der App das Installieren von Apps erlaubt</summary>
+    void OpenInstallPermissionSettings();
 }

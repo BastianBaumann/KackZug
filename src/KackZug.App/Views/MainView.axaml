@@ -21,14 +21,22 @@
             </Border>
 
             <Grid Grid.Row="1" RowDefinitions="Auto,*">
-                <Border Grid.Row="0" IsVisible="{Binding HasUpdate}" Background="{DynamicResource AppAccentSoftBrush}" Padding="16,8">
-                    <Grid ColumnDefinitions="*,Auto,Auto">
-                        <TextBlock Text="{Binding UpdateText}" VerticalAlignment="Center" TextWrapping="Wrap" FontWeight="SemiBold" />
-                        <Button Grid.Column="1" Classes="ghost" Command="{Binding OpenUpdatePageCommand}">
-                            <TextBlock Text="Herunterladen" />
-                        </Button>
-                        <Button Grid.Column="2" Classes="icon" Command="{Binding DismissUpdateCommand}" ToolTip.Tip="Ausblenden">
+                <Border Grid.Row="0" IsVisible="{Binding Updates.HasUpdate}" Background="{DynamicResource AppAccentSoftBrush}" Padding="16,8,8,10">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                        <StackPanel Spacing="2" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Updates.BannerText}" TextWrapping="Wrap" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding Updates.NotesText}" Classes="caption" TextWrapping="Wrap" MaxLines="3" TextTrimming="CharacterEllipsis"
+                                       IsVisible="{Binding Updates.HasNotes}" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Classes="icon" VerticalAlignment="Top" Command="{Binding DismissUpdateCommand}" ToolTip.Tip="Ausblenden">
                             <c:OutlineIcon Data="{StaticResource IconCancelled}" Width="18" Height="18" Foreground="{DynamicResource AppMutedBrush}" />
+                        </Button>
+                        <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="0,8,8,0" Minimum="0" Maximum="100"
+                                     Value="{Binding Updates.ProgressValue}" IsIndeterminate="{Binding Updates.IsProgressUnknown}"
+                                     Foreground="{DynamicResource AppAccentBrush}" IsVisible="{Binding Updates.IsDownloading}" />
+                        <Button Grid.Row="2" Grid.ColumnSpan="2" Classes="primary" Margin="0,8,8,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                Command="{Binding UpdateNowCommand}" IsVisible="{Binding !Updates.IsDownloading}">
+                            <TextBlock Text="{Binding Updates.ActionText}" />
                         </Button>
                     </Grid>
                 </Border>

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AppUpdater;
 using KackZug.Core.Checking;
 using KackZug.Core.Planning;
 
@@ -82,5 +83,17 @@ public sealed class DefaultPlatform : IPlatform
 
     public void OpenPermissionSettings(string key)
     {
+    }
+
+    public IUpdateInstaller? CreateUpdateInstaller()
+    {
+        return null;
+    }
+
+    public Action? InstallPermissionOpener { get; set; }
+
+    public void OpenInstallPermissionSettings()
+    {
+        InstallPermissionOpener?.Invoke();
     }
 }

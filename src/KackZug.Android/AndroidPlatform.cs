@@ -3,6 +3,8 @@ using Android.Content;
 
 using Android.OS;
 using AndroidX.Core.App;
+using AppUpdater;
+using AppUpdater.Android;
 using KackZug.Core.Checking;
 using KackZug.Core.Planning;
 using KackZug.Services;
@@ -178,5 +180,15 @@ public sealed class AndroidPlatform : IPlatform
 
         intent.AddFlags(ActivityFlags.NewTask);
         _context.StartActivity(intent);
+    }
+
+    public IUpdateInstaller? CreateUpdateInstaller()
+    {
+        return new AndroidPackageInstaller(_context);
+    }
+
+    public void OpenInstallPermissionSettings()
+    {
+        new AndroidPackageInstaller(_context).OpenInstallPermissionSettings();
     }
 }

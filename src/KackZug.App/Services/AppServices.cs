@@ -1,3 +1,4 @@
+using AppUpdater;
 using KackZug.Core;
 using KackZug.Core.Bahn;
 using KackZug.Core.Checking;
@@ -6,7 +7,6 @@ using KackZug.Core.Models;
 using KackZug.Core.Planning;
 using KackZug.Core.Sharing;
 using KackZug.Core.Storage;
-using KackZug.Core.Updates;
 
 namespace KackZug.Services;
 
@@ -17,6 +17,7 @@ public sealed class AppServices
     private IStationSearch? _stationSearch;
     private IShareLinkCreator? _shareLinks;
     private BahnWebClient? _bahnClient;
+    private UpdateController? _updates;
 
     private AppServices(IPlatform platform, AppDataStore store, AppData data, IClock clock)
     {
@@ -25,6 +26,7 @@ public sealed class AppServices
         Data = data;
         Clock = clock;
         Theme = new ThemeService();
+        UpdateInstaller = platform.CreateUpdateInstaller();
     }
 
     public event EventHandler? DataChanged;
@@ -85,14 +87,31 @@ public sealed class AppServices
 
     public Func<HttpClient>? UpdateClientFactory { get; set; }
 
-    public UpdateChecker CreateUpdateChecker()
+    /// <remarks>Null, wenn die Plattform sich nicht selbst installieren kann; die Tour setzt hier einen eigenen ein.</remarks>
+    public IUpdateInstaller? UpdateInstaller { get; set; }
+
+    public UpdateController Updates
+    {
+        get
+        {
+            if (_updates is null)
+            {
+                _updates = new UpdateController(this);
+            }
+
+            return _updates;
+        }
+    }
+
+    /// <remarks>Die Zeitgrenze gilt nur bis zu den Kopfzeilen, ein grosser Download darf laenger dauern.</remarks>
+    public HttpClient CreateUpdateHttpClient()
     {
         if (UpdateClientFactory is not null)
         {
-            return new UpdateChecker(UpdateClientFactory());
+            return UpdateClientFactory();
         }
 
-        return new UpdateChecker(new HttpClient { Timeout = TimeSpan.FromSeconds(10) });
+        return new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
     }
 
     public ITripStatusSource CreateStatusSource()

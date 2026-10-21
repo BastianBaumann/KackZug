@@ -27,5 +27,7 @@ public sealed class Settings
 
     public bool UpdateCheckEnabled { get; set; } = true;
 
+    public bool IncludePrereleases { get; set; }
+
     public string? TutorialSeenVersion { get; set; }
 }

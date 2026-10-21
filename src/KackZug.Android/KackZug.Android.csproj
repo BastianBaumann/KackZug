@@ -17,6 +17,7 @@
     <PackageReference Include="Avalonia.Android" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppUpdater.Android\AppUpdater.Android.csproj" />
     <ProjectReference Include="..\KackZug.App\KackZug.App.csproj" />
   </ItemGroup>
 </Project>

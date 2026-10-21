@@ -232,6 +232,15 @@
                             <ToggleSwitch Grid.Column="1" IsChecked="{Binding UpdateCheckEnabled}" OnContent="" OffContent="" />
                         </Grid>
                     </Border>
+                    <Border Classes="setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="Vorabversionen anbieten" Classes="body-lg" />
+                                <TextBlock Text="Testversionen von dev, können Fehler haben." Classes="caption" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding IncludePrereleases}" OnContent="" OffContent="" />
+                        </Grid>
+                    </Border>
                     <Border Classes="setting" BorderThickness="0">
                         <StackPanel Spacing="8">
                             <Button Classes="secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding CheckUpdatesNowCommand}">

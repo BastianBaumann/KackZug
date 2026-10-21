@@ -1,5 +1,6 @@
 using Android.App;
 using Android.Runtime;
+using AppUpdater.Android;
 using Avalonia.Android;
 
 namespace KackZug.Android;
@@ -21,6 +22,17 @@ public class MainApplication : AvaloniaAndroidApplication<App>
     {
         App.Platform = new AndroidPlatform(this);
         AlertNotifier.EnsureChannels(this);
+        InstallStatusReceiver.StatusReceived += OnInstallStatus;
         base.OnCreate();
+    }
+
+    private static void OnInstallStatus(object? sender, InstallStatusEventArgs e)
+    {
+        if (e.Status == AndroidInstallStatus.WaitingForUser)
+        {
+            return;
+        }
+
+        App.ReportUpdateInstallFinished(e.Status == AndroidInstallStatus.Succeeded, e.Status == AndroidInstallStatus.Aborted, e.Message);
     }
 }

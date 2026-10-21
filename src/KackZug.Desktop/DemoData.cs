@@ -18,6 +18,7 @@ internal static class DemoData
 
         var data = new AppData();
         data.Settings.TutorialSeenVersion = Core.AppInfo.Version;
+        data.LastUpdateCheck = DateTimeOffset.Now;
         var early = new Shift { Name = "Frühdienst", ColorHex = "#1E9E8B" };
         early.Outbound = Connection(
             Ride("RE7", "NRE", "4711", "Musterstadt Hbf", "8000001", "Beispielhausen", "8000002", 5, 42, 6, 10, "2"),

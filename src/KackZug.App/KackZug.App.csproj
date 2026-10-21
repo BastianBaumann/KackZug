@@ -15,6 +15,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppUpdater\AppUpdater.csproj" />
     <ProjectReference Include="..\KackZug.Core\KackZug.Core.csproj" />
   </ItemGroup>
 </Project>

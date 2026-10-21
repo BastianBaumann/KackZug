@@ -1,5 +1,7 @@
 #if DEBUG
+using System.Security.Cryptography;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using KackZug.ViewModels;
 
@@ -28,13 +30,6 @@ internal static class TourSteps
         check(!main.HasTutorial && main.Services.Store.Load().Settings.TutorialSeenVersion == Core.AppInfo.Version, "Tutorial als gesehen gespeichert");
         main.ShowTutorialIfNeeded();
         check(!main.HasTutorial, "Tutorial kommt nicht erneut");
-
-        main.ShowUpdate(new Core.Updates.UpdateInfo("9.9.9", "https://github.com/BastianBaumann/KackZug/releases/tag/v9.9.9"));
-        check(main.HasUpdate && main.UpdateText.Contains("9.9.9"), "Update-Hinweis sichtbar");
-        main.Navigate("week");
-        await capture(window, Path.Combine(directory, "update-banner.png"));
-        main.DismissUpdateCommand.Execute(null);
-        check(!main.HasUpdate, "Update-Hinweis ausblendbar");
 
         main.Navigate("week");
         var firstWeek = (WeekViewModel)main.CurrentPage!;
@@ -272,22 +267,129 @@ internal static class TourSteps
 
         main.Navigate("settings");
         var settings = (SettingsViewModel)main.CurrentPage!;
+        var updates = main.Updates;
+        var platform = (Services.DefaultPlatform)main.Services.Platform;
+        var opened = new List<string>();
+        platform.UrlOpener = url => opened.Add(url);
         main.DismissUpdateCommand.Execute(null);
 
-        main.Services.UpdateClientFactory = () => new HttpClient(new DemoUpdateHandler("v" + Core.AppInfo.Version));
+        var handler = new DemoUpdateHandler("v" + Core.AppInfo.Version);
+        main.Services.UpdateClientFactory = () => new HttpClient(handler);
         await settings.CheckUpdatesNowCommand.ExecuteAsync(null);
-        check(settings.UpdateStatusText is not null && settings.UpdateStatusText.StartsWith("Du hast die neueste Version") && !main.HasUpdate, "Updates: aktuell");
+        check(settings.UpdateStatusText is not null && settings.UpdateStatusText.StartsWith("Du hast die neueste Version") && !updates.HasUpdate, "Updates: aktuell");
+        check(handler.RequestedUrls.Contains(DemoUpdateHandler.ReleasesUrl), "Updates: fragt die Release-Liste auf GitHub ab");
 
-        main.Services.UpdateClientFactory = () => new HttpClient(new DemoUpdateHandler(null));
+        handler = new DemoUpdateHandler(null);
         await settings.CheckUpdatesNowCommand.ExecuteAsync(null);
         check(settings.UpdateStatusText is not null && settings.UpdateStatusText.StartsWith("Konnte bei GitHub nicht nachsehen"), "Updates: 404 wird als nicht pruefbar gemeldet");
 
-        main.Services.UpdateClientFactory = () => new HttpClient(new DemoUpdateHandler("v9.9.9"));
+        handler = new DemoUpdateHandler("v" + Core.AppInfo.Version, "v9.9.9-dev.1");
         await settings.CheckUpdatesNowCommand.ExecuteAsync(null);
-        check(main.HasUpdate && settings.UpdateStatusText is not null && settings.UpdateStatusText.Contains("9.9.9"), "Updates: neue Version zeigt Banner");
-        check(window.GetVisualDescendants().OfType<TextBlock>().Any(text => text.Text == "Nach Updates suchen"), "Knopf Nach Updates suchen sichtbar");
+        check(!settings.IncludePrereleases && !updates.HasUpdate && settings.UpdateStatusText!.StartsWith("Du hast die neueste Version"), "Updates: Vorabversion ohne Schalter nicht angeboten");
+        check(HasText(window, "Vorabversionen anbieten"), "Schalter Vorabversionen sichtbar");
+        settings.IncludePrereleases = true;
+        check(main.Services.Store.Load().Settings.IncludePrereleases, "Schalter Vorabversionen gespeichert");
+        await settings.CheckUpdatesNowCommand.ExecuteAsync(null);
+        check(updates.HasUpdate && updates.Release!.IsPrerelease && updates.BannerText == "Version 9.9.9-dev.1 ist da.", "Updates: Vorabversion mit Schalter angeboten");
+        settings.IncludePrereleases = false;
+
+        handler = new DemoUpdateHandler("v9.9.9");
+        await settings.CheckUpdatesNowCommand.ExecuteAsync(null);
+        await SettleAsync();
+        check(updates.HasUpdate && settings.UpdateStatusText is not null && settings.UpdateStatusText.Contains("9.9.9"), "Updates: neue Version zeigt Banner");
+        check(updates.BannerText == "Version 9.9.9 ist da." && HasText(window, "Version 9.9.9 ist da."), "Update-Hinweis sichtbar");
+        check(updates.NotesText == "feat: Updates direkt in der App laden und installieren\nfix: Alarm klingelt auch nach Neustart", "Update-Hinweis zeigt die gekuerzten Notizen");
+        check(HasText(window, "Download-Seite öffnen") && settings.UpdateStatusText!.Contains("„Download-Seite öffnen“"), "Ohne Installer: Knopf Download-Seite öffnen");
+        check(HasText(window, "Nach Updates suchen"), "Knopf Nach Updates suchen sichtbar");
         await capture(window, Path.Combine(directory, "settings-update-check.png"));
+        await main.UpdateNowCommand.ExecuteAsync(null);
+        check(opened.Count == 1 && opened[0] == "https://github.com/BastianBaumann/KackZug/releases/tag/v9.9.9", "Ohne Installer oeffnet der Knopf die Release-Seite");
         main.DismissUpdateCommand.Execute(null);
+        check(!updates.HasUpdate, "Update-Hinweis ausblendbar");
+
+        var installer = new DemoUpdateInstaller { PermissionRequestsLeft = 1 };
+        main.Services.UpdateInstaller = installer;
+        var updateDirectory = Path.Combine(main.Services.Platform.DataDirectory, "updates");
+        handler = new DemoUpdateHandler("v9.9.9") { CorruptAsset = true };
+        await updates.CheckAsync();
+        main.Navigate("week");
+        await SettleAsync();
+        check(updates.HasUpdate && HasText(window, "Jetzt aktualisieren"), "Mit Installer: Knopf Jetzt aktualisieren");
+        await capture(window, Path.Combine(directory, "update-banner.png"));
+        await main.UpdateNowCommand.ExecuteAsync(null);
+        check(main.ToastIsError && main.Toast is not null && main.Toast.Contains("fehlerhaft") && installer.InstalledFiles.Count == 0
+              && !Directory.EnumerateFiles(updateDirectory).Any(), "Falsche Pruefsumme: Datei verworfen, nichts installiert");
+        main.Toast = null;
+
+        var pausing = new DemoPausingStream();
+        handler = new DemoUpdateHandler("v9.9.9") { PausingStream = pausing };
+        await updates.CheckAsync();
+        var percents = new List<int>();
+        updates.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(updates.ProgressPercent) && updates.ProgressPercent is int percent)
+            {
+                percents.Add(percent);
+            }
+        };
+        var permissionScreens = 0;
+        platform.InstallPermissionOpener = () => permissionScreens++;
+        var run = main.UpdateNowCommand.ExecuteAsync(null);
+        await pausing.Paused;
+        await SettleAsync();
+        check(updates.IsDownloading && updates.BannerText == "Lädt … 50 %" && HasText(window, "Lädt … 50 %"), "Download: Fortschritt im Hinweis");
+        await capture(window, Path.Combine(directory, "update-downloading.png"));
+        pausing.Resume();
+        await WaitForAsync(() => main.HasDialog);
+        check(percents.Count >= 3 && percents.Contains(50) && percents[percents.Count - 1] == 100, "Download: Fortschritt erreicht 100 %");
+        var downloaded = updates.DownloadedFilePath;
+        check(updates.IsDownloaded && Path.GetFileName(downloaded) == "KackZug-9.9.9.apk"
+              && Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(downloaded!))).ToLowerInvariant() == DemoUpdateHandler.AssetSha256, "Download: Pruefsumme stimmt, Datei liegt bereit");
+        check(main.HasDialog && main.Dialog!.Message.Contains("Apps zu installieren"), "Erlaubnis: Erklaerung vor den Einstellungen");
+        await capture(window, Path.Combine(directory, "update-permission.png"));
+        main.Dialog!.ConfirmCommand.Execute(null);
+        await run;
+        check(permissionScreens == 1 && updates.IsWaitingForPermission && installer.InstalledFiles.Count == 0, "Erlaubnis: Einstellungen geoeffnet, Installation wartet");
+
+        App.ContinueUpdateAfterResume();
+        await WaitForAsync(() => installer.InstalledFiles.Count > 0);
+        check(installer.InstalledFiles.Count == 1 && installer.InstalledFiles[0] == downloaded && installer.LastFileSha256 == DemoUpdateHandler.AssetSha256,
+              "Nach der Rueckkehr: Installer bekommt die geladene Datei");
+        check(!updates.IsWaitingForPermission && updates.IsInstalling && updates.BannerText == "Version 9.9.9 wird installiert …", "Hinweis zeigt die laufende Installation");
+
+        App.ReportUpdateInstallFinished(false, true, "aborted");
+        await SettleAsync();
+        check(!updates.IsInstalling && updates.HasUpdate && main.Toast is not null && main.Toast.StartsWith("Update abgebrochen"), "Abgebrochene Installation meldet sich, Hinweis bleibt");
+        var assetRequests = handler.AssetRequests;
+        await main.UpdateNowCommand.ExecuteAsync(null);
+        check(installer.InstalledFiles.Count == 2 && handler.AssetRequests == assetRequests, "Neuer Versuch installiert ohne neuen Download");
+        App.ReportUpdateInstallFinished(true, false, null);
+        await SettleAsync();
+        check(!updates.HasUpdate && !updates.IsInstalling, "Erfolgreiche Installation blendet den Hinweis aus");
+
+        main.Toast = null;
+        main.Services.UpdateInstaller = null;
+        platform.InstallPermissionOpener = null;
+        platform.UrlOpener = null;
+    }
+
+    private static async Task WaitForAsync(Func<bool> condition)
+    {
+        for (var i = 0; i < 100 && !condition(); i++)
+        {
+            await Task.Delay(50);
+        }
+    }
+
+    private static async Task SettleAsync()
+    {
+        await Task.Delay(300);
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+    }
+
+    private static bool HasText(Window window, string text)
+    {
+        return window.GetVisualDescendants().OfType<TextBlock>().Any(block => block.Text == text && block.IsEffectivelyVisible);
     }
 
     private static async Task RunManualEntryAsync(MainViewModel main, Window window, string directory, Action<bool, string> check, Func<TopLevel, string, Task> capture)

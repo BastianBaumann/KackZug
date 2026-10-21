@@ -41,6 +41,30 @@ public partial class App : Application
         Avalonia.Threading.Dispatcher.UIThread.Post(() => services.Reload());
     }
 
+    /// <summary>Beim Zurueckkehren in die App: wartet ein Update auf die Erlaubnis zum Installieren, geht es weiter</summary>
+    public static void ContinueUpdateAfterResume()
+    {
+        var main = Main;
+        if (main is null)
+        {
+            return;
+        }
+
+        Avalonia.Threading.Dispatcher.UIThread.Post(() => _ = main.ContinueUpdateAfterPermissionAsync());
+    }
+
+    /// <summary>Ergebnis einer Update-Installation, die nicht mit dem Neustart der App endete</summary>
+    public static void ReportUpdateInstallFinished(bool succeeded, bool aborted, string? message)
+    {
+        var main = Main;
+        if (main is null)
+        {
+            return;
+        }
+
+        Avalonia.Threading.Dispatcher.UIThread.Post(() => main.ReportInstallFinished(succeeded, aborted, message));
+    }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);

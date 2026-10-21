@@ -33,6 +33,7 @@ public class MainActivity : AvaloniaMainActivity
     {
         base.OnResume();
         App.ReloadFromBackground();
+        App.ContinueUpdateAfterResume();
     }
 
     private void AskForNotifications()
