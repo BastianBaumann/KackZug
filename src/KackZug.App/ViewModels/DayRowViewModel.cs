@@ -40,6 +40,11 @@ public partial class DayRowViewModel : ViewModelBase
 
     public DateOnly Date { get; }
 
+    public DayPlan Plan
+    {
+        get { return _plan; }
+    }
+
     public string DayName { get; }
 
     public string WeekdayShort { get; }

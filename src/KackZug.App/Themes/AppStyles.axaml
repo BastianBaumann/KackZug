@@ -38,6 +38,10 @@
         <Setter Property="FontFeatures" Value="+tnum" />
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
+    <Style Selector="TextBlock.cancelled">
+        <Setter Property="TextDecorations" Value="Strikethrough" />
+        <Setter Property="Foreground" Value="{DynamicResource AppMutedBrush}" />
+    </Style>
     <Style Selector="TextBlock.kicker">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="Bold" />

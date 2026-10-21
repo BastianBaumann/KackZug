@@ -136,6 +136,16 @@ internal static class TourSteps
         weekRadios[0].IsChecked = true;
         check(week.WeekTitle == "Diese Woche", "Zurueck zur laufenden Woche");
 
+        var detailDay = week.Days.First(day => day.IsToday);
+        week.OpenDetailCommand.Execute(detailDay);
+        check(week.HasDetail, "Detailansicht geoeffnet");
+        await week.Detail!.RefreshCommand.ExecuteAsync(null);
+        var firstTrip = week.Detail.Trips[0];
+        check(firstTrip.NowText == "jetzt 05:50" && firstTrip.Legs[0].Badge is not null && firstTrip.Legs[0].Badge!.Text == "+8 min", "Detail zeigt +8 und neue Zeit");
+        check(firstTrip.Notes.Any(note => note.Contains("Anschluss gefährdet")), "Detail zeigt gefaehrdeten Umstieg");
+        await capture(window, Path.Combine(directory, "trip-detail.png"));
+        check(main.HandleBack() && !week.HasDetail, "Zurueck schliesst die Detailansicht");
+
         var editable = week.Days.Where(day => day.IsEditable).Take(3).ToList();
         week.StartSelectingCommand.Execute(null);
         check(week.IsSelecting && week.Days.Where(day => day.IsPast).All(day => !day.CanMark), "Auswahlmodus, vergangene Tage nicht markierbar");

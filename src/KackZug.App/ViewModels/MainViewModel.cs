@@ -180,6 +180,39 @@ public partial class MainViewModel : ViewModelBase
         AvailableUpdate = null;
     }
 
+    public bool HandleBack()
+    {
+        if (Dialog is not null)
+        {
+            Dialog.CancelCommand.Execute(null);
+            return true;
+        }
+
+        if (Import is not null)
+        {
+            CloseImport();
+            return true;
+        }
+
+        if (CurrentPage is WeekViewModel week && week.HandleBack())
+        {
+            return true;
+        }
+
+        if (CurrentPage is ShiftsViewModel shifts && shifts.HandleBack())
+        {
+            return true;
+        }
+
+        if (CurrentPage is not WeekViewModel)
+        {
+            Navigate("week");
+            return true;
+        }
+
+        return false;
+    }
+
     public Task StartImportAsync(string sharedText)
     {
         var import = new ImportViewModel(this);

@@ -43,6 +43,21 @@ public partial class WeekViewModel : PageViewModel
     public partial bool IsSelecting { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasDetail))]
+    [NotifyPropertyChangedFor(nameof(IsListVisible))]
+    public partial TripDetailViewModel? Detail { get; set; }
+
+    public bool HasDetail
+    {
+        get { return Detail is not null; }
+    }
+
+    public bool IsListVisible
+    {
+        get { return Detail is null; }
+    }
+
+    [ObservableProperty]
     public partial ShiftOption? BulkOption { get; set; }
 
     public ObservableCollection<ShiftOption> BulkOptions { get; } = new ObservableCollection<ShiftOption>();
@@ -84,6 +99,45 @@ public partial class WeekViewModel : PageViewModel
         {
             _isSavingOwnChange = false;
         }
+    }
+
+    [RelayCommand]
+    private void OpenDetail(DayRowViewModel day)
+    {
+        if (day.Shift is null)
+        {
+            return;
+        }
+
+        var detail = new TripDetailViewModel(Main, day.Date, day.Shift, day.Plan, CloseDetail);
+        Detail = detail;
+        if (detail.IsSoon && detail.Trips.Count > 0)
+        {
+            _ = detail.RefreshAsync();
+        }
+    }
+
+    public void CloseDetail()
+    {
+        Detail = null;
+        Refresh();
+    }
+
+    public bool HandleBack()
+    {
+        if (Detail is not null)
+        {
+            CloseDetail();
+            return true;
+        }
+
+        if (IsSelecting)
+        {
+            CancelSelectingCommand.Execute(null);
+            return true;
+        }
+
+        return false;
     }
 
     [RelayCommand]

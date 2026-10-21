@@ -46,6 +46,17 @@ public partial class ShiftsViewModel : PageViewModel
     {
     }
 
+    public bool HandleBack()
+    {
+        if (Editor is null)
+        {
+            return false;
+        }
+
+        Editor.CancelCommand.Execute(null);
+        return true;
+    }
+
     public void OpenEditor(Shift shift, bool isNew)
     {
         Editor = new ShiftEditorViewModel(Main, shift, isNew, CloseEditor);

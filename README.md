@@ -15,7 +15,11 @@ er verspätet, wechselt das Gleis oder wird der Anschluss knapp, meldet sich Kac
   und KackZug auswählen. Die Verbindung landet mit allen Teilstrecken (auch Fußwege und Straßenbahn)
   als Hin- oder Rückfahrt in einer Schicht.
 - **Woche planen:** Jeder Tag bekommt eine Schicht oder bleibt frei. Hin- und Rückfahrt lassen sich
-  pro Tag einzeln abschalten. Eine neue Woche übernimmt auf Wunsch den Plan der Vorwoche.
+  pro Tag einzeln abschalten. Die nächste Woche kannst du schon vorher planen, und mit „Mehrere Tage
+  setzen“ (oder langem Druck auf einen Tag) bekommen gleich mehrere Tage dieselbe Schicht. Eine neue
+  Woche übernimmt auf Wunsch den Plan der Vorwoche.
+- **Details zu jeder Fahrt:** große Abfahrtszeit, aktueller Stand jeder Teilstrecke (Verspätung, neues
+  Gleis, Ausfall) und wie viel Puffer beim Umsteigen bleibt.
 - **Prüfen zu festen Zeiten:** am Abend vorher und kurz vor der Abfahrt, standardmäßig 90, 45 und
   15 Minuten vorher. Die Zeiten sind einstellbar.
 - **Laute Meldungen bei Störungen:** Ausfall, Teilausfall, Verspätung ab einer einstellbaren Schwelle,
