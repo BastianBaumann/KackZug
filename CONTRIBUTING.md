@@ -19,7 +19,8 @@ Schön, dass du helfen willst. Fehlerberichte, Ideen und Pull Requests sind will
 | `main` | Stand der letzten stabilen Version. Nur der Maintainer führt `dev` hier zusammen. |
 | `dev` | Entwicklung. **Pull Requests gehen immer nach `dev`.** |
 
-Releases entstehen nur aus Tags (`v1.2.3` von `main`, Vorabversionen wie `v1.3.0-dev.1` von `dev`).
+Releases entstehen nur aus Tags (`v1.2.3` von `main`, Vorabversionen wie `v1.3.0-dev.1` von `dev`). Der Release-Workflow
+prüft das und bricht ab, wenn ein Tag auf einem anderen Stand liegt.
 Tags kann nur der Maintainer setzen, und nur er hat Zugriff auf den Signierschlüssel.
 
 ## Ablauf für einen Pull Request
