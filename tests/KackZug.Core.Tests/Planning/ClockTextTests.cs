@@ -40,4 +40,34 @@ public class ClockTextTests
     {
         Assert.Equal("07:05", ClockText.Format(new TimeOnly(7, 5)));
     }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData("2", "2")]
+    [InlineData("22", "22")]
+    [InlineData("223", "22:3")]
+    [InlineData("2230", "22:30")]
+    [InlineData("22:30", "22:30")]
+    [InlineData("22:", "22")]
+    [InlineData("9", "9")]
+    [InlineData("93", "9:3")]
+    [InlineData("930", "9:30")]
+    [InlineData("0930", "09:30")]
+    [InlineData("245", "24:5")]
+    [InlineData("25:00", "25:00")]
+    [InlineData("22305", "22:30")]
+    [InlineData("19.30", "19:30")]
+    public void ColonComesWhileTyping(string typed, string expected)
+    {
+        Assert.Equal(expected, ClockText.FormatTyping(typed));
+    }
+
+    [Theory]
+    [InlineData("2230")]
+    [InlineData("930")]
+    [InlineData("0005")]
+    public void TypedTextStaysReadable(string typed)
+    {
+        Assert.Equal(ClockText.Parse(typed), ClockText.Parse(ClockText.FormatTyping(typed)));
+    }
 }
