@@ -23,6 +23,7 @@ public partial class TutorialViewModel : ViewModelBase
         Steps.Add(new TutorialStep(UiStrings.Tutorial_WelcomeTitle, welcome, null));
         Steps.Add(new TutorialStep(UiStrings.Tutorial_ShareTitle, UiStrings.Tutorial_ShareText, "IconShare"));
         Steps.Add(new TutorialStep(UiStrings.Tutorial_WeekTitle, UiStrings.Tutorial_WeekText, "IconWeek"));
+        Steps.Add(new TutorialStep(UiStrings.Tutorial_TripsTitle, UiStrings.Tutorial_TripsText, "IconTrain"));
         Steps.Add(new TutorialStep(UiStrings.Tutorial_CheckTitle, UiStrings.Tutorial_CheckText, "IconBell"));
         Steps.Add(new TutorialStep(UiStrings.Tutorial_AlarmsTitle, UiStrings.Tutorial_AlarmsText, "IconSettings"));
         Steps[0].IsCurrent = true;

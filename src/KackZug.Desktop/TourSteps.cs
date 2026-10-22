@@ -26,6 +26,9 @@ internal static class TourSteps
         await capture(window, Path.Combine(directory, "tutorial-2.png"));
         main.Tutorial.NextCommand.Execute(null);
         main.Tutorial.NextCommand.Execute(null);
+        check(main.Tutorial.Steps.Any(step => step.IsCurrent && step.Title == "Einzelfahrten" && step.Text.Contains("löscht KackZug sie von selbst")), "Tutorial erklaert Einzelfahrten und dass sie geloescht werden");
+        await capture(window, Path.Combine(directory, "tutorial-trips.png"));
+        main.Tutorial.NextCommand.Execute(null);
         main.Tutorial.NextCommand.Execute(null);
         check(main.Tutorial.IsLast, "Letzte Tutorial-Seite erreicht");
         await capture(window, Path.Combine(directory, "tutorial-5.png"));

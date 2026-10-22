@@ -241,4 +241,6 @@
   <data name="Settings_SoundHint" xml:space="preserve"><value>Störungen klingeln mit dem KackZug-Ton. Aus: nur Vibration.</value></data>
   <data name="Settings_FullScreen" xml:space="preserve"><value>Vollbild auf dem Sperrbildschirm</value></data>
   <data name="Settings_FullScreenHint" xml:space="preserve"><value>Aus: nur die Benachrichtigung, kein großes Alarmbild.</value></data>
+  <data name="Tutorial_TripsTitle" xml:space="preserve"><value>Einzelfahrten</value></data>
+  <data name="Tutorial_TripsText" xml:space="preserve"><value>Für eine einmalige Reise speicherst du die Verbindung als Einzelfahrt mit Datum. Sie steht unter „Fahrten“ und wird genauso geprüft. Eine Stunde nach der Ankunft löscht KackZug sie von selbst, du musst nichts aufräumen.</value></data>
 </root>

@@ -241,4 +241,6 @@
   <data name="Settings_SoundHint" xml:space="preserve"><value>Disruptions ring with the KackZug tone. Off: vibration only.</value></data>
   <data name="Settings_FullScreen" xml:space="preserve"><value>Full screen on the lock screen</value></data>
   <data name="Settings_FullScreenHint" xml:space="preserve"><value>Off: only the notification, no big alarm screen.</value></data>
+  <data name="Tutorial_TripsTitle" xml:space="preserve"><value>One-off trips</value></data>
+  <data name="Tutorial_TripsText" xml:space="preserve"><value>For a single journey, save the connection as a one-off trip with a date. It shows up under “Trips” and is checked the same way. One hour after arrival KackZug deletes it by itself, so there is nothing to tidy up.</value></data>
 </root>
