@@ -16,11 +16,9 @@ public partial class ImportTarget : ObservableObject
     {
         Shift = shift;
         IsOneOffTrip = isOneOffTrip;
-        Subtitle = "";
         if (isOneOffTrip)
         {
             Title = UiStrings.Import_TargetOneOff;
-            Subtitle = UiStrings.Import_TargetOneOffHint;
         }
         else if (shift is null)
         {
@@ -42,13 +40,6 @@ public partial class ImportTarget : ObservableObject
     public bool IsOneOffTrip { get; }
 
     public string Title { get; }
-
-    public string Subtitle { get; }
-
-    public bool HasSubtitle
-    {
-        get { return Subtitle.Length > 0; }
-    }
 
     public bool IsNew
     {

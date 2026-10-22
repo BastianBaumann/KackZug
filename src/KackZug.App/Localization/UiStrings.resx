@@ -213,7 +213,7 @@
   <data name="Nav_Trips" xml:space="preserve"><value>Trips</value></data>
   <data name="Format_Date" xml:space="preserve"><value>dd/MM/yyyy</value></data>
   <data name="Import_TargetOneOff" xml:space="preserve"><value>One-off trip</value></data>
-  <data name="Import_TargetOneOffHint" xml:space="preserve"><value>Just one day, then it's gone</value></data>
+  <data name="Import_TargetOneOffHint" xml:space="preserve"><value>Just one day</value></data>
   <data name="Import_TripDate" xml:space="preserve"><value>Date</value></data>
   <data name="Import_TripDatePlaceholder" xml:space="preserve"><value>DD.MM.YYYY</value></data>
   <data name="Import_TripName" xml:space="preserve"><value>Name (optional)</value></data>
@@ -233,6 +233,10 @@
   <data name="Trips_Deleted" xml:space="preserve"><value>One-off trip deleted.</value></data>
   <data name="Trips_Back" xml:space="preserve"><value>‹ Back to the trips</value></data>
   <data name="Trips_CheckNow" xml:space="preserve"><value>Check now (all trips)</value></data>
+  <data name="Import_KindShift" xml:space="preserve"><value>Shift</value></data>
+  <data name="Import_KindShiftHint" xml:space="preserve"><value>Every week</value></data>
+  <data name="Import_ChooseShift" xml:space="preserve"><value>Which shift?</value></data>
+  <data name="Import_ChooseDirection" xml:space="preserve"><value>Outbound or return?</value></data>
   <data name="Settings_Sound" xml:space="preserve"><value>Sound</value></data>
   <data name="Settings_SoundHint" xml:space="preserve"><value>Disruptions ring with the KackZug tone. Off: vibration only.</value></data>
   <data name="Settings_FullScreen" xml:space="preserve"><value>Full screen on the lock screen</value></data>

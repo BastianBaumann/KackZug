@@ -15,6 +15,8 @@ public partial class ImportViewModel : ViewModelBase
     private readonly MainViewModel _main;
     private SavedConnection? _connection;
     private DateOnly? _sharedDate;
+    private readonly ImportTarget _oneOffTarget = ImportTarget.ForOneOffTrip();
+    private ImportTarget? _shiftTarget;
 
     public ImportViewModel(MainViewModel main)
     {
@@ -24,6 +26,7 @@ public partial class ImportViewModel : ViewModelBase
 
     public ObservableCollection<LegLine> Legs { get; } = new ObservableCollection<LegLine>();
 
+    /// <summary>Bestehende Schichten und "Neue Schicht"; die Einzelfahrt ist eine eigene Kachel</summary>
     public ObservableCollection<ImportTarget> Targets { get; } = new ObservableCollection<ImportTarget>();
 
     [ObservableProperty]
@@ -51,6 +54,7 @@ public partial class ImportViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNewTarget))]
     [NotifyPropertyChangedFor(nameof(IsOneOffTarget))]
+    [NotifyPropertyChangedFor(nameof(IsShiftMode))]
     [NotifyPropertyChangedFor(nameof(SaveHint))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public partial ImportTarget? SelectedTarget { get; set; }
@@ -112,6 +116,12 @@ public partial class ImportViewModel : ViewModelBase
     public bool IsOneOffTarget
     {
         get { return SelectedTarget is not null && SelectedTarget.IsOneOffTrip; }
+    }
+
+    /// <summary>Kachel Schicht gewaehlt: Schichtliste und Hin/Rueck sind zu sehen</summary>
+    public bool IsShiftMode
+    {
+        get { return SelectedTarget is not null && !SelectedTarget.IsOneOffTrip; }
     }
 
     public bool HasTripDateError
@@ -211,12 +221,7 @@ public partial class ImportViewModel : ViewModelBase
     [RelayCommand]
     private void SelectTarget(ImportTarget target)
     {
-        foreach (var item in Targets)
-        {
-            item.IsSelected = item == target;
-        }
-
-        SelectedTarget = target;
+        ApplyTarget(target);
         if (target.Shift is not null)
         {
             var hasOutbound = target.Shift.Outbound is not null;
@@ -232,6 +237,47 @@ public partial class ImportViewModel : ViewModelBase
         }
 
         UpdateReplacement();
+    }
+
+    /// <summary>Zurueck zur Schicht, die vorher gewaehlt war; Hin/Rueck bleibt, wie es war</summary>
+    [RelayCommand]
+    private void ChooseShiftMode()
+    {
+        if (IsShiftMode || _shiftTarget is null)
+        {
+            return;
+        }
+
+        ApplyTarget(_shiftTarget);
+        UpdateReplacement();
+    }
+
+    [RelayCommand]
+    private void ChooseOneOffMode()
+    {
+        if (IsOneOffTarget)
+        {
+            return;
+        }
+
+        ApplyTarget(_oneOffTarget);
+        UpdateReplacement();
+    }
+
+    private void ApplyTarget(ImportTarget target)
+    {
+        if (!target.IsOneOffTrip)
+        {
+            _shiftTarget = target;
+        }
+
+        foreach (var item in Targets)
+        {
+            item.IsSelected = item == target;
+        }
+
+        _oneOffTarget.IsSelected = target == _oneOffTarget;
+        SelectedTarget = target;
     }
 
     [RelayCommand]
@@ -449,15 +495,10 @@ public partial class ImportViewModel : ViewModelBase
 
         var newTarget = new ImportTarget(null);
         Targets.Add(newTarget);
-        var oneOffTarget = ImportTarget.ForOneOffTrip();
-        Targets.Add(oneOffTarget);
+        SelectTarget(newTarget);
         if (PrefersOneOffTrip)
         {
-            SelectTarget(oneOffTarget);
-        }
-        else
-        {
-            SelectTarget(newTarget);
+            ChooseOneOffMode();
         }
     }
 

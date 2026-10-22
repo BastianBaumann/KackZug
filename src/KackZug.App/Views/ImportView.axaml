@@ -50,7 +50,29 @@
                        Classes="caption" TextWrapping="Wrap" Foreground="{DynamicResource AppLateInkBrush}" />
 
             <StackPanel Spacing="8">
-                <TextBlock Text="{x:Static l:UiStrings.Import_WhichShift}" Classes="caption" />
+                <TextBlock Text="{x:Static l:UiStrings.Import_WhichShift}" Classes="title" TextWrapping="Wrap" />
+                <UniformGrid Columns="2">
+                    <RadioButton Classes="choice kind" GroupName="kind" Margin="0,0,4,0" Theme="{StaticResource {x:Type ToggleButton}}"
+                                 IsChecked="{Binding IsShiftMode, Mode=OneWay}" Command="{Binding ChooseShiftModeCommand}">
+                        <StackPanel Spacing="4" HorizontalAlignment="Center">
+                            <c:OutlineIcon Data="{StaticResource IconShifts}" Width="28" Height="28" Foreground="{DynamicResource AppAccentBrush}" HorizontalAlignment="Center" />
+                            <TextBlock Text="{x:Static l:UiStrings.Import_KindShift}" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                            <TextBlock Text="{x:Static l:UiStrings.Import_KindShiftHint}" Classes="caption" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton Classes="choice kind" GroupName="kind" Margin="4,0,0,0" Theme="{StaticResource {x:Type ToggleButton}}"
+                                 IsChecked="{Binding IsOneOffTarget, Mode=OneWay}" Command="{Binding ChooseOneOffModeCommand}">
+                        <StackPanel Spacing="4" HorizontalAlignment="Center">
+                            <c:OutlineIcon Data="{StaticResource IconTrain}" Width="28" Height="28" Foreground="{DynamicResource AppAccentBrush}" HorizontalAlignment="Center" />
+                            <TextBlock Text="{x:Static l:UiStrings.Import_TargetOneOff}" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                            <TextBlock Text="{x:Static l:UiStrings.Import_TargetOneOffHint}" Classes="caption" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </RadioButton>
+                </UniformGrid>
+            </StackPanel>
+
+            <StackPanel Spacing="8" IsVisible="{Binding IsShiftMode}">
+                <TextBlock Text="{x:Static l:UiStrings.Import_ChooseShift}" Classes="caption" />
                 <ItemsControl ItemsSource="{Binding Targets}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -67,10 +89,7 @@
                                         <Ellipse Stroke="{DynamicResource AppMutedBrush}" StrokeThickness="2" IsVisible="{Binding !IsSelected}" />
                                         <Ellipse Stroke="{DynamicResource AppAccentBrush}" StrokeThickness="6" IsVisible="{Binding IsSelected}" />
                                     </Grid>
-                                    <StackPanel VerticalAlignment="Center" Spacing="1">
-                                        <TextBlock Text="{Binding Title}" />
-                                        <TextBlock Text="{Binding Subtitle}" Classes="caption" TextWrapping="Wrap" IsVisible="{Binding HasSubtitle}" />
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
                                 </StackPanel>
                             </RadioButton>
                         </DataTemplate>
@@ -78,6 +97,20 @@
                 </ItemsControl>
                 <TextBox Text="{Binding NewShiftName}" PlaceholderText="{x:Static l:UiStrings.Import_NewShiftPlaceholder}"
                          IsVisible="{Binding IsNewTarget}" />
+            </StackPanel>
+
+            <StackPanel Spacing="8" IsVisible="{Binding IsShiftMode}">
+                <TextBlock Text="{x:Static l:UiStrings.Import_ChooseDirection}" Classes="caption" />
+                <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4">
+                    <UniformGrid Rows="1">
+                        <RadioButton Classes="segment" GroupName="direction" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsOutbound, Mode=OneWay}" Command="{Binding ChooseOutboundCommand}">
+                            <TextBlock Text="{x:Static l:UiStrings.Common_Outbound}" />
+                        </RadioButton>
+                        <RadioButton Classes="segment" GroupName="direction" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsReturn, Mode=OneWay}" Command="{Binding ChooseReturnCommand}">
+                            <TextBlock Text="{x:Static l:UiStrings.Common_Return}" />
+                        </RadioButton>
+                    </UniformGrid>
+                </Border>
             </StackPanel>
 
             <StackPanel Spacing="12" IsVisible="{Binding IsOneOffTarget}">
@@ -96,17 +129,6 @@
                     <TextBox Text="{Binding TripName}" PlaceholderText="{Binding TripNamePlaceholder}" MaxLength="60" />
                 </StackPanel>
             </StackPanel>
-
-            <Border Background="{DynamicResource AppSurfaceAltBrush}" CornerRadius="8" Padding="4" IsVisible="{Binding !IsOneOffTarget}">
-                <UniformGrid Rows="1">
-                    <RadioButton Classes="segment" GroupName="direction" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsOutbound, Mode=OneWay}" Command="{Binding ChooseOutboundCommand}">
-                        <TextBlock Text="{x:Static l:UiStrings.Common_Outbound}" />
-                    </RadioButton>
-                    <RadioButton Classes="segment" GroupName="direction" Theme="{StaticResource {x:Type ToggleButton}}" IsChecked="{Binding IsReturn, Mode=OneWay}" Command="{Binding ChooseReturnCommand}">
-                        <TextBlock Text="{x:Static l:UiStrings.Common_Return}" />
-                    </RadioButton>
-                </UniformGrid>
-            </Border>
 
             <Border Classes="soft" IsVisible="{Binding HasReplacement}">
                 <StackPanel Spacing="6">

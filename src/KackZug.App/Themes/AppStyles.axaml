@@ -402,6 +402,15 @@
     <Style Selector="RadioButton.choice TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource AppTextBrush}" />
     </Style>
+    <Style Selector="RadioButton.choice.kind">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="12,14" />
+    </Style>
+    <Style Selector="RadioButton.choice.kind TextBlock.caption">
+        <Setter Property="Foreground" Value="{DynamicResource AppMutedBrush}" />
+    </Style>
 
     <Style Selector="Border.dot">
         <Setter Property="Background" Value="{DynamicResource AppBorderBrush}" />

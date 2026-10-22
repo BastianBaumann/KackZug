@@ -213,7 +213,7 @@
   <data name="Nav_Trips" xml:space="preserve"><value>Fahrten</value></data>
   <data name="Format_Date" xml:space="preserve"><value>dd.MM.yyyy</value></data>
   <data name="Import_TargetOneOff" xml:space="preserve"><value>Einzelfahrt</value></data>
-  <data name="Import_TargetOneOffHint" xml:space="preserve"><value>Nur an einem Tag, danach ist sie weg</value></data>
+  <data name="Import_TargetOneOffHint" xml:space="preserve"><value>Nur an einem Tag</value></data>
   <data name="Import_TripDate" xml:space="preserve"><value>Datum</value></data>
   <data name="Import_TripDatePlaceholder" xml:space="preserve"><value>TT.MM.JJJJ</value></data>
   <data name="Import_TripName" xml:space="preserve"><value>Name (freiwillig)</value></data>
@@ -233,6 +233,10 @@
   <data name="Trips_Deleted" xml:space="preserve"><value>Einzelfahrt gelöscht.</value></data>
   <data name="Trips_Back" xml:space="preserve"><value>‹ Zurück zu den Fahrten</value></data>
   <data name="Trips_CheckNow" xml:space="preserve"><value>Jetzt prüfen (alle Fahrten)</value></data>
+  <data name="Import_KindShift" xml:space="preserve"><value>Schicht</value></data>
+  <data name="Import_KindShiftHint" xml:space="preserve"><value>Jede Woche wieder</value></data>
+  <data name="Import_ChooseShift" xml:space="preserve"><value>Welche Schicht?</value></data>
+  <data name="Import_ChooseDirection" xml:space="preserve"><value>Hin- oder Rückfahrt?</value></data>
   <data name="Settings_Sound" xml:space="preserve"><value>Ton</value></data>
   <data name="Settings_SoundHint" xml:space="preserve"><value>Störungen klingeln mit dem KackZug-Ton. Aus: nur Vibration.</value></data>
   <data name="Settings_FullScreen" xml:space="preserve"><value>Vollbild auf dem Sperrbildschirm</value></data>

@@ -320,6 +320,16 @@ internal static class TourSteps
         check(HasText(window, "Check now (all trips)"), "Knopf Jetzt pruefen auf Englisch");
         await capture(window, Path.Combine(directory, "trips-en.png"));
 
+        await english.StartImportAsync("https://int.bahn.de/en/buchung/start?vbid=demo");
+        await SettleAsync();
+        check(HasText(window, "What is this connection for?") && HasText(window, "Shift") && HasText(window, "Every week") && HasText(window, "One-off trip")
+              && HasText(window, "Just one day") && HasText(window, "Which shift?") && HasText(window, "Outbound or return?"), "Zuordnen auf Englisch");
+        await capture(window, Path.Combine(directory, "import-kind-en.png"));
+        english.Import!.ChooseOneOffModeCommand.Execute(null);
+        await SettleAsync();
+        await capture(window, Path.Combine(directory, "import-kind-oneoff-en.png"));
+        english.Import.CloseCommand.Execute(null);
+
         english.Navigate("settings");
         await SettleAsync();
         LanguageRadios(window)[1].IsChecked = true;
@@ -516,9 +526,38 @@ internal static class TourSteps
 
         await main.StartImportAsync("https://int.bahn.de/en/buchung/start?vbid=demo");
         var import = main.Import!;
-        var oneOff = import.Targets.FirstOrDefault(target => target.IsOneOffTrip);
-        check(oneOff is not null && oneOff.Title == "Einzelfahrt" && import.Targets.Last() == oneOff, "Import bietet Einzelfahrt an");
-        import.SelectTargetCommand.Execute(oneOff);
+        await SettleAsync();
+        var kindTiles = window.GetVisualDescendants().OfType<RadioButton>().Where(radio => radio.GroupName == "kind").ToList();
+        check(kindTiles.Count == 2 && kindTiles.All(tile => tile.IsEffectivelyVisible) && HasText(window, "Schicht") && HasText(window, "Jede Woche wieder")
+              && HasText(window, "Einzelfahrt") && HasText(window, "Nur an einem Tag"), "Zuordnen zeigt die Kacheln Schicht und Einzelfahrt");
+        check(kindTiles.Count == 2 && Math.Abs(kindTiles[0].Bounds.Height - kindTiles[1].Bounds.Height) < 0.5 && Math.Abs(kindTiles[0].Bounds.Width - kindTiles[1].Bounds.Width) < 0.5,
+              "Beide Kacheln gleich gross");
+        check(import.IsShiftMode && import.IsNewTarget && kindTiles[0].IsChecked == true && kindTiles[1].IsChecked != true && import.Targets.All(target => !target.IsOneOffTrip),
+              "Geteilt startet bei Schicht mit Neue Schicht, die Einzelfahrt steht nicht in der Liste");
+        var targetRadios = window.GetVisualDescendants().OfType<RadioButton>().Where(radio => radio.GroupName == "target").ToList();
+        var dateField = window.GetVisualDescendants().OfType<TextBox>().First(box => box.Classes.Contains("date"));
+        check(targetRadios.Count > 0 && targetRadios.All(radio => radio.IsEffectivelyVisible) && HasText(window, "Welche Schicht?") && HasText(window, "Hin- oder Rückfahrt?")
+              && !dateField.IsEffectivelyVisible, "Schicht zeigt Schichtliste und Hin/Rueck, aber kein Datum");
+        await capture(window, Path.Combine(directory, "import-kind-shift.png"));
+        import.ChooseOneOffModeCommand.Execute(null);
+        await SettleAsync();
+        check(import.IsOneOffTarget && !import.IsShiftMode && kindTiles[1].IsChecked == true && kindTiles[0].IsChecked != true, "Kachel Einzelfahrt gewaehlt");
+        check(targetRadios.All(radio => !radio.IsEffectivelyVisible) && !HasText(window, "Welche Schicht?") && !HasText(window, "Hin- oder Rückfahrt?")
+              && dateField.IsEffectivelyVisible, "Einzelfahrt blendet Schichtliste und Hin/Rueck aus");
+        await capture(window, Path.Combine(directory, "import-kind-oneoff.png"));
+        Avalonia.Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
+        await capture(window, Path.Combine(directory, "import-kind-oneoff-dark.png"));
+        Avalonia.Application.Current.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Light;
+        var spaetTarget = import.Targets.First(target => target.Title == "Spätdienst");
+        import.ChooseShiftModeCommand.Execute(null);
+        import.SelectTargetCommand.Execute(spaetTarget);
+        import.ChooseOutboundCommand.Execute(null);
+        import.ChooseOneOffModeCommand.Execute(null);
+        import.ChooseShiftModeCommand.Execute(null);
+        await SettleAsync();
+        check(import.SelectedTarget == spaetTarget && spaetTarget.IsSelected && import.IsOutbound && !dateField.IsEffectivelyVisible && !HasText(window, "Name (freiwillig)"),
+              "Zurueck zu Schicht behaelt Schicht und Richtung, Datum und Name verschwinden");
+        import.ChooseOneOffModeCommand.Execute(null);
         await SettleAsync();
         check(import.IsOneOffTarget && import.TripDateText == DateText.Format(today) && import.TripNamePlaceholder == "Beispielhausen → Musterstadt Hbf",
               "Einzelfahrt: Datum vom geteilten Tag, Name aus Start und Ziel");
