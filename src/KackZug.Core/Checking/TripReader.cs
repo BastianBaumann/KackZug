@@ -1,5 +1,6 @@
 using System.Text.Json;
 using KackZug.Core.Bahn;
+using KackZug.Core.Localization;
 using KackZug.Core.Models;
 
 namespace KackZug.Core.Checking;
@@ -21,7 +22,7 @@ public static class TripReader
         }
 
         var stopList = stops.EnumerateArray().ToList();
-        var departureIndex = stopList.FindIndex(stop => BahnJson.GetString(stop, "extId") == leg.From.EvaNumber);
+        var departureIndex = stopList.FindIndex(stop => IsStop(stop, leg.From));
         if (departureIndex < 0)
         {
             return;
@@ -49,7 +50,7 @@ public static class TripReader
         var arrivalIndex = -1;
         for (var index = departureIndex + 1; index < stopList.Count; index++)
         {
-            if (BahnJson.GetString(stopList[index], "extId") == leg.To.EvaNumber)
+            if (IsStop(stopList[index], leg.To))
             {
                 arrivalIndex = index;
                 break;
@@ -59,6 +60,7 @@ public static class TripReader
         if (arrivalIndex < 0)
         {
             observation.ArrivalMissing = true;
+            observation.Problem = string.Format(Language.Culture, Strings.Check_DestinationMissing, leg.To.Name);
             return;
         }
 
@@ -73,6 +75,24 @@ public static class TripReader
         {
             observation.ArrivalCancelled = true;
         }
+    }
+
+    /// <remarks>Meist passt die Haltnummer; manche Halte fuehrt bahn.de in den Fahrtdaten unter einer anderen Nummer, dann zaehlt der Name.</remarks>
+    private static bool IsStop(JsonElement stop, Station station)
+    {
+        if (BahnJson.GetString(stop, "extId") == station.EvaNumber)
+        {
+            return true;
+        }
+
+        var name = BahnJson.GetString(stop, "name");
+        return !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(station.Name)
+            && string.Equals(Compact(name), Compact(station.Name), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string Compact(string text)
+    {
+        return string.Concat(text.Where(character => !char.IsWhiteSpace(character)));
     }
 
     private static string? CurrentPlatform(JsonElement stop)

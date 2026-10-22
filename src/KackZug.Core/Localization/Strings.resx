@@ -88,4 +88,5 @@
   <data name="Test_TripLine" xml:space="preserve"><value>RE7 · 06:42 Sampletown Hbf → Exampleton</value></data>
   <data name="Android_ChannelProblemSilentName" xml:space="preserve"><value>Disruption (no sound)</value></data>
   <data name="Android_ChannelProblemSilentDoNotDisturbName" xml:space="preserve"><value>Disruption (no sound, also in Do not disturb)</value></data>
+  <data name="Check_DestinationMissing" xml:space="preserve"><value>The stop {0} is missing from bahn.de's data for this train.</value></data>
 </root>

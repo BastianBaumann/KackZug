@@ -88,4 +88,5 @@
   <data name="Test_TripLine" xml:space="preserve"><value>RE7 · 06:42 Musterstadt Hbf → Beispielhausen</value></data>
   <data name="Android_ChannelProblemSilentName" xml:space="preserve"><value>Störung (ohne Ton)</value></data>
   <data name="Android_ChannelProblemSilentDoNotDisturbName" xml:space="preserve"><value>Störung (ohne Ton, auch bei Bitte nicht stören)</value></data>
+  <data name="Check_DestinationMissing" xml:space="preserve"><value>Der Halt {0} fehlt in den Daten von bahn.de für diesen Zug.</value></data>
 </root>

@@ -147,7 +147,19 @@ public partial class TripCardViewModel : ViewModelBase
 
             if (status.Overall == LegStatus.Unknown)
             {
-                Notes.Add(UiStrings.Trip_UnknownNote);
+                var reasons = status.Legs
+                    .Where(result => result.Status == LegStatus.Unknown && !string.IsNullOrEmpty(result.Observation?.Problem))
+                    .Select(result => UiLanguage.Format(UiStrings.Trip_LegReason, result.Leg.From.Name, result.Leg.To.Name, result.Observation!.Problem!))
+                    .ToList();
+                if (reasons.Count == 0)
+                {
+                    Notes.Add(UiStrings.Trip_UnknownNote);
+                }
+
+                foreach (var reason in reasons)
+                {
+                    Notes.Add(reason);
+                }
             }
 
             CheckedText = UiStrings.Trip_JustChecked;

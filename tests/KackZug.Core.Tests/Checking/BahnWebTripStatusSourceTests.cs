@@ -79,6 +79,24 @@ public class BahnWebTripStatusSourceTests
         Assert.True(observation.ArrivalMissing);
         Assert.False(observation.ArrivalCancelled);
         Assert.False(observation.DepartureCancelled);
+        Assert.Contains("Beispielhausen", observation.Problem);
+    }
+
+    [Fact]
+    public async Task DestinationWithOtherNumberIsFoundByName()
+    {
+        var handler = new FakeHttpHandler();
+        handler.Answer("reiseloesung/abfahrten", HttpStatusCode.OK, BahnJsonBuilder.Board(
+            BahnJsonBuilder.BoardEntry("2026-10-21T06:42:00", "RE7", "NRE", "4711", "2")));
+        handler.Answer("reiseloesung/fahrt", HttpStatusCode.OK, BahnJsonBuilder.Trip(false,
+            BahnJsonBuilder.Stop("8000001", "Musterstadt Hbf", null, null, "2026-10-21T06:42:00", null, "2"),
+            BahnJsonBuilder.Stop("8099999", "Beispielhausen", "2026-10-21T07:10:00", "2026-10-21T07:13:00", null, null, "5")));
+
+        var observation = await CreateSource(handler).ObserveAsync(TrainLeg(), TravelDate, CancellationToken.None);
+
+        Assert.False(observation.ArrivalMissing);
+        Assert.True(observation.ArrivalKnown);
+        Assert.Equal(new DateTime(2026, 10, 21, 7, 13, 0), observation.LiveArrival);
     }
 
     [Fact]
