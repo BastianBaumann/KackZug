@@ -317,6 +317,7 @@ internal static class TourSteps
         var tripCard = trips.Trips.FirstOrDefault();
         check(HasText(window, "One-off trips") && tripCard is not null && tripCard.Kicker == "TOMORROW"
               && tripCard.DateText.StartsWith(tripCard.Trip.TravelDate.DayOfWeek + ", ") && HasText(window, "Open in DB Navigator"), "Fahrten auf Englisch");
+        check(HasText(window, "Check now (all trips)"), "Knopf Jetzt pruefen auf Englisch");
         await capture(window, Path.Combine(directory, "trips-en.png"));
 
         english.Navigate("settings");
@@ -480,6 +481,11 @@ internal static class TourSteps
         platform.UrlOpener = null;
     }
 
+    private static Button CheckAllButton(Window window, TripsViewModel trips)
+    {
+        return window.GetVisualDescendants().OfType<Button>().First(button => button.Command == trips.CheckNowCommand);
+    }
+
     private static async Task WaitForAsync(Func<bool> condition)
     {
         for (var i = 0; i < 100 && !condition(); i++)
@@ -501,6 +507,7 @@ internal static class TourSteps
         var trips = (TripsViewModel)main.CurrentPage!;
         check(main.NavItems.Select(item => item.Key).SequenceEqual(new[] { "week", "trips", "shifts", "settings" }), "Tab Fahrten zwischen Woche und Schichten");
         check(trips.IsEmpty && HasText(window, "Noch keine Einzelfahrt"), "Fahrten ohne Einzelfahrt zeigt den Hinweis");
+        check(!CheckAllButton(window, trips).IsEffectivelyVisible, "Ohne Einzelfahrt kein Knopf Jetzt pruefen");
         await capture(window, Path.Combine(directory, "trips-empty.png"));
 
         trips.EnterManuallyCommand.Execute(null);
@@ -559,6 +566,27 @@ internal static class TourSteps
         Avalonia.Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
         await capture(window, Path.Combine(directory, "trips-dark.png"));
         Avalonia.Application.Current.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Light;
+
+        var checkAll = CheckAllButton(window, trips);
+        check(checkAll.IsEffectivelyVisible && HasText(window, "Jetzt prüfen (alle Fahrten)"), "Mit Einzelfahrt gibt es den Knopf Jetzt pruefen");
+        var lockedWhileChecking = false;
+        System.ComponentModel.PropertyChangedEventHandler watchChecking = (_, args) =>
+        {
+            if (args.PropertyName == nameof(TripsViewModel.IsChecking) && trips.IsChecking)
+            {
+                lockedWhileChecking = !trips.CheckNowCommand.CanExecute(null);
+            }
+        };
+        trips.PropertyChanged += watchChecking;
+        await trips.CheckNowCommand.ExecuteAsync(null);
+        trips.PropertyChanged -= watchChecking;
+        check(lockedWhileChecking, "Waehrend der Pruefung ist der Knopf gesperrt");
+        await SettleAsync();
+        card = trips.Trips.Single();
+        check(!trips.IsChecking && card.Live.Badge is not null && card.Live.Badge.Text == "Planmäßig" && card.CheckedText.StartsWith("geprüft "),
+              "Jetzt pruefen aktualisiert Kennzeichen und Pruefzeit der Karte: " + card.CheckedText);
+        check(services.Store.Load().CheckStates.Any(state => state.ShiftId == tripId && state.LastCheckedAt != default), "Pruefung gespeichert");
+        await capture(window, Path.Combine(directory, "trips-check.png"));
 
         trips.OpenDetailCommand.Execute(card);
         check(trips.HasDetail && trips.Detail!.BackText == "‹ Zurück zu den Fahrten" && trips.Detail.Trips.Count == 1, "Details der Einzelfahrt geoeffnet");

@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using KackZug.Core.Checking;
+using KackZug.Core.Models;
 using KackZug.Core.Planning;
 using KackZug.Localization;
 
@@ -27,6 +29,10 @@ public partial class TripsViewModel : PageViewModel
 
     [ObservableProperty]
     public partial bool IsEmpty { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CheckNowCommand))]
+    public partial bool IsChecking { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasDetail))]
@@ -96,6 +102,37 @@ public partial class TripsViewModel : PageViewModel
         Main.Services.SaveAndReschedule();
         Main.ShowToast(UiStrings.Trips_Deleted, false);
         Refresh();
+    }
+
+    /// <summary>Prueft alle gespeicherten Einzelfahrten wie der Knopf in der Woche; die Kennzeichen zeigen das Ergebnis</summary>
+    [RelayCommand(CanExecute = nameof(CanCheckNow))]
+    private async Task CheckNowAsync()
+    {
+        IsChecking = true;
+        try
+        {
+            var services = Main.Services;
+            var checker = new TripChecker(services.CreateStatusSource(), services.Clock);
+            foreach (var trip in services.Data.Trips.ToList())
+            {
+                await checker.CheckAsync(services.Data, trip.TravelDate, trip.Id, TripDirection.Outbound, CheckContext.Manual, CancellationToken.None);
+            }
+
+            services.Store.Save(services.Data);
+            if (Detail is null)
+            {
+                Refresh();
+            }
+        }
+        finally
+        {
+            IsChecking = false;
+        }
+    }
+
+    private bool CanCheckNow()
+    {
+        return !IsChecking;
     }
 
     [RelayCommand]

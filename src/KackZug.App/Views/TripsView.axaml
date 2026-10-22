@@ -10,6 +10,15 @@
             <StackPanel Margin="16" Spacing="12">
                 <TextBlock Text="{x:Static l:UiStrings.Trips_Heading}" Classes="title-lg" />
 
+                <Button Classes="primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                        Command="{Binding CheckNowCommand}" IsVisible="{Binding !IsEmpty}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <c:OutlineIcon Data="{StaticResource IconRefresh}" Width="20" Height="20" />
+                        <TextBlock Text="{x:Static l:UiStrings.Trips_CheckNow}" />
+                    </StackPanel>
+                </Button>
+                <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsChecking}" />
+
                 <Border Classes="card" IsVisible="{Binding IsEmpty}">
                     <StackPanel Spacing="12" HorizontalAlignment="Center" Margin="8,16">
                         <c:OutlineIcon Data="{StaticResource IconTrain}" Width="48" Height="48" StrokeThickness="1.5" Foreground="{DynamicResource AppMutedBrush}" HorizontalAlignment="Center" />
