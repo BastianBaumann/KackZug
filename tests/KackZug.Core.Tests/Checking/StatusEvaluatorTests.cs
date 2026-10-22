@@ -140,7 +140,7 @@ public class StatusEvaluatorTests
     }
 
     [Fact]
-    public void MissingDestinationIsNoDataNotPartlyCancelled()
+    public void MissingDestinationWithoutLastStopIsNoData()
     {
         var connection = Connection();
         var observations = Observations(connection, 0, 0);
@@ -151,6 +151,21 @@ public class StatusEvaluatorTests
         Assert.Equal(LegStatus.Unknown, status.Legs[0].Status);
         Assert.Equal(LegStatus.Unknown, status.Overall);
         Assert.Equal(AlertSeverity.Info, AlertComposer.SeverityOf(status.Overall));
+    }
+
+    [Fact]
+    public void TrainEndingEarlyIsAProblemWithItsLastStop()
+    {
+        var connection = Connection();
+        var observations = Observations(connection, 0, 0);
+        observations[0]!.ArrivalMissing = true;
+        observations[0]!.EndsAt = "Zwischenort";
+
+        var status = StatusEvaluator.Evaluate(connection, observations, new Settings());
+
+        Assert.Equal(LegStatus.PartlyCancelled, status.Overall);
+        Assert.Equal(AlertSeverity.Problem, AlertComposer.SeverityOf(status.Overall));
+        Assert.Equal("Nur bis Zwischenort", AlertComposer.BadgeText(status));
     }
 
     [Fact]

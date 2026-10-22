@@ -21,9 +21,19 @@ public sealed class LegObservation
 
     public bool ArrivalCancelled { get; set; }
 
-    /// <remarks>Der Zielhalt fehlt in den Fahrtdaten von bahn.de. Ein ausgefallener Halt bleibt dort mit Hinweis stehen,
-    /// ein fehlender heisst meist nur, dass die Daten unvollstaendig sind oder der Halt anders heisst.</remarks>
+    /// <remarks>Der Zielhalt fehlt in den Fahrtdaten von bahn.de, auch unter seinem Namen.</remarks>
     public bool ArrivalMissing { get; set; }
+
+    /// <summary>Letzter Halt des Zuges, wenn er vor dem Ziel endet, etwa bei einem geaenderten Fahrplan</summary>
+    public string? EndsAt { get; set; }
+
+    /// <summary>Text von bahn.de zu abweichenden Fahrtagen, z. B. "22. Okt bis 12. Dez 2026"</summary>
+    public string? ChangedDays { get; set; }
+
+    /// <summary>Haltnummer und geplante Ankunft am letzten Halt, um dort nach der Weiterfahrt zu suchen</summary>
+    public string? EndsAtEva { get; set; }
+
+    public DateTime? EndsAtArrival { get; set; }
 
     public string? CurrentPlatform { get; set; }
 

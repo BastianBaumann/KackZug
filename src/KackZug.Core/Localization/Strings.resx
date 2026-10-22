@@ -89,4 +89,8 @@
   <data name="Android_ChannelProblemSilentName" xml:space="preserve"><value>Disruption (no sound)</value></data>
   <data name="Android_ChannelProblemSilentDoNotDisturbName" xml:space="preserve"><value>Disruption (no sound, also in Do not disturb)</value></data>
   <data name="Check_DestinationMissing" xml:space="preserve"><value>The stop {0} is missing from bahn.de's data for this train.</value></data>
+  <data name="Alert_BadgeEndsAt" xml:space="preserve"><value>Only to {0}</value></data>
+  <data name="Alert_ProblemEndsAt" xml:space="preserve"><value>only runs to {0}</value></data>
+  <data name="Check_EndsEarly" xml:space="preserve"><value>This train only runs to {0}, not to {1}.</value></data>
+  <data name="Check_ChangedDays" xml:space="preserve"><value>Changed timetable: {0}. Best save a new connection for these days.</value></data>
 </root>

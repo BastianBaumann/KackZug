@@ -74,6 +74,12 @@ public static class StatusEvaluator
             return result;
         }
 
+        if (observation.ArrivalMissing && observation.EndsAt is not null)
+        {
+            result.Status = LegStatus.PartlyCancelled;
+            return result;
+        }
+
         if (observation.ArrivalMissing)
         {
             result.Status = LegStatus.Unknown;

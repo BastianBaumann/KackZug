@@ -145,13 +145,13 @@ public partial class TripCardViewModel : ViewModelBase
                 Notes.Add(UiStrings.Trip_PlannedOnlyNote);
             }
 
-            if (status.Overall == LegStatus.Unknown)
+            if (status.Overall == LegStatus.Unknown || status.Overall == LegStatus.PartlyCancelled)
             {
                 var reasons = status.Legs
-                    .Where(result => result.Status == LegStatus.Unknown && !string.IsNullOrEmpty(result.Observation?.Problem))
+                    .Where(result => (result.Status == LegStatus.Unknown || result.Status == LegStatus.PartlyCancelled) && !string.IsNullOrEmpty(result.Observation?.Problem))
                     .Select(result => UiLanguage.Format(UiStrings.Trip_LegReason, result.Leg.From.Name, result.Leg.To.Name, result.Observation!.Problem!))
                     .ToList();
-                if (reasons.Count == 0)
+                if (reasons.Count == 0 && status.Overall == LegStatus.Unknown)
                 {
                     Notes.Add(UiStrings.Trip_UnknownNote);
                 }

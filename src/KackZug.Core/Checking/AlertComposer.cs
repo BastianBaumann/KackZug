@@ -100,6 +100,12 @@ public static class AlertComposer
             case LegStatus.NotFound:
                 return Strings.Alert_BadgeNotFound;
             case LegStatus.PartlyCancelled:
+                var endsEarly = status.Legs.FirstOrDefault(result => result.Observation?.EndsAt is not null);
+                if (endsEarly is not null)
+                {
+                    return Format(Strings.Alert_BadgeEndsAt, endsEarly.Observation!.EndsAt!);
+                }
+
                 return Strings.Alert_BadgePartlyCancelled;
             default:
                 return Strings.Alert_BadgeCancelled;
@@ -326,6 +332,11 @@ public static class AlertComposer
             case LegStatus.Cancelled:
                 return Strings.Alert_ProblemCancelled;
             case LegStatus.PartlyCancelled:
+                if (result.Observation?.EndsAt is not null)
+                {
+                    return Format(Strings.Alert_ProblemEndsAt, result.Observation.EndsAt);
+                }
+
                 return Format(Strings.Alert_ProblemPartlyCancelled, result.Leg.To.Name);
             case LegStatus.NotFound:
                 return Strings.Alert_ProblemNotFound;

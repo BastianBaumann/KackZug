@@ -89,4 +89,8 @@
   <data name="Android_ChannelProblemSilentName" xml:space="preserve"><value>Störung (ohne Ton)</value></data>
   <data name="Android_ChannelProblemSilentDoNotDisturbName" xml:space="preserve"><value>Störung (ohne Ton, auch bei Bitte nicht stören)</value></data>
   <data name="Check_DestinationMissing" xml:space="preserve"><value>Der Halt {0} fehlt in den Daten von bahn.de für diesen Zug.</value></data>
+  <data name="Alert_BadgeEndsAt" xml:space="preserve"><value>Nur bis {0}</value></data>
+  <data name="Alert_ProblemEndsAt" xml:space="preserve"><value>fährt nur bis {0}</value></data>
+  <data name="Check_EndsEarly" xml:space="preserve"><value>Der Zug fährt nur bis {0}, nicht bis {1}.</value></data>
+  <data name="Check_ChangedDays" xml:space="preserve"><value>Geänderter Fahrplan: {0}. Speichere für diese Tage am besten eine neue Verbindung.</value></data>
 </root>

@@ -65,7 +65,7 @@ public class BahnWebTripStatusSourceTests
     }
 
     [Fact]
-    public async Task MissingDestinationStopMeansNoData()
+    public async Task TrainEndingBeforeTheDestinationIsReported()
     {
         var handler = new FakeHttpHandler();
         handler.Answer("reiseloesung/abfahrten", HttpStatusCode.OK, BahnJsonBuilder.Board(
@@ -77,9 +77,35 @@ public class BahnWebTripStatusSourceTests
         var observation = await CreateSource(handler).ObserveAsync(TrainLeg(), TravelDate, CancellationToken.None);
 
         Assert.True(observation.ArrivalMissing);
-        Assert.False(observation.ArrivalCancelled);
+        Assert.Equal("Zwischenort", observation.EndsAt);
         Assert.False(observation.DepartureCancelled);
-        Assert.Contains("Beispielhausen", observation.Problem);
+        Assert.Contains("nur bis Zwischenort, nicht bis Beispielhausen", observation.Problem);
+    }
+
+    [Fact]
+    public async Task TrainContinuingUnderAnotherJourneyReachesTheDestination()
+    {
+        var first = BahnJsonBuilder.BoardEntry("2026-10-21T06:42:00", "RE7", "NRE", "4711", "2");
+        var continuation = BahnJsonBuilder.BoardEntry("2026-10-21T06:58:00", "RE7 18682", "NRE", "4711", "3");
+        var continuationId = continuation["journeyId"]!.GetValue<string>();
+        var handler = new FakeHttpHandler();
+        handler.Answer("reiseloesung/abfahrten?ortExtId=8000009", HttpStatusCode.OK, BahnJsonBuilder.Board(continuation));
+        handler.Answer("reiseloesung/abfahrten", HttpStatusCode.OK, BahnJsonBuilder.Board(first));
+        handler.Answer("reiseloesung/fahrt?journeyId=" + Uri.EscapeDataString(continuationId), HttpStatusCode.OK, BahnJsonBuilder.Trip(false,
+            BahnJsonBuilder.Stop("8000009", "Zwischenort", null, null, "2026-10-21T06:58:00", null, "3"),
+            BahnJsonBuilder.Stop("8000002", "Beispielhausen", "2026-10-21T07:10:00", "2026-10-21T07:12:00", null, null, "5")));
+        handler.Answer("reiseloesung/fahrt", HttpStatusCode.OK, BahnJsonBuilder.Trip(false,
+            BahnJsonBuilder.Stop("8000001", "Musterstadt Hbf", null, null, "2026-10-21T06:42:00", null, "2"),
+            BahnJsonBuilder.Stop("8000009", "Zwischenort", "2026-10-21T06:55:00", null, null, null, "1")));
+
+        var observation = await CreateSource(handler).ObserveAsync(TrainLeg(), TravelDate, CancellationToken.None);
+
+        Assert.False(observation.ArrivalMissing);
+        Assert.Null(observation.EndsAt);
+        Assert.Null(observation.Problem);
+        Assert.True(observation.ArrivalKnown);
+        Assert.Equal(new DateTime(2026, 10, 21, 7, 12, 0), observation.LiveArrival);
+        Assert.Contains(handler.RequestedPaths, path => path.Contains("ortExtId=8000009"));
     }
 
     [Fact]

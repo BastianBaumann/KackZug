@@ -60,7 +60,7 @@ public static class TripReader
         if (arrivalIndex < 0)
         {
             observation.ArrivalMissing = true;
-            observation.Problem = string.Format(Language.Culture, Strings.Check_DestinationMissing, leg.To.Name);
+            ReadEndsEarly(trip, stopList, departureIndex, leg, observation);
             return;
         }
 
@@ -75,6 +75,81 @@ public static class TripReader
         {
             observation.ArrivalCancelled = true;
         }
+    }
+
+    /// <remarks>Fehlt das Ziel, faehrt der Zug meist nur bis zu seinem letzten Halt (geaenderter Fahrplan oder Kurzwende).
+    /// Ohne Halt nach der Abfahrt ist das nicht sicher, dann bleibt es bei "keine Daten".</remarks>
+    private static void ReadEndsEarly(JsonElement trip, List<JsonElement> stopList, int departureIndex, Leg leg, LegObservation observation)
+    {
+        if (departureIndex >= stopList.Count - 1)
+        {
+            observation.Problem = string.Format(Language.Culture, Strings.Check_DestinationMissing, leg.To.Name);
+            return;
+        }
+
+        var last = stopList[stopList.Count - 1];
+        var lastStop = BahnJson.GetString(last, "name");
+        if (string.IsNullOrEmpty(lastStop))
+        {
+            observation.Problem = string.Format(Language.Culture, Strings.Check_DestinationMissing, leg.To.Name);
+            return;
+        }
+
+        observation.EndsAt = lastStop;
+        observation.EndsAtEva = BahnJson.GetString(last, "extId");
+        observation.EndsAtArrival = BahnJson.ReadPlannedTime(last, "ankunft");
+        observation.ChangedDays = BahnJson.GetString(trip, "irregulaereVerkehrstage");
+        var problem = string.Format(Language.Culture, Strings.Check_EndsEarly, lastStop, leg.To.Name);
+        if (!string.IsNullOrEmpty(observation.ChangedDays))
+        {
+            problem += " " + string.Format(Language.Culture, Strings.Check_ChangedDays, observation.ChangedDays);
+        }
+
+        observation.Problem = problem;
+    }
+
+    /// <summary>Liest die Ankunft aus der Weiterfahrt des Zuges ab seinem bisherigen letzten Halt</summary>
+    /// <remarks>bahn.de fuehrt manche Zuege in zwei Fahrten, etwa RE3 3962 bis Weimar und weiter als 18682 nach Erfurt.
+    /// Gibt false zurueck, wenn das Ziel auch in der Weiterfahrt fehlt.</remarks>
+    public static bool ApplyContinuation(JsonElement trip, Leg leg, LegObservation observation)
+    {
+        if (!trip.TryGetProperty("halte", out var stops) || stops.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        var stopList = stops.EnumerateArray().ToList();
+        var startIndex = stopList.FindIndex(stop => BahnJson.GetString(stop, "extId") == observation.EndsAtEva);
+        for (var index = startIndex + 1; index < stopList.Count; index++)
+        {
+            var stop = stopList[index];
+            if (!IsStop(stop, leg.To))
+            {
+                continue;
+            }
+
+            observation.ArrivalMissing = false;
+            observation.EndsAt = null;
+            observation.EndsAtEva = null;
+            observation.EndsAtArrival = null;
+            observation.ChangedDays = null;
+            observation.Problem = null;
+            observation.ArrivalKnown = true;
+            observation.LiveArrival = BahnJson.ReadLiveTime(stop, "ankunft");
+            if (observation.LiveArrival is not null)
+            {
+                observation.HasLiveData = true;
+            }
+
+            if (CancellationNotes.ContainsCancellation(stop))
+            {
+                observation.ArrivalCancelled = true;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /// <remarks>Meist passt die Haltnummer; manche Halte fuehrt bahn.de in den Fahrtdaten unter einer anderen Nummer, dann zaehlt der Name.</remarks>
