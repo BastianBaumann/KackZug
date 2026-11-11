@@ -1,0 +1,154 @@
+# Taskboard archive
+
+> MEMORY: read before acting; append, do not overwrite; this file (not the chat) is the source of truth; protocol: AgentStarter (see AgentHub/STATE.md -> Protocol).
+
+## Archived 2026-10-20
+
+## M1 / E-01: Geruest und Open-Source-Basis
+- [x] **T-001** Solution with Core/App/Android/Desktop + Core.Tests, empty start page · owner: @Core · depends-on: none · origin: design §4, D-007
+  - **DoD:** `dotnet build` + `dotnet test` green; Desktop starts; Android APK builds (platform 36 installed) and starts on emulator; .gitignore, .editorconfig, LICENSE (GPL-3.0), README stub (Deutsch); package id fixed; versions in maintenance/Dependencies.md.
+  - **Log:**
+    - [2026-10-20] (@Core) PROGRESS: claimed: @Core @ 2026-10-20; gate APPROVED by developer
+    - [2026-10-20] (@Core) DONE: KackZug.slnx with Core/App/Desktop/Android + Core.Tests, central package versions, .gitignore/.gitattributes/.editorconfig, LICENSE GPL-3.0, README stub; package id io.github.bastianbaumann.kackzug. Solution file is .slnx (not .sln).
+    - [2026-10-20] (@Core) VERIFY: `dotnet build KackZug.slnx` -> 0 errors 0 warnings; `dotnet test KackZug.slnx` -> 1/1 passed; APK installed on emulator (API 35), app starts, no FATAL in logcat, screenshot shows start page; desktop ran 12 s without crash · not verified: real device · commit: 430652f
+- [-] **T-002** Own logo: SVG (ICE-style train, poop on roof), Android adaptive vector icon, Avalonia geometry · owner: @Core · depends-on: T-001 · origin: brief, D-003
+  - **Note:** [2026-10-20] descoped: logo is replaced by the Design System icon (D-009, T-023); no approval needed for the hand-drawn one.
+  - **DoD:** `assets/logo/kackzug.svg` drawn from scratch (no DB logo/stripe/"ICE" text, no emoji artwork); launcher icon shows on emulator; logo visible in app header; developer approves look.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: assets/logo/kackzug.svg drawn by hand (teal stripe, no DB marks); tools/logo/build_icons.py generates Android adaptive icon (mipmap-anydpi-v26, foreground vector, background #FFF3DC) and Avalonia DrawingImage (Assets/Logo.axaml).
+    - [2026-10-20] (@Core) VERIFY: `dotnet build KackZug.slnx` -> 0 errors; emulator: launcher icon and in-app logo render correctly (screenshots) · not verified: developer approval of the look (pending) · commit: e57f4a0
+- [x] **T-003** CI workflow: build + test on push/PR · owner: @Core · depends-on: T-001 · origin: D-006
+  - **DoD:** `.github/workflows/ci.yml` green on GitHub for the working branch.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: ci.yml with two jobs (core tests + desktop build; Android workload + SDK deps + Release APK build) on push to main/dev and PRs.
+    - [2026-10-20] (@Core) VERIFY: pushed 17e2347 · not verified: run result (private repo, agent has no GitHub access) -> developer checks Actions tab
+    - [2026-10-20] (@Dev/Bastian) VERIFY: GitHub runs green (developer confirmed in chat)
+
+## M1 / E-02: Kernlogik (Core)
+- [x] **T-004** Models, JSON store (atomic), week rollover (copy/empty), cleanup of old CheckStates · owner: @Core · depends-on: T-001 · origin: design §5
+  - **DoD:** tests for roundtrip, rollover copy/empty, cleanup green.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: Core/Models (Shift, SavedConnection, Leg with Kind Walk/PublicTransport, WeekPlan as list of 7 DayPlans, Settings, CheckState, AppData.RemoveShift), Storage/AppDataStore (source-generated JSON, temp+move, broken file kept as .broken-*), Storage/DataMaintenance (rollover, free days of deleted shifts, cleanup).
+    - [2026-10-20] (@Core) VERIFY: `dotnet test tests/KackZug.Core.Tests` -> 14/14 passed; build -warnaserror 0 errors · not verified: none · commit: ae28660
+- [x] **T-005** Share-link parser + BahnWebConnectionResolver (vbid -> recon -> legs, offline recon fallback) · owner: @Core · depends-on: T-004 · origin: design §6, D-002
+  - **DoD:** tests with hand-made fixtures (single leg, transfer, footpath skipped, bad link) green; one real shared link resolves correctly (manual run).
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: Import/ShareLinkParser (any *.bahn.de host, any language path), Bahn/BahnWebClient (browser UA, gzip, OPS_BLOCKED/403/429 -> Blocked), Import/ReconResponseMapper (walk legs kept as LegKind.Walk, trams, day offsets), Import/ReconStringParser fallback, BahnWebConnectionResolver. Leg got DepartureDayOffset + ProductClass. Note: footpaths are KEPT (needed for transfer check), not skipped.
+    - [2026-10-20] (@Core) VERIFY: `dotnet test tests/KackZug.Core.Tests` -> 26/26 passed; fixtures invented (no real stations) · not verified: resolver end-to-end against live bahn.de in C# (curl flow verified manually with 2 real links, specs/samples/) -> do one live run in T-012 · commit: fb9ef81
+    - [2026-10-20] (@Core) VERIFY: live C# import of the developer's real link works (during T-006 live run) -> all DoD points met
+- [x] **T-006** BahnWebTripStatusSource + matching + StatusEvaluator (incl. transfer check) · owner: @Core · depends-on: T-004 · origin: design §6
+  - **DoD:** fixture tests: on time, delayed, cancelled, platform change, train missing, transfer endangered, API error -> Unbekannt; one manual run against live API.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: Core/Checking: BoardParser + JourneyIdReader (CA/ZE), BoardMatcher (time + number/name/line), TripReader, CancellationNotes, BahnWebTripStatusSource (board cache per run), StatusEvaluator (LegStatus OnTime..Cancelled, TransferAtRisk: live gap < walk + min(MinTransfer, planned spare)). BahnWebClient spaces requests (MinimumGap 1.5 s).
+    - [2026-10-20] (@Core) VERIFY: `dotnet test tests/KackZug.Core.Tests` -> 44/44 passed; live C# run (scratchpad livecheck.cs): developer's link imported (3 legs, platform), RE1 + STR 3 found for 2026-10-21, OnTime, transfer spare 4 · not verified: live cancellation note format (no cancelled train available) · commit: see git log
+- [x] **T-007** CheckPlanner (evening check, lead times, maintenance alarm, 48 h window) · owner: @Core · depends-on: T-004 · origin: design §6, D-005
+  - **DoD:** tests incl. midnight, past evening check skipped, DST change (Maerz/Oktober) green.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: Core/Planning: CheckPlanner (evening check day before if before departure, lead times, maintenance 00:10, 48 h window, dedupe by key), TripCalendar (next-week days use current plan when CopyPrevious), BerlinTime (wall clock <-> instant, DST gap/overlap), StableHash (FNV request codes). The 17 h rule from Vision.md dropped: bahn.de serves next-day planned data.
+    - [2026-10-20] (@Core) VERIFY: `dotnet test tests/KackZug.Core.Tests` -> 54/54 passed (incl. DST 2026-03-29 and 2026-10-25, after-midnight trip) · not verified: none
+- [x] **T-008** TripChecker + AlertComposer + status-hash dedupe · owner: @Core · depends-on: T-005, T-006, T-007 · origin: design §6
+  - **DoD:** tests: same status twice -> one alert; changed status -> new alert; texts German and concrete.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: Core/Checking: TripChecker (one ITripStatusSource per run, CheckContext Evening/LeadTime/LastLeadTime/Manual), AlertComposer (German title/text, no emojis, Ersatzverkehr hint, hash with 5-min delay buckets), TripAlert/AlertSeverity; CheckState.LastStatus for the week view colour.
+    - [2026-10-20] (@Core) VERIFY: `dotnet test tests/KackZug.Core.Tests` -> 61/61 passed · not verified: none
+- [x] **T-009** UpdateChecker (GitHub releases/latest, max 1x/day) · owner: @Core · depends-on: T-004 · origin: D-004
+  - **DoD:** tests for version compare and once-per-day rule.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: Core/Updates/UpdateChecker (releases/latest, own honest UA for GitHub, tag v-prefix and -suffix tolerant, silent on 404/offline), IsDue per calendar day.
+    - [2026-10-20] (@Core) VERIFY: `dotnet test tests/KackZug.Core.Tests` -> 71/71 passed · not verified: real GitHub call (repo private, no release yet)
+
+## M1 / E-03: Oberflaeche
+- [x] **T-010** App shell: navigation (Woche, Schichten, Einstellungen), theming (two colors + presets, light/dark), phone layout · owner: @Core · depends-on: T-001, T-002 · origin: design §2, D-006
+  - **DoD:** screens reachable on desktop and emulator; colors persist.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: App/Services (IPlatform, DefaultPlatform with KACKZUG_DATA_DIR, AppServices load+maintenance+SaveAndReschedule, ThemeService with 5 presets), MainViewModel (tabs, ConfirmAsync, ShowToast), placeholder pages, AppStyles, Icons.axaml (MDI, Apache-2.0, fetched from @mdi/svg 7.4.47), Android AndroidPlatform (FilesDir). Phone-first: one layout with bottom tabs, also on desktop. Desktop DEBUG screenshot tour (KACKZUG_SCREENSHOTS + KACKZUG_DATA_DIR + KACKZUG_DEMO=1, invented demo data).
+    - [2026-10-20] (@Core) VERIFY: `dotnet build KackZug.slnx` -> 0 errors; screenshot tour 6/6 OK (3 pages x light/dark) · not verified: emulator run of the new shell (done with T-012) and colour persistence via UI (comes with T-014) · commit: 6b0b86e
+- [x] **T-011** Schichten view: list, edit name/color, show/remove Hin/Rueck, delete with confirmation (days become frei) · owner: @Core · depends-on: T-004, T-010
+  - **DoD:** functional check on desktop.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: ShiftsViewModel (list, empty-state hint how to share), ShiftEditorViewModel (name, 8 colour swatches, ConnectionCardViewModel per direction with LegLine rows, remove trip, delete with confirm, cancel reloads data), ConnectionText helpers.
+    - [2026-10-20] (@Core) VERIFY: screenshot tour 15/15 OK (list, editor, add, delete confirm) + visual check of screenshots · not verified: Android rendering (with T-012)
+- [x] **T-012** Share intent + import dialog (new/existing shift, Hin/Rueck, replace with before/after, errors) · owner: @Core · depends-on: T-005, T-011
+  - **DoD:** sharing text to the app on emulator opens the dialog; saving reschedules alarms; error path shows clear message.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: MainActivity (fixed Name, Exported, SEND text/plain filter, OnCreate+OnNewIntent -> App.HandleSharedText with pending queue), ImportViewModel/ImportView overlay (loading, error, legs, target chips, Hin/Rueck with smart default, before/after on replace), AppServices.Resolver (settable; desktop tour uses DemoResolver).
+    - [2026-10-20] (@Core) VERIFY: tour 23/23 OK; emulator: `am start -a SEND` with the developer's real link -> dialog with 3 live legs incl. platform, typed name, saved, shift listed; second share while open -> dialog via OnNewIntent · not verified: real DB Navigator share sheet on a phone (T-022) · commit: see git log
+- [x] **T-013** Wochen view: Mo-So, shift picker, Hin/Rueck switches, past days disabled, last status color, "Jetzt pruefen" · owner: @Core · depends-on: T-008, T-010
+  - **DoD:** functional check; changes persist and reschedule.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: WeekViewModel (rows Mo-So, per-row option lists, Jetzt pruefen for today+tomorrow via TripChecker/CheckContext.Manual, result box), DayRowViewModel (shift ComboBox, Hin/Rueck toggles only when trip exists, past locked, today highlighted, StatusBadge from CheckState), AppServices.StatusSourceFactory (tour uses DemoStatusSource). Fixed shared-ItemsSource null write-back (L-001).
+    - [2026-10-20] (@Core) VERIFY: tour 32/32 OK (plan not overwritten on display, change saved to file, check now shows "Anschluss gefaehrdet") + screenshots light/dark · not verified: Android rendering of the week (with T-015)
+- [x] **T-014** Einstellungen view: lead times, evening check, thresholds, insistent alerts, new-week mode, update check, permission status, Test-Alarm · owner: @Core · depends-on: T-010
+  - **DoD:** functional check; values persist.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: SettingsViewModel/View (lead-time checkboxes incl. stored custom values, evening check + TimePicker, OK-info, NumericUpDowns, insistent, test alarm after 5 s via IPlatform.ShowAlert, week mode radios, theme radios, 2 ColorPickers + 5 presets, update check, version + not-affiliated note), IPlatform.GetPermissions/OpenPermissionSettings (Android impl in T-016).
+    - [2026-10-20] (@Core) VERIFY: tour 37/37 OK (lead time, preset, dark, evening off persisted) + screenshots · not verified: permission card with real data (T-016), test alarm on Android (T-016)
+
+## M1 / E-04: Android-Hintergrund und Benachrichtigungen
+- [x] **T-015** AlarmScheduler, CheckAlarmReceiver (GoAsync, timeout, retry 2 min), BootReceiver, maintenance alarm · owner: @Core · depends-on: T-007, T-008, T-012
+  - **DoD:** scheduled check fires on locked emulator and in forced Doze; alarms restored after reboot (adb).
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: Core/Checking/BackgroundCheck (load, still-planned check, context LastLeadTime, one retry when Unknown, save, replan; 5 tests). Android: AlarmScheduler (exact alarms per check, old codes from alarms.txt cancelled, retry alarm), CheckIntent (extras), CheckAlarmReceiver (GoAsync, 9 s hard timeout, MinimumGap 300 ms, retry on timeout), BootReceiver (boot, package replaced, time/timezone changed), MainActivity OnResume reload, manifest internalOnly + permissions + <queries> for DB Navigator.
+    - [2026-10-20] (@Core) VERIFY: `dumpsys alarm` -> exact RTC_WAKEUP (window=0, policy_permission) at Berlin times; evening check fired with screen off and app frozen, live bahn.de check -> info notification "RE1 17:38 faehrt planmaessig"; after `adb reboot` all alarms re-planned · not verified: forced deep Doze (emulator: "Unable to go deep idle; not enabled") -> real device (T-022)
+- [x] **T-016** Notification channels (Stoerung laut/insistent, Info), actions (Gesehen, DB Navigator oeffnen), permission requests (notifications, exact alarms, battery optimization) · owner: @Core · depends-on: T-015, T-014
+  - **DoD:** Test-Alarm is loud and heads-up on emulator; denied permissions shown in settings.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: AlertNotifier (channel stoerung_v1: high, alarm sound USAGE_ALARM, vibration pattern, public on lockscreen; info_v1 default; INSISTENT flag per setting; category alarm; actions Gesehen + DB Navigator oeffnen with bahn.de fallback), NotificationActionReceiver, ic_notification (MDI train), AndroidPlatform permissions (notifications, exact alarms, battery) + system settings intents, POST_NOTIFICATIONS request on start.
+    - [2026-10-20] (@Core) VERIFY: emulator: test alarm -> red heads-up with both actions, flags INSISTENT|AUTO_CANCEL, channel sound alarm_alert; Gesehen removes it; settings card listed only missing battery optimisation, Erlauben opened the system dialog (cancelled, nothing changed) · not verified: loudness on a real phone, DND behaviour (T-022)
+
+## Compacted 2026-10-21 (done tasks of E-05 and E-06, still listed as one line on the board)
+- [x] **T-017** Release workflow: tag v* -> signed APK -> GitHub Release; versionCode from build time · owner: @Core · depends-on: T-003, T-018
+  - **DoD:** test tag produces a release with an installable APK that updates over the previous one without uninstall.
+  - **Log:**
+    - [2026-10-20] (@Core) PROGRESS: release.yml written (tag v* -> tests, version from tag, versionCode minutes since 2026-01-01, signing via secrets with env: passwords, gh release create). Local Release build (trimmed) installed on emulator: tutorial on fresh install + live import OK.
+    - [2026-10-20] (@Core) BLOCKER: run needs T-018 secrets and a developer OK for merge to main + tag push. blocked-by: T-018
+    - [2026-10-20] (@Core) PROGRESS: developer added the 4 secrets and approved; main fast-forwarded to dev @ 99c5947, annotated tag v0.1.0 (tagger Bastian Baumann) pushed -> release.yml should run
+    - [2026-10-20] (@Core) VERIFY: pending: workflow result + APK on the release page (agent cannot see the private repo's Actions) -> developer checks
+    - [2026-10-20] (@Core) PROGRESS: tag v0.2.0 pushed on main @ a282582 (developer OK)
+    - [2026-10-20] (@Core) PROGRESS: main fast-forwarded to fba1e5f, tag v0.2.1 pushed (developer OK)
+    - [2026-10-21] (@Core) PROGRESS: pre-release tag v0.2.2-dev.1 on dev @ 7a357fd pushed (developer OK); main untouched
+    - [2026-10-21] (@Core) PROGRESS: pre-release tag v0.2.2-dev.2 on dev @ 29d62d4 pushed (developer OK: "Ja, tagge v0.2.2-dev.2 auf dev."); main untouched
+    - [2026-10-21] (@Core) PROGRESS: dev pushed and pre-release tag v0.2.2-dev.3 on dev @ 58dd30e pushed (developer OK: "Ja, push dev und tagge v0.2.2-dev.3."); main untouched
+    - [2026-10-21] (@Core) PROGRESS: dev pushed and pre-release tag v0.2.2-dev.4 on dev @ fa5d92b pushed (developer OK: "Ja, push dev und tagge v0.2.2-dev.4."); main untouched
+    - [2026-10-20] (@Dev/Bastian) VERIFY: release run for v0.1.0 green (developer confirmed) · not verified: update over an installed release (needs a second release) -> T-022
+- [x] **T-018** Create release keystore, back it up offline, add GitHub secrets (names in design §8) · owner: @Dev/Bastian · depends-on: none
+  - **DoD:** secrets present in repo settings (developer confirms).
+  - **Log:**
+    - [2026-10-20] (@Dev/Bastian) DONE: keystore created, 4 secrets added (confirmed in chat). Offline backup: developer's responsibility.
+- [x] **T-019** Update banner in app (opens release page) · owner: @Core · depends-on: T-009, T-010
+  - **DoD:** banner appears with a faked newer version; link opens browser.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: MainViewModel.CheckForUpdateAsync on app start (setting + once per day, stores LastUpdateCheck), banner under header with Herunterladen (IPlatform.OpenUrl) and dismiss.
+    - [2026-10-20] (@Core) VERIFY: tour 39/39 OK incl. faked v9.9.9 banner + screenshot · not verified: real release (none yet, repo private) and browser opening on Android (OpenUrl uses ACTION_VIEW)
+- [x] **T-020** Tutorial on first start and after each update, reopenable in settings · owner: @Core · depends-on: T-011..T-016 · origin: dev request 2026-10-20
+  - **DoD:** shows on fresh install and after version change, not otherwise; covers Teilen, Schicht, Woche, Benachrichtigungen.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: TutorialViewModel/View (5 steps, logo + icons, dots, skip/back/next/finish, jump to settings, wording differs after update), MainViewModel.ShowTutorialIfNeeded (Settings.TutorialSeenVersion vs AppInfo.Version) on start, settings button to reopen.
+    - [2026-10-20] (@Core) VERIFY: tour 44/44 OK (not shown when seen, shown after version change, saved as seen, not shown again) + screenshots · not verified: fresh install on device (T-022)
+- [x] **T-021** README (Deutsch: Funktion, Installation, Updates/Obtainium, Berechtigungen, Akku, Datenschutz, inoffiziell-Hinweis, Lizenz), finish pass · owner: @Core · depends-on: T-017, T-020
+  - **DoD:** README matches app; no DB marks; no AI traces.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: README rewritten (features, install, updates + Obtainium, permissions + dontkillmyapp, privacy, limits, not-affiliated note with trademarks, build, release, licences incl. MDI). Finish pass: no task IDs/AI refs/emojis/ternaries/??=/ranges/switch expressions, one type per file.
+    - [2026-10-20] (@Core) VERIFY: grep scans empty; README statements checked against the implemented behaviour · not verified: release section until first real release (T-017)
+- [x] **T-024** Persistent alarm until "Gesehen": full-screen alarm activity over lock screen (AlarmScreen component), notification cannot simply be swiped away (re-posted on dismiss), sound/vibration repeat until acknowledged, re-alert every few minutes until departure if not acknowledged · owner: @Core · depends-on: T-016 · origin: dev request 2026-10-20 ("nervig oft wiederholt oder geht gar nicht erst weg ... bis man auf GESEHEN geht")
+  - **DoD:** on emulator: problem alert opens a full-screen window even when locked; back/home/swipe do not end it; only "Gesehen" stops sound and re-alerts; USE_FULL_SCREEN_INTENT permission shown in settings when missing; info alerts stay quiet.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: Core/Alarms (PendingAlarm, PendingAlarmStore with 5-min repeat until departure, 4 tests), TripAlert Kicker/Headline/TripLine/RepeatUntil; Android AlarmFlow (ongoing insistent notification, full-screen + content intent -> AlarmActivity, delete intent re-posts, repeat alarm), AlarmActivity (native, design system AlarmScreen colours, over lock screen, back ignored, pulse), Gesehen/Navigator acknowledge, full-screen permission in settings. Deviation from design system: ALL problems get the full-screen alarm (developer wish), not only cancellations.
+    - [2026-10-20] (@Core) VERIFY: emulator: locked screen woke up with full-screen alarm; back ignored; home leaves notification ONGOING|INSISTENT; swipe -> re-posted heads-up; Gesehen -> notification gone, pending file empty, repeat alarm cancelled · not verified: 5-min repeat firing (logic unit-tested), real phone
+- [x] **T-025** Bug: shift colour buttons did nothing · owner: @Core · origin: dev test 2026-10-20
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: binding used $parent[ContentControl] whose DataContext was ShiftsViewModel -> $parent[ItemsControl]; tour now presses the real buttons from the visual tree.
+    - [2026-10-20] (@Core) VERIFY: tour 47/47 incl. "Farbknoepfe haben einen Befehl", colour saved
+- [x] **T-026** Bug: test alarm missing when the app is closed · owner: @Core · origin: dev test 2026-10-20
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: test alarm was an in-app Task.Delay; now IPlatform.ScheduleTestAlarm -> exact AlarmManager alarm -> receiver (Core TestAlert).
+    - [2026-10-20] (@Core) VERIFY: emulator: process killed after tapping, alert arrived 5 s later
+- [x] **T-027** Checks must be honest: no "planmaessig" without live data, correct date, visible last check, explain week colours · owner: @Core · origin: dev test 2026-10-20 ("ganze Woche gruen markiert ... soll eine kleine Meldung kommen, nicht einfach planmaessig")
+  - **DoD:** a trip without any realtime data is shown and reported as "laut Fahrplan, noch keine Echtzeit" (not green); empty board = Unknown, not NotFound; request date tested; week rows show last check time; tests green.
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: LegStatus.PlannedOnly (info, grey), LegObservation.HasLiveData from board ezZeit / trip echtzeit, TripStatus.HasLiveData (any ride with live data), empty board -> Unknown "noch keine Daten", PlannedOnly notifies on evening check (always) and on last lead time if changed, texts "faehrt laut Fahrplan ... Echtzeit folgt", week badge "geprueft HH:mm". Finding for the developer: "green week" were most likely the teal Hin/Rueck toggles, not status dots -> neutral toggles in T-023.
+    - [2026-10-20] (@Core) VERIFY: 85/85 tests (datum param asserted); live run for developer's RE1 tomorrow 17:38 -> PlannedOnly live=False; tour 47/47 + week screenshot with "geprueft 22:06" · not verified: when exactly bahn.de starts sending realtime (observe on device)
+- [x] **T-028** Bug: delay hidden behind "Anschluss gefaehrdet"; badge overlaps shift picker · owner: @Core · origin: dev device test 2026-10-20
+  - **Log:**
+    - [2026-10-20] (@Core) DONE: AlertComposer.DelayedLeg -> badge "+8 · Anschluss knapp", title "... +8 MIN., ANSCHLUSS IN ... GEFAEHRDET", alarm trip line "· +8 min"; week caption uses badge text; chip + badge in a WrapPanel. Note: threshold change takes effect at the next scheduled check (manual check shows result in-app only).
+    - [2026-10-20] (@Core) VERIFY: 87/87 tests (incl. lower threshold -> new alert), tour 47/47 + screenshot
