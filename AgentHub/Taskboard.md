@@ -279,3 +279,10 @@ Critical path: T-001 -> T-004 -> T-005/T-006 -> T-008 -> T-012/T-015 -> T-016 ->
 - B6 (-> T-036, done) Optional: alarms may bypass "Bitte nicht stoeren" · Vision §7
 - B7 Smaller APK (arm64 only) · open size question
 
+## Bugs
+- [ ] **T-071** Untersuchen: Einzelverbindungs Meldung · owner: @Core · priority: next · bug-investigation: ja · priority: next · origin: Board 2026-11-12
+  - Bug gemeldet. Was passiert: eine Meldung für eine Einzelverbindung kam nicht an, ob das bei den gespeicherten auch passiert kann ich so nicht direkt sagen · Erwartet: meldung sollte wie geplant darauf aufmerksam machen Ursache finden und belegen, nichts beheben. Gibt es mehrere Ursachen, für jede eine Beheben-Aufgabe anlegen; sonst die folgende präzisieren (welche Datei, was ändern).
+  - **DoD:** Ursache gefunden und belegt (Reproduktion oder ein Test, der fehlschlägt); Befund als Log-Zeile in dieser Aufgabe; die Beheben-Aufgabe(n) sagen konkret, was zu ändern ist.
+- [ ] **T-072** Beheben: Einzelverbindungs Meldung · owner: @Core · depends-on: T-071 · bug-fix-for: T-071 · origin: Board 2026-11-12
+  - Den in der Untersuchung gefundenen Fehler beheben. Was passiert: eine Meldung für eine Einzelverbindung kam nicht an, ob das bei den gespeicherten auch passiert kann ich so nicht direkt sagen · Erwartet: meldung sollte wie geplant darauf aufmerksam machen
+  - **DoD:** Fehler behoben; ein Test deckt ihn ab und schlug vorher fehl; die Schritte aus der Meldung laufen ohne Fehler.
