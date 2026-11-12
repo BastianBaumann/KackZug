@@ -1,0 +1,18 @@
+{
+  "targets": [
+    {
+      "name": "Android APK",
+      "command": "dotnet publish src/KackZug.Android/KackZug.Android.csproj -c Release -f net10.0-android -p:AndroidSdkDirectory=\"%LOCALAPPDATA%\\Android\\Sdk\" -o artifacts/android",
+      "artifacts": [
+        "artifacts/android/*-Signed.apk"
+      ]
+    },
+    {
+      "name": "Windows",
+      "command": "dotnet publish src/KackZug.Desktop/KackZug.Desktop.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o artifacts/windows",
+      "artifacts": [
+        "artifacts/windows/*.exe"
+      ]
+    }
+  ]
+}
