@@ -1,0 +1,11 @@
+{
+  "ursache": "TripChecker.CheckAsync schreibt LastStatusHash, LastStatus und LastNotifiedAt bei jeder Pruefung, auch bei CheckContext.Manual (Knopf 'Jetzt pruefen' in Einzelfahrten, Woche, Fahrtdetail). Ist die Stoerung dort schon einmal gesehen worden, meldet die geplante Hintergrundpruefung sie nicht mehr (ShouldNotify: changed == false). TripsViewModel.CheckNowAsync prueft zudem alle Einzelfahrten unabhaengig vom Datum, daher trifft es Einzelfahrten haeufiger; bei Schichten (WeekViewModel, TripDetailViewModel) ist es derselbe Fehler.",
+  "beleg": "tests/KackZug.Core.Tests/Checking/TripCheckerTests.cs::ManualCheckDoesNotSwallowTheLaterBackgroundAlert (derzeit mit Skip markiert, damit CI gruen bleibt; erwartet ShouldNotify == true, Code-Lesung ergibt false). Nicht ausgefuehrt: in dieser Umgebung ist kein dotnet installiert.",
+  "fixes": [
+    {
+      "titel": "Beheben: Einzelverbindungs Meldung",
+      "beschreibung": "src/KackZug.Core/Models/CheckState.cs: Felder LastNotifiedHash und LastNotifiedStatus ergaenzen (inkl. AppJsonContext, alte Daten ohne Feld = null). src/KackZug.Core/Checking/TripChecker.cs: ShouldNotify und wasProblem gegen diese Felder pruefen statt gegen LastStatusHash/LastStatus; die Felder nur setzen, wenn context != CheckContext.Manual. Anzeige-Felder (LastStatus, LastSummary, LastBadgeText, LastCheckedAt) weiter bei jeder Pruefung setzen. Im Test ManualCheckDoesNotSwallowTheLaterBackgroundAlert das Skip entfernen.",
+      "dod": "Der Test ManualCheckDoesNotSwallowTheLaterBackgroundAlert laeuft ohne Skip und ist gruen; dotnet test tests/KackZug.Core.Tests ist gruen; dieselbe Stoerung wird nach einer manuellen Pruefung bei Einzelfahrt und Schicht trotzdem einmal gemeldet."
+    }
+  ]
+}

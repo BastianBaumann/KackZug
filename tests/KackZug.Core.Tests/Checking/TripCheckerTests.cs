@@ -227,6 +227,22 @@ public class TripCheckerTests
         Assert.DoesNotContain("Hinfahrt", outcome.Alert.Title);
     }
 
+    [Fact(Skip = "T-072: schlaegt heute fehl; Skip mit der Korrektur entfernen")]
+    public async Task ManualCheckDoesNotSwallowTheLaterBackgroundAlert()
+    {
+        var data = new AppData();
+        var trip = SampleData.CreateTrip("Konzert", Day);
+        data.Trips.Add(trip);
+        var source = new FakeTripStatusSource();
+        source.CancelledNames.Add("RE7");
+        var checker = new TripChecker(source, new FixedClock(Now));
+
+        await checker.CheckAsync(data, Day, trip.Id, TripDirection.Outbound, CheckContext.Manual, CancellationToken.None);
+        var scheduled = await checker.CheckAsync(data, Day, trip.Id, TripDirection.Outbound, CheckContext.LeadTime, CancellationToken.None);
+
+        Assert.True(scheduled!.ShouldNotify);
+    }
+
     [Fact]
     public async Task OneOffTripIsNotCheckedOnAnotherDay()
     {
