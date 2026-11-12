@@ -227,7 +227,7 @@ public class TripCheckerTests
         Assert.DoesNotContain("Hinfahrt", outcome.Alert.Title);
     }
 
-    [Fact(Skip = "T-072: schlaegt heute fehl; Skip mit der Korrektur entfernen")]
+    [Fact]
     public async Task ManualCheckDoesNotSwallowTheLaterBackgroundAlert()
     {
         var data = new AppData();

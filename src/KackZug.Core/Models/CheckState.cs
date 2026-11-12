@@ -15,6 +15,11 @@ public sealed class CheckState
 
     public LegStatus? LastStatus { get; set; }
 
+    /// <remarks>Stand der letzten geplanten Pruefung, gegen den gemeldet wird; manuelle Pruefungen aendern ihn nicht. Null bei alten Daten.</remarks>
+    public string? LastNotifiedHash { get; set; }
+
+    public LegStatus? LastNotifiedStatus { get; set; }
+
     public string LastSummary { get; set; } = "";
 
     public string LastBadgeText { get; set; } = "";

@@ -67,6 +67,12 @@ public sealed class TripChecker
 
         alert.RepeatUntil = BerlinTime.ToInstant(connection.FirstRide.DepartureOn(travelDate), BerlinTime.Zone);
         var state = FindOrCreateState(data, travelDate, shiftId, direction);
+        if (state.LastNotifiedHash is null)
+        {
+            state.LastNotifiedHash = state.LastStatusHash;
+            state.LastNotifiedStatus = state.LastStatus;
+        }
+
         var shouldNotify = ShouldNotify(state, alert, context, data.Settings);
 
         state.LastStatusHash = alert.StatusHash;
@@ -75,6 +81,12 @@ public sealed class TripChecker
         state.LastBadgeText = alert.BadgeText;
         state.LastBadgeLanguage = Language.Culture.TwoLetterISOLanguageName;
         state.LastCheckedAt = _clock.Now;
+        if (context != CheckContext.Manual)
+        {
+            state.LastNotifiedHash = alert.StatusHash;
+            state.LastNotifiedStatus = status.Overall;
+        }
+
         if (shouldNotify)
         {
             state.LastNotifiedAt = _clock.Now;
@@ -85,7 +97,7 @@ public sealed class TripChecker
 
     private static bool ShouldNotify(CheckState state, TripAlert alert, CheckContext context, Settings settings)
     {
-        var changed = state.LastStatusHash != alert.StatusHash;
+        var changed = state.LastNotifiedHash != alert.StatusHash;
         if (alert.Severity == AlertSeverity.Problem)
         {
             return changed;
@@ -101,7 +113,7 @@ public sealed class TripChecker
             return context == CheckContext.Evening || (context == CheckContext.LastLeadTime && changed);
         }
 
-        var wasProblem = state.LastStatus is not null && AlertComposer.SeverityOf(state.LastStatus.Value) == AlertSeverity.Problem;
+        var wasProblem = state.LastNotifiedStatus is not null && AlertComposer.SeverityOf(state.LastNotifiedStatus.Value) == AlertSeverity.Problem;
         if (wasProblem)
         {
             return true;
