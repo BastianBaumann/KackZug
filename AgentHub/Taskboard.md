@@ -280,9 +280,10 @@ Critical path: T-001 -> T-004 -> T-005/T-006 -> T-008 -> T-012/T-015 -> T-016 ->
 - B7 Smaller APK (arm64 only) · open size question
 
 ## Bugs
-- [ ] **T-073** Abnahme: Meldung nach manueller Prüfung · owner: @Dev · priority: next · follow-up-of: T-072 · from-run: 78 · acceptance-of: T-072 · origin: Board 2026-11-12
+- [x] **T-073** Abnahme: Meldung nach manueller Prüfung · owner: @Dev · priority: next · follow-up-of: T-072 · from-run: 78 · acceptance-of: T-072 · origin: Board 2026-11-12
   - Eine Einzelfahrt und eine Schicht mit Störung anlegen, zuerst Jetzt prüfen drücken und dann die geplante Hintergrundprüfung abwarten Grund laut Lauf zu T-072: Ob die Meldung auf dem Gerät wirklich ankommt, lässt sich nur dort prüfen
   - **DoD:** Die Störung wird bei der Einzelfahrt und bei der Schicht trotzdem einmal gemeldet
+  - [2026-11-13] (@Dev/Bastian) DONE: erledigt
 - [x] **T-071** Untersuchen: Einzelverbindungs Meldung · owner: @Core · priority: next · bug-investigation: ja · priority: next · origin: Board 2026-11-12
   - Bug gemeldet. Was passiert: eine Meldung für eine Einzelverbindung kam nicht an, ob das bei den gespeicherten auch passiert kann ich so nicht direkt sagen · Erwartet: meldung sollte wie geplant darauf aufmerksam machen Ursache finden und belegen, nichts beheben. Gibt es mehrere Ursachen, für jede eine Beheben-Aufgabe anlegen; sonst die folgende präzisieren (welche Datei, was ändern).
   - **DoD:** Ursache gefunden und belegt (Reproduktion oder ein Test, der fehlschlägt); Befund als Log-Zeile in dieser Aufgabe; die Beheben-Aufgabe(n) sagen konkret, was zu ändern ist.
